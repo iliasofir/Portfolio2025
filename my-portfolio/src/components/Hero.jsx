@@ -1,4 +1,6 @@
 import Typewriter from "typewriter-effect";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { HiDownload } from "react-icons/hi";
 
 const Hero = () => {
   return (
@@ -59,13 +61,37 @@ const Hero = () => {
 
                 {/* Social Links */}
                 <div className="flex gap-4 pt-4">
-                  {["GitHub", "LinkedIn"].map((platform) => (
+                  {[
+                    {
+                      name: "GitHub",
+                      icon: <FaGithub className="mr-2" />,
+                      href: "https://github.com/iliasofir",
+                    },
+                    {
+                      name: "LinkedIn",
+                      icon: <FaLinkedin className="mr-2" />,
+                      href: "https://www.linkedin.com/in/ilias-ofir-445b91295/",
+                    },
+                    {
+                      name: "Resume",
+                      icon: <HiDownload className="mr-2" />,
+                      href: "/Resume.pdf",
+                    },
+                  ].map((platform) => (
                     <a
-                      key={platform}
-                      href={platform === "GitHub" ? "https://github.com/iliasofir" : "https://www.linkedin.com/in/ilias-ofir-445b91295/"}
-                      className="glass-effect p-3 rounded-lg hover:bg-white/20 transition-colors"
+                      key={platform.name}
+                      href={platform.href}
+                      download={platform.name === "Resume"}
+                      target={platform.name !== "Resume" ? "_blank" : undefined}
+                      rel={
+                        platform.name !== "Resume"
+                          ? "noopener noreferrer"
+                          : undefined
+                      }
+                      className="glass-effect p-3 rounded-lg hover:bg-white/20 transition-colors flex items-center"
                     >
-                      <span className="gradient-text">{platform}</span>
+                      {platform.icon}
+                      <span className="gradient-text">{platform.name}</span>
                     </a>
                   ))}
                 </div>

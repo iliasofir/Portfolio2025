@@ -8,6 +8,7 @@ const Navbar = () => {
   const menuItems = [
     { id: "home", name: "Home" },
     { id: "skills", name: "Skills" },
+    { id: "certifications", name: "Certifications" },
     { id: "projects", name: "Projects" },
     { id: "education", name: "Education" },
     { id: "experience", name: "Experience" },
