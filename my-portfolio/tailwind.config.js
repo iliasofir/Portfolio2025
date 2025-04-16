@@ -1,13 +1,21 @@
-/** @type {import('tailwindcss').Config} */
-export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+const { fontFamily } = require('tailwindcss/defaultTheme')
+
+module.exports = {
+  content: ['./src/**/*.{js,jsx,ts,tsx}', './index.html'],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', ...fontFamily.sans],
+      },
+      lineHeight: {
+        'relaxed': '1.75',
+      },
       animation: {
         blob: "blob 7s infinite",
         fadeIn: "fadeIn 1s ease-in forwards",
         gradient: "gradient 8s linear infinite",
         "bounce-slow": "bounce 3s linear infinite",
+        'float': 'float 6s ease-in-out infinite',
       },
       keyframes: {
         blob: {
@@ -39,4 +47,4 @@ export default {
     },
   },
   plugins: [],
-};
+}

@@ -1,190 +1,368 @@
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-
-const CustomArrow = ({ direction, onClick }) => (
-  <button
-    onClick={onClick}
-    className={`absolute ${
-      direction === "left" ? "-left-16" : "-right-16"
-    } top-1/2 -translate-y-1/2 z-10 p-4 glass-effect rounded-full text-gray-300 hover:text-white transition-colors ${
-      !onClick && "hidden"
-    }`}
-  >
-    {direction === "left" ? (
-      <FaChevronLeft className="w-6 h-6" />
-    ) : (
-      <FaChevronRight className="w-6 h-6" />
-    )}
-  </button>
-);
+import React, { useState, useEffect, useRef } from "react";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useTransform,
+  useSpring,
+} from "framer-motion";
 
 const Projects = () => {
+  const [[page, direction], setPage] = useState([0, 0]);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const containerRef = useRef(null);
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
+  });
+
+  const springConfig = { stiffness: 100, damping: 30 };
+  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.9, 1], [0, 1, 1, 0]);
+  const scale = useTransform(
+    scrollYProgress,
+    [0, 0.2, 0.9, 1],
+    [0.8, 1, 1, 0.8]
+  );
+
   const projects = [
     {
-      title: "Sentiment Analysis App",
-      image: "/images/deployDocker.png",
-      description:
-        "Deployed a containerized Sentiment Analysis application using Docker. The app combines FastAPI for the backend and Streamlit for the frontend, integrated with a HuggingFace transformer model for sentiment analysis. The architecture ensures scalability and efficient inference through API endpoints, providing real-time sentiment analysis capabilities.",
-      technologies: [
-        "Docker",
-        "FastAPI",
-        "Streamlit",
-        "Python",
-        "HuggingFace",
-        "Inference API",
-      ],
-      status: "Completed",
-      statusColor: "bg-green-500",
-    },
-    {
       title: "ChatWithMe",
+      period: "2024, Ongoing",
+      description: "Real-Time Chat Web App",
+      details:
+        "Built a real-time messaging platform for seamless communication. Implemented WebSockets for instant message updates.",
+      tech: ["Node.js", "React.js", "WebSocket", "TailwindCSS"],
       image: "/images/project5.png",
-      description:
-        "A real-time chat application built with the MERN stack (MongoDB, Express.js, React.js) and styled with Tailwind CSS. Features include real-time messaging, user authentication, message history, and a responsive design. The app demonstrates modern web development practices and real-time communication implementation.",
-      technologies: [
-        "React.js",
-        "Express.js",
-        "MongoDB",
-        "TailwindCSS",
-        "Socket.io",
-        "Node.js",
-      ],
-      status: "Ongoing",
-      statusColor: "bg-yellow-500",
+      color: "from-cyan-500 to-blue-600",
+      bgAccent: "bg-blue-500/20",
+      accentColor: "rgb(59, 130, 246)",
     },
     {
-      title: "Eventure App",
+      title: "Eventure",
+      period: "2024",
+      description: "Event Management Platform",
+      details:
+        "Developed a web app for event creation and attendee management. Integrated Spring Boot for backend and Thymeleaf & TailwindCSS for UI.",
+      tech: ["Spring Boot", "Thymeleaf", "MySQL", "Git", "TailwindCSS"],
       image: "/images/project4.jpeg",
-      description:
-        "A dynamic event management application built with Spring Boot and Thymeleaf. The app features a modern, responsive UI styled with Tailwind CSS, allowing users to create, manage, and participate in events. Implements secure user authentication, real-time updates, and an intuitive dashboard for event organizers.",
-      technologies: [
-        "Spring Boot",
-        "Thymeleaf",
-        "TailwindCSS",
-        "MySQL",
-        "Java",
-      ],
-      status: "Completed",
-      statusColor: "bg-green-500",
+      color: "from-violet-500 to-purple-600",
+      bgAccent: "bg-purple-500/20",
+      accentColor: "rgb(168, 85, 247)",
     },
     {
-      title: "Recruiting Agency",
+      title: "Recruiting Agency App",
+      period: "2024",
+      description: "JavaFX Desktop Application",
+      details:
+        "Designed a multi-client recruitment platform for companies and job seekers. Enabled job postings and interactive journals.",
+      tech: ["JavaFX", "MySQL", "IntelliJ IDEA"],
       image: "/images/project1.jpeg",
-      description:
-        "A Java desktop application designed to provide flexible functionalities to meet the needs of businesses in hiring. The application allows for efficient recruitment processes and manages job applications and candidate profiles with ease.",
-      technologies: [
-        "Java",
-        "JavaFX",
-        "CSS",
-        "Git",
-        "UML",
-        "IntelliJ IDEA",
-        "MYSQL",
-      ],
-      status: "Completed",
-      statusColor: "bg-green-500",
+      color: "from-emerald-400 to-teal-600",
+      bgAccent: "bg-emerald-500/20",
+      accentColor: "rgb(16, 185, 129)",
     },
     {
-      title: "E-learning School Website",
-      image: "/images/yop2.png",
-      description:
-        "A project designed to simplify management tasks in primary schools. Built with Python and Django, it ensures flexibility and accessibility for all users, including admins, students, teachers, and parents. The system streamlines administrative tasks, facilitates communication, and enhances the overall educational experience.",
-      technologies: ["Django", "CSS", "PostgreSQL", "UML", "PyCharm"],
-      status: "Ongoing",
-      statusColor: "bg-yellow-500",
+      title: "Sentiment Analysis & GNN",
+      period: "2024",
+      description: "ML Research Project",
+      details:
+        "Developed a sentiment analysis app for text classification. Improved a Graph Neural Network (GNN) model for higher accuracy using PyTorch.",
+      tech: ["PyTorch", "Machine Learning", "Data Processing"],
+      image: "/images/deployDocker.png",
+      color: "from-amber-400 to-orange-600",
+      bgAccent: "bg-amber-500/20",
+      accentColor: "rgb(245, 158, 11)",
     },
   ];
 
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 2,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 5000,
-    pauseOnHover: true,
-    prevArrow: <CustomArrow direction="left" />,
-    nextArrow: <CustomArrow direction="right" />,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-        },
-      },
-    ],
-    appendDots: (dots) => (
-      <div className="bottom-[-50px]">
-        <ul className="flex justify-center gap-2"> {dots} </ul>
-      </div>
-    ),
-    customPaging: () => (
-      <div className="w-3 h-3 rounded-full bg-gray-500 hover:bg-blue-400 transition-colors" />
-    ),
-    adaptiveHeight: false,
+  const variants = {
+    enter: (direction) => ({
+      x: direction > 0 ? 1000 : -1000,
+      opacity: 0,
+      scale: 0.95,
+    }),
+    center: {
+      zIndex: 1,
+      x: 0,
+      opacity: 1,
+      scale: 1,
+    },
+    exit: (direction) => ({
+      zIndex: 0,
+      x: direction < 0 ? 1000 : -1000,
+      opacity: 0,
+      scale: 0.95,
+    }),
   };
 
+  // Auto-scroll effect
+  useEffect(() => {
+    if (!isPaused) {
+      const interval = setInterval(() => {
+        paginate(1);
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [isPaused, page]);
+
+  const swipeConfidenceThreshold = 10000;
+  const swipePower = (offset, velocity) => {
+    return Math.abs(offset) * velocity;
+  };
+
+  const paginate = (newDirection) => {
+    setPage([page + newDirection, newDirection]);
+  };
+
+  const wrap = (min, max, v) => {
+    const rangeSize = max - min;
+    return ((((v - min) % rangeSize) + rangeSize) % rangeSize) + min;
+  };
+
+  const projectIndex = wrap(0, projects.length, page);
+
   return (
-    <div id="projects" className="relative min-h-screen py-20 code-bg">
-      <div className="max-w-7xl mx-auto px-4 sm:px-20 lg:px-32">
-        <h2 className="text-4xl md:text-6xl font-bold gradient-text text-center mb-16">
-          My Projects
-        </h2>
+    <div
+      id="projects"
+      className="relative min-h-screen py-20 "
+      ref={containerRef}
+    >
+      <motion.div
+        className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8"
+        style={{
+          opacity: useSpring(opacity, springConfig),
+          scale: useSpring(scale, springConfig),
+        }}
+      >
+        <motion.div
+          className="mb-20"
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-6xl md:text-7xl font-bold text-center">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
+              Featured Projects
+            </span>
+          </h2>
+        </motion.div>
 
-        <div className="relative">
-          <Slider {...settings}>
-            {projects.map((project) => (
-              <div key={project.title} className="px-4 h-full">
-                <div className="glass-effect card-hover rounded-2xl overflow-hidden h-[700px] flex flex-col">
-                  {/* Project Image */}
-                  <div className="relative h-56 overflow-hidden flex-shrink-0">
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  </div>
+        <motion.div
+          className="relative h-[700px] md:h-[600px] lg:h-[650px] overflow-hidden rounded-2xl"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <AnimatePresence initial={false} custom={direction}>
+            <motion.div
+              key={page}
+              custom={direction}
+              variants={variants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{
+                x: { type: "spring", stiffness: 300, damping: 30 },
+                opacity: { duration: 0.2 },
+              }}
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={1}
+              onDragStart={() => {
+                setIsDragging(true);
+                setIsPaused(true);
+              }}
+              onDragEnd={(e, { offset, velocity }) => {
+                setIsDragging(false);
+                setIsPaused(false);
+                const swipe = swipePower(offset.x, velocity.x);
+                if (swipe < -swipeConfidenceThreshold) {
+                  paginate(1);
+                } else if (swipe > swipeConfidenceThreshold) {
+                  paginate(-1);
+                }
+              }}
+              className="absolute w-full h-full flex items-center justify-center"
+            >
+              <div className="w-full h-full px-4 flex items-center justify-center">
+                <motion.div
+                  className="w-full max-w-6xl mx-auto"
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="relative rounded-2xl overflow-hidden backdrop-blur-md bg-white/[0.03] border border-white/10 shadow-2xl">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 p-8">
+                      <motion.div
+                        className="lg:col-span-7 relative rounded-xl overflow-hidden aspect-[16/10]"
+                        whileHover={{ scale: 1.03 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <img
+                          src={projects[projectIndex].image}
+                          alt={projects[projectIndex].title}
+                          className="object-cover w-full h-full"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                      </motion.div>
 
-                  {/* Project Content */}
-                  <div className="p-8 space-y-6 flex-grow flex flex-col">
-                    <h3 className="text-2xl font-bold text-gray-200">
-                      {project.title}
-                    </h3>
-
-                    <p className="text-gray-400 leading-relaxed flex-grow">
-                      {project.description}
-                    </p>
-
-                    {/* Technologies */}
-                    <div className="flex flex-wrap gap-3 mt-auto">
-                      {project.technologies.map((tech) => (
-                        <span
-                          key={tech}
-                          className="px-4 py-1.5 text-sm glass-effect rounded-full text-blue-400"
+                      <div className="lg:col-span-5 flex flex-col justify-between py-4">
+                        <div>
+                          <motion.div
+                            className="flex items-center justify-between mb-6"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4 }}
+                          >
+                            <h3 className="text-4xl font-bold text-white">
+                              {projects[projectIndex].title}
+                            </h3>
+                            <div
+                              className={`px-4 py-1.5 rounded-full ${projects[projectIndex].bgAccent} text-sm`}
+                            >
+                              {projects[projectIndex].period}
+                            </div>
+                          </motion.div>
+                          <motion.p
+                            className="text-xl text-white/90 mb-4"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.2, duration: 0.4 }}
+                          >
+                            {projects[projectIndex].description}
+                          </motion.p>
+                          <motion.p
+                            className="text-base text-gray-300 leading-relaxed mb-8"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.3, duration: 0.4 }}
+                          >
+                            {projects[projectIndex].details}
+                          </motion.p>
+                        </div>
+                        <motion.div
+                          className="flex flex-wrap gap-2.5"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.4, duration: 0.4 }}
                         >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Status Badge */}
-                    <div
-                      className={`inline-block px-4 py-1.5 rounded-full text-sm font-medium ${project.statusColor} text-white mt-2`}
-                    >
-                      {project.status}
+                          {projects[projectIndex].tech.map((tech) => (
+                            <motion.span
+                              key={tech}
+                              className={`px-4 py-2 text-sm ${projects[projectIndex].bgAccent} text-white rounded-full backdrop-blur-sm`}
+                              whileHover={{
+                                scale: 1.05,
+                                backgroundColor: "rgba(255, 255, 255, 0.15)",
+                              }}
+                              whileTap={{ scale: 0.95 }}
+                            >
+                              {tech}
+                            </motion.span>
+                          ))}
+                        </motion.div>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               </div>
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Navigation buttons avec design moderne */}
+          <motion.button
+            className="absolute left-6 top-1/2 -translate-y-1/2 bg-white/5 hover:bg-white/10 rounded-full p-4 backdrop-blur-sm z-10 border border-white/10"
+            whileHover={{
+              scale: 1.1,
+              backgroundColor: "rgba(255, 255, 255, 0.15)",
+            }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => {
+              if (!isDragging) {
+                paginate(-1);
+                setIsPaused(true);
+                setTimeout(() => setIsPaused(false), 3000);
+              }
+            }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+              className="w-6 h-6 text-white"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15.75 19.5L8.25 12l7.5-7.5"
+              />
+            </svg>
+          </motion.button>
+
+          <motion.button
+            className="absolute right-6 top-1/2 -translate-y-1/2 bg-white/5 hover:bg-white/10 rounded-full p-4 backdrop-blur-sm z-10 border border-white/10"
+            whileHover={{
+              scale: 1.1,
+              backgroundColor: "rgba(255, 255, 255, 0.15)",
+            }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => {
+              if (!isDragging) {
+                paginate(1);
+                setIsPaused(true);
+                setTimeout(() => setIsPaused(false), 3000);
+              }
+            }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+              className="w-6 h-6 text-white"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M8.25 4.5l7.5 7.5-7.5 7.5"
+              />
+            </svg>
+          </motion.button>
+
+          {/* Indicateurs de progression modernisés */}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-3">
+            {projects.map((_, index) => (
+              <motion.button
+                key={index}
+                className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                  index === projectIndex ? "w-8 bg-white" : "bg-white/40"
+                }`}
+                onClick={() => {
+                  const newDirection = index - projectIndex;
+                  setPage([index, newDirection]);
+                  setIsPaused(true);
+                  setTimeout(() => setIsPaused(false), 3000);
+                }}
+                whileHover={{ scale: 1.2 }}
+                whileTap={{ scale: 0.8 }}
+                animate={{
+                  scale: index === projectIndex ? [1, 1.1, 1] : 1,
+                  transition: {
+                    duration: 2,
+                    repeat: index === projectIndex ? Infinity : 0,
+                    repeatType: "reverse",
+                  },
+                }}
+              />
             ))}
-          </Slider>
-        </div>
-      </div>
+          </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 };
