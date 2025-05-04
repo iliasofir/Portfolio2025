@@ -45,13 +45,13 @@ const Education = () => {
 
   const educationData = [
     {
-      school: "FST Settat",
-      degree: "Software Engineering Degree",
+      school: "Hassan 1st University - FST Settat",
+      degree: "Bachelor's Degree in Software Engineering",
       period: "2023 - Present",
       image: "/images/fst_settat.jpg",
       status: "Current",
       points: [
-        "Core Studies: Programming Fundamentals, Mathematics",
+        "Engineering studies with a focus on Computer Science and Software Development",
         "Focus Areas: Software Engineering, Data Structures, Algorithms",
         "Relevant Coursework: Database Systems, Web Development, Software Design Patterns",
       ],
@@ -59,13 +59,13 @@ const Education = () => {
       accent: "#8B5CF6",
     },
     {
-      school: "FST Mohammedia",
-      degree: "DEUST (University Diploma in Science and Technology)",
+      school: "Hassan II University of Casablanca - FST Mohammedia",
+      degree: "The University Diploma for Science and Techniques",
       period: "2021 - 2023",
       image: "/images/fst_mohammedia.jpg",
       status: "Completed",
       points: [
-        "Foundation in Sciences and Technical Studies",
+        "Fundamental studies in Mathematics, Physics, and Computer Science",
         "Preparation for Engineering School",
         "Strong background in Mathematics and Physics",
       ],
@@ -107,7 +107,8 @@ const Education = () => {
             mass: 0.8,
           }}
           style={{
-            background: "radial-gradient(circle, rgba(111, 66, 193, 0.15) 0%, transparent 70%)",
+            background:
+              "radial-gradient(circle, rgba(111, 66, 193, 0.15) 0%, transparent 70%)",
             filter: "blur(10px)",
           }}
         />
@@ -154,17 +155,14 @@ const Education = () => {
           />
 
           {/* Modern Typographic Heading with Variable Font Animation - 2025 trend */}
-          <motion.h2 
-            className="text-7xl md:text-8xl font-bold text-center relative py-4"
-            animate={{ 
-              letterSpacing: ["-.02em", "-.01em", "-.02em"],
-              fontWeight: [700, 800, 700],
-            }}
-            transition={{ duration: 4, repeat: Infinity, repeatType: "mirror" }}
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+            className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-violet-400 to-purple-600 bg-clip-text text-transparent text-center mb-16"
           >
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-violet-400 to-purple-400 drop-shadow-[0_0_35px_rgba(167,139,250,0.3)]">
-              Education
-            </span>
+            Education
           </motion.h2>
 
           {/* Animated Line Separator - 2025 trend with multiple lines */}
@@ -173,15 +171,19 @@ const Education = () => {
               <motion.div
                 key={i}
                 initial={{ width: "0%" }}
-                whileInView={{ width: ["0%", "40%", i === 1 ? "60%" : "40%", "40%"] }}
-                transition={{ 
-                  duration: 3, 
-                  delay: i * 0.2, 
+                whileInView={{
+                  width: ["0%", "40%", i === 1 ? "60%" : "40%", "40%"],
+                }}
+                transition={{
+                  duration: 3,
+                  delay: i * 0.2,
                   repeat: Infinity,
                   repeatType: "mirror",
                   repeatDelay: 2,
                 }}
-                className={`h-px absolute bg-gradient-to-r from-transparent via-violet-400/${30 - i * 5} to-transparent mx-auto`}
+                className={`h-px absolute bg-gradient-to-r from-transparent via-violet-400/${
+                  30 - i * 5
+                } to-transparent mx-auto`}
                 style={{
                   top: `${i * 4}px`,
                 }}
@@ -198,7 +200,7 @@ const Education = () => {
             transition={{ duration: 2, delay: 0.5 }}
             className="h-full w-full bg-gradient-to-b from-transparent via-violet-500/20 to-transparent"
           />
-          
+
           {/* Animated dots on timeline */}
           {educationData.map((_, index) => (
             <motion.div
@@ -208,11 +210,14 @@ const Education = () => {
               animate={{
                 scale: activeCard === index ? [1, 1.5, 1] : 1,
                 opacity: activeCard === index ? [0.7, 1, 0.7] : 0.7,
-                boxShadow: activeCard === index ? [
-                  "0 0 0px rgba(139, 92, 246, 0)",
-                  "0 0 20px rgba(139, 92, 246, 0.7)",
-                  "0 0 0px rgba(139, 92, 246, 0)",
-                ] : "none",
+                boxShadow:
+                  activeCard === index
+                    ? [
+                        "0 0 0px rgba(139, 92, 246, 0)",
+                        "0 0 20px rgba(139, 92, 246, 0.7)",
+                        "0 0 0px rgba(139, 92, 246, 0)",
+                      ]
+                    : "none",
               }}
               transition={{ duration: 2, repeat: Infinity }}
             />
@@ -261,19 +266,21 @@ const Education = () => {
                 {/* Animated Border - 2025 trend */}
                 <motion.div
                   animate={{
-                    background: activeCard === index 
-                      ? [
-                          `linear-gradient(90deg, transparent, ${edu.accent}40, transparent)`,
-                          `linear-gradient(180deg, transparent, ${edu.accent}40, transparent)`,
-                          `linear-gradient(270deg, transparent, ${edu.accent}40, transparent)`,
-                          `linear-gradient(0deg, transparent, ${edu.accent}40, transparent)`,
-                          `linear-gradient(90deg, transparent, ${edu.accent}40, transparent)`,
-                        ]
-                      : "none",
+                    background:
+                      activeCard === index
+                        ? [
+                            `linear-gradient(90deg, transparent, ${edu.accent}40, transparent)`,
+                            `linear-gradient(180deg, transparent, ${edu.accent}40, transparent)`,
+                            `linear-gradient(270deg, transparent, ${edu.accent}40, transparent)`,
+                            `linear-gradient(0deg, transparent, ${edu.accent}40, transparent)`,
+                            `linear-gradient(90deg, transparent, ${edu.accent}40, transparent)`,
+                          ]
+                        : "none",
                     backgroundSize: "300% 300%",
-                    backgroundPosition: activeCard === index
-                      ? ["0% 0%", "0% 100%", "100% 100%", "100% 0%", "0% 0%"]
-                      : "0% 0%",
+                    backgroundPosition:
+                      activeCard === index
+                        ? ["0% 0%", "0% 100%", "100% 100%", "100% 0%", "0% 0%"]
+                        : "0% 0%",
                   }}
                   transition={{ duration: 4, repeat: Infinity, repeatDelay: 0 }}
                   className="absolute -inset-0.5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
@@ -283,7 +290,7 @@ const Education = () => {
                 <div className="relative rounded-2xl backdrop-blur-xl bg-white/[0.03] border border-white/10 p-8 transition-all duration-500 group-hover:bg-white/[0.06] overflow-hidden">
                   {/* Grain Texture - 2025 trend */}
                   <div className="absolute inset-0 opacity-20 mix-blend-overlay pointer-events-none" />
-                  
+
                   {/* Dynamic Chromatic Aberration - 2025 trend */}
                   <AnimatePresence>
                     {activeCard === index && (
@@ -328,8 +335,8 @@ const Education = () => {
                               {[...Array(10)].map((_, i) => (
                                 <motion.div
                                   key={i}
-                                  initial={{ 
-                                    opacity: 0, 
+                                  initial={{
+                                    opacity: 0,
                                     scale: 0,
                                     x: Math.random() * 100 - 50,
                                     y: Math.random() * 100 - 50,
@@ -340,12 +347,12 @@ const Education = () => {
                                     x: [
                                       Math.random() * 100 - 50,
                                       Math.random() * 200 - 100,
-                                      Math.random() * 100 - 50
+                                      Math.random() * 100 - 50,
                                     ],
                                     y: [
                                       Math.random() * 100 - 50,
                                       Math.random() * 200 - 100,
-                                      Math.random() * 100 - 50
+                                      Math.random() * 100 - 50,
                                     ],
                                   }}
                                   exit={{ opacity: 0, scale: 0 }}
@@ -378,7 +385,8 @@ const Education = () => {
                           <motion.div
                             className={`absolute inset-0 bg-gradient-to-br ${edu.color} mix-blend-soft-light`}
                             animate={{
-                              opacity: activeCard === index ? [0.3, 0.6, 0.3] : 0.3,
+                              opacity:
+                                activeCard === index ? [0.3, 0.6, 0.3] : 0.3,
                             }}
                             transition={{ duration: 2, repeat: Infinity }}
                           />
@@ -390,11 +398,11 @@ const Education = () => {
                                 initial={{ top: "-100%" }}
                                 animate={{ top: ["100%", "0%", "-100%"] }}
                                 exit={{ top: "-100%" }}
-                                transition={{ 
+                                transition={{
                                   duration: 2,
                                   times: [0, 0.5, 1],
                                   repeat: Infinity,
-                                  repeatDelay: 1
+                                  repeatDelay: 1,
                                 }}
                                 className="absolute left-0 right-0 h-1/3 pointer-events-none"
                                 style={{
@@ -411,38 +419,42 @@ const Education = () => {
 
                       {/* Futuristic Corner Indicators - 2025 trend */}
                       {[
-                        "top-0 left-0", 
-                        "top-0 right-0", 
-                        "bottom-0 left-0", 
-                        "bottom-0 right-0"
+                        "top-0 left-0",
+                        "top-0 right-0",
+                        "bottom-0 left-0",
+                        "bottom-0 right-0",
                       ].map((position, i) => (
                         <motion.div
                           key={i}
                           className={`absolute w-8 h-8 pointer-events-none ${position}`}
                           animate={{
-                            opacity: activeCard === index ? [0.4, 0.8, 0.4] : 0.4,
+                            opacity:
+                              activeCard === index ? [0.4, 0.8, 0.4] : 0.4,
                           }}
-                          transition={{ 
-                            duration: 2, 
+                          transition={{
+                            duration: 2,
                             repeat: Infinity,
-                            delay: i * 0.2
+                            delay: i * 0.2,
                           }}
                         >
-                          <svg 
-                            viewBox="0 0 100 100" 
+                          <svg
+                            viewBox="0 0 100 100"
                             fill="none"
                             className="w-full h-full"
                             style={{
-                              transform: 
-                                i === 0 ? "rotate(0deg)" : 
-                                i === 1 ? "rotate(90deg)" : 
-                                i === 2 ? "rotate(-90deg)" : 
-                                "rotate(180deg)",
+                              transform:
+                                i === 0
+                                  ? "rotate(0deg)"
+                                  : i === 1
+                                  ? "rotate(90deg)"
+                                  : i === 2
+                                  ? "rotate(-90deg)"
+                                  : "rotate(180deg)",
                             }}
                           >
-                            <path 
-                              d="M0,20 L0,0 L20,0" 
-                              stroke={edu.accent} 
+                            <path
+                              d="M0,20 L0,0 L20,0"
+                              stroke={edu.accent}
                               strokeWidth="5"
                             />
                           </svg>
@@ -470,7 +482,7 @@ const Education = () => {
                             {/* Degree with Variable Width Text - 2025 trend */}
                             <h3 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/80 relative">
                               {edu.degree}
-                              
+
                               {/* Highlight Effect on Hover - 2025 trend */}
                               <AnimatePresence>
                                 {activeCard === index && (
@@ -484,7 +496,7 @@ const Education = () => {
                                 )}
                               </AnimatePresence>
                             </h3>
-                            
+
                             {/* Status Indicator with Pulse - 2025 trend */}
                             <motion.div
                               className={`px-4 py-1.5 rounded-full text-sm font-medium flex items-center gap-2
@@ -496,14 +508,14 @@ const Education = () => {
                               whileHover={{ scale: 1.05 }}
                             >
                               {edu.status === "Current" && (
-                                <motion.div 
+                                <motion.div
                                   className="w-2 h-2 rounded-full bg-emerald-400"
-                                  animate={{ 
+                                  animate={{
                                     scale: [1, 1.5, 1],
                                     opacity: [0.7, 1, 0.7],
                                   }}
-                                  transition={{ 
-                                    duration: 2, 
+                                  transition={{
+                                    duration: 2,
                                     repeat: Infinity,
                                   }}
                                 />
@@ -516,7 +528,8 @@ const Education = () => {
                           <motion.div
                             className="relative inline-block"
                             animate={{
-                              opacity: activeCard === index ? [0.8, 1, 0.8] : 0.8,
+                              opacity:
+                                activeCard === index ? [0.8, 1, 0.8] : 0.8,
                             }}
                             transition={{ duration: 2, repeat: Infinity }}
                           >
@@ -525,10 +538,14 @@ const Education = () => {
                               {activeCard === index && (
                                 <motion.div
                                   initial={{ opacity: 0, scale: 0.9 }}
-                                  animate={{ 
-                                    opacity: 0.1, 
+                                  animate={{
+                                    opacity: 0.1,
                                     scale: 1,
-                                    filter: ["blur(8px)", "blur(12px)", "blur(8px)"],
+                                    filter: [
+                                      "blur(8px)",
+                                      "blur(12px)",
+                                      "blur(8px)",
+                                    ],
                                   }}
                                   exit={{ opacity: 0, scale: 0.9 }}
                                   transition={{ duration: 2, repeat: Infinity }}
@@ -536,8 +553,10 @@ const Education = () => {
                                 />
                               )}
                             </AnimatePresence>
-                            
-                            <p className={`text-xl bg-clip-text text-transparent bg-gradient-to-r ${edu.color} relative z-10`}>
+
+                            <p
+                              className={`text-xl bg-clip-text text-transparent bg-gradient-to-r ${edu.color} relative z-10`}
+                            >
                               {edu.school}
                             </p>
                           </motion.div>
@@ -547,18 +566,23 @@ const Education = () => {
                         <motion.div className="relative h-px w-full overflow-hidden">
                           <motion.div
                             initial={{ x: "-100%" }}
-                            animate={{ 
-                              x: activeCard === index ? ["100%", "-100%"] : "-100%"
+                            animate={{
+                              x:
+                                activeCard === index
+                                  ? ["100%", "-100%"]
+                                  : "-100%",
                             }}
-                            transition={{ 
-                              duration: 3, 
+                            transition={{
+                              duration: 3,
                               repeat: Infinity,
                               repeatType: "loop",
                               ease: "linear",
                             }}
                             className={`absolute inset-0 h-px bg-gradient-to-r ${edu.color}`}
                           />
-                          <div className={`absolute inset-0 h-px bg-gradient-to-r ${edu.color} opacity-20`} />
+                          <div
+                            className={`absolute inset-0 h-px bg-gradient-to-r ${edu.color} opacity-20`}
+                          />
                         </motion.div>
 
                         {/* Points with Interactive Icons - 2025 trend */}
@@ -576,24 +600,25 @@ const Education = () => {
                               <motion.div
                                 className="relative mt-1 w-4 h-4 flex-shrink-0"
                                 animate={{
-                                  rotate: activeCard === index ? [0, 180, 360] : 0,
+                                  rotate:
+                                    activeCard === index ? [0, 180, 360] : 0,
                                 }}
-                                transition={{ 
-                                  duration: 6, 
+                                transition={{
+                                  duration: 6,
                                   repeat: Infinity,
                                   delay: idx * 0.5,
                                 }}
                               >
-                                <svg 
-                                  viewBox="0 0 24 24" 
+                                <svg
+                                  viewBox="0 0 24 24"
                                   className={`w-full h-full text-transparent fill-current bg-clip-text bg-gradient-to-r ${edu.color}`}
                                 >
                                   <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
                                 </svg>
                               </motion.div>
-                              
+
                               {/* Text with Shimmer on Hover - 2025 trend */}
-                              <motion.span 
+                              <motion.span
                                 className="text-gray-300 relative group-hover/item:text-white transition-colors duration-300"
                                 whileHover={{ x: 2 }}
                               >
@@ -602,13 +627,13 @@ const Education = () => {
                                   {activeCard === index && (
                                     <motion.span
                                       initial={{ left: "-10%", width: "0%" }}
-                                      animate={{ 
+                                      animate={{
                                         left: ["0%", "100%"],
-                                        width: ["0%", "10%", "0%"]
+                                        width: ["0%", "10%", "0%"],
                                       }}
                                       exit={{ left: "100%", width: "0%" }}
-                                      transition={{ 
-                                        duration: 2, 
+                                      transition={{
+                                        duration: 2,
                                         repeat: Infinity,
                                         repeatDelay: idx * 0.3,
                                       }}
@@ -627,18 +652,21 @@ const Education = () => {
                           whileHover={{ x: 5 }}
                         >
                           {/* Date Label */}
-                          <span className={`text-transparent bg-clip-text bg-gradient-to-r ${edu.color}`}>
+                          <span
+                            className={`text-transparent bg-clip-text bg-gradient-to-r ${edu.color}`}
+                          >
                             {edu.period}
                           </span>
-                          
+
                           {/* Animated Arrow - 2025 trend */}
                           <motion.div
                             animate={{
                               x: activeCard === index ? [0, 5, 0] : 0,
-                              opacity: activeCard === index ? [0.7, 1, 0.7] : 0.7,
+                              opacity:
+                                activeCard === index ? [0.7, 1, 0.7] : 0.7,
                             }}
-                            transition={{ 
-                              duration: 2, 
+                            transition={{
+                              duration: 2,
                               repeat: Infinity,
                               repeatType: "mirror",
                             }}
@@ -657,11 +685,11 @@ const Education = () => {
                               />
                             </svg>
                           </motion.div>
-                          
+
                           {/* Trailing Particles - 2025 trend */}
                           <AnimatePresence>
                             {activeCard === index && (
-                              <motion.div 
+                              <motion.div
                                 className="absolute -right-2 inset-y-0"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
@@ -670,7 +698,7 @@ const Education = () => {
                                 {[...Array(3)].map((_, i) => (
                                   <motion.div
                                     key={i}
-                                    initial={{ 
+                                    initial={{
                                       opacity: 0,
                                       x: 0,
                                       y: 0,
@@ -686,7 +714,7 @@ const Education = () => {
                                       delay: i * 0.3,
                                     }}
                                     className="absolute w-1 h-1 rounded-full"
-                                    style={{ 
+                                    style={{
                                       background: `radial-gradient(circle, ${edu.accent} 0%, transparent 70%)`,
                                       top: "50%",
                                       transform: "translateY(-50%)",
