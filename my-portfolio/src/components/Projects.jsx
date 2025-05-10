@@ -29,11 +29,11 @@ const Projects = () => {
   const projects = [
     {
       title: "ChatWithMe",
-      period: "2024, Ongoing",
+      period: "2025",
       description: "Real-Time Chat Web App",
       details:
         "Built a real-time messaging platform for seamless communication. Implemented WebSockets for instant message updates.",
-      tech: ["Node.js", "React.js", "WebSocket", "TailwindCSS"],
+      tech: ["BaaS", "React.js", "Firebase","FireStore", "TailwindCSS"],
       image: "/images/project5.png",
       color: "from-cyan-500 to-blue-600",
       bgAccent: "bg-blue-500/20",
@@ -86,6 +86,18 @@ const Projects = () => {
       color: "from-amber-400 to-orange-600",
       bgAccent: "bg-amber-500/20",
       accentColor: "rgb(245, 158, 11)",
+    },
+     {
+      title: ".IO ASSISTANT",
+      period: "2025",
+      description: "My Personal Assistant",
+      details:
+        "Developed a personal assistant using the AI model Qwen/Qwen2-VL-7B-Instruct for text and image processing. Integrated with a web app for seamless interaction.",
+      tech: ["Python", "FastAPI","React.js","HuggingFaces","Inference API","Qwen/Qwen2-VL-7B-Instruct"],
+      image: "/images/io_assistant.png",
+      color: "from-violet-500 to-purple-600",
+      bgAccent: "bg-purple-500/20",
+      accentColor: "rgb(168, 90, 134)",
     },
   ];
 

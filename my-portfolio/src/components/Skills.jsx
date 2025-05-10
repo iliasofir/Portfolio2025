@@ -23,6 +23,8 @@ const Skills = () => {
         { name: "Python", image: "/images/tech/python.png" },
         { name: "Java", image: "/images/tech/java.png" },
         { name: "JavaScript", image: "/images/tech/javascript.png" },
+         { name: "Dart", image: "/images/tech/dart.svg" },
+
       ],
     },
     {
@@ -32,8 +34,9 @@ const Skills = () => {
         { name: "Node.js", image: "/images/tech/nodejs.png" },
         { name: "Spring Boot", image: "/images/tech/spring-boot.png" },
         { name: "Django", image: "/images/tech/django.svg" },
-        { name: "Express.js", image: "/images/tech/expressjs.png" },
-        { name: "GraphQL", image: "/images/tech/graphql.png" },
+        { name: "Nest.js", image: "/images/tech/nestjs.png" },
+        { name: "Laravel", image: "/images/tech/Laravel.png" },
+       
       ],
     },
     {
@@ -58,7 +61,7 @@ const Skills = () => {
         { name: "Git", image: "/images/tech/git.png" },
         { name: "Docker", image: "/images/tech/docker.png" },
         { name: "REST APIs", image: "/images/tech/rest.png" },
-        { name: "WebSockets", image: "/images/tech/websocket.png" },
+        { name: "GraphQL", image: "/images/tech/graphql.png" },
         { name: "Oracle Cloud", image: "/images/tech/oracle.png" },
         { name: "Jenkins", image: "/images/tech/jenkins.png" },
       ],
