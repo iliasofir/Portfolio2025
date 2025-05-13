@@ -144,7 +144,7 @@ const Certification = () => {
             <div className="w-2/3 h-32 bg-gradient-conic from-violet-500/20 via-blue-500/20 to-violet-500/20 rounded-full blur-3xl" />
           </motion.div>
           
-          <h2 className="text-6xl md:text-8xl font-bold text-center relative">
+          <h2 className="text-4xl md:text-6xl font-bold text-center relative">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-violet-400 to-purple-400 drop-shadow-[0_0_35px_rgba(167,139,250,0.3)]">
               Certifications
             </span>

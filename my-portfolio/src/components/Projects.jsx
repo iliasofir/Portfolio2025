@@ -167,7 +167,7 @@ const Projects = () => {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-6xl md:text-7xl font-bold text-center">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
+            <span className="text-4xl md:text-6xl bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
               Featured Projects
             </span>
           </h2>
