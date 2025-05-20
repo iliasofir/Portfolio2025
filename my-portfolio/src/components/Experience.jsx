@@ -183,7 +183,7 @@ const Experience = () => {
                       whileInView={{ opacity: 1, scale: 1 }}
                       whileHover={{ scale: 1.05 }}
                       transition={{ duration: 0.5 }}
-                      src="/images/yop2.png"
+                      src="/images/yop3.png"
                       alt="Plateforme E-learning"
                       className="w-full h-48 object-cover rounded-lg mb-4"
                     />
