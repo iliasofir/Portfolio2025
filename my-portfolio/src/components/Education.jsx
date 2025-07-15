@@ -6,7 +6,7 @@ import {
   AnimatePresence,
   MotionValue,
 } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo, useCallback, memo } from "react";
 
 const Education = () => {
   const containerRef = useRef(null);
