@@ -99,6 +99,18 @@ const Projects = () => {
       bgAccent: "bg-purple-500/20",
       accentColor: "rgb(168, 90, 134)",
     },
+    {
+      title: "KOURAZONE",
+      period: "2025",
+      description: "Sport Field Booking App",
+      details:
+        "Developed a mobile app for booking sport fields with real-time availability and payment integration.",
+      tech: ["Flutter", "Laravel", "MySQL","Material-UI"],
+      image: "/images/KouraZone.png",
+      color: "from-amber-400 to-blue-600",
+      bgAccent: "bg-red-500/20",
+      accentColor: "rgb(16, 185, 129)",
+    },
   ];
 
   const variants = {

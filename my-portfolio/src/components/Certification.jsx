@@ -22,7 +22,7 @@ const Certification = () => {
       date: "Feb 2025",
       credential: "OCIFA-123456",
       logo: "/images/oracle.png",
-      color: "from-cyan-500 to-blue-600",
+      color: "from-red-300 to-red-600 ",
       bgAccent: "bg-blue-500/20",
     },
     {
@@ -34,6 +34,16 @@ const Certification = () => {
       logo: "/images/Udemy-Logo.png",
       color: "from-fuchsia-500 to-purple-600",
       bgAccent: "bg-violet-500/20",
+    },
+       {
+      id: 3,
+      title: "Big Data Foundations - Level 2",
+      issuer: "IBM",
+      date: "May 2025",
+      credential: "IBM-BDFL2-789012",
+      logo: "/images/IBM_logo.png",
+      color: "from-blue-500 to-cyan-400",
+      bgAccent: "bg-blue-500/20",
     },
   ];
 
