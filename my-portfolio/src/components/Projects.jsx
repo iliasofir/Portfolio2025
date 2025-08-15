@@ -17,28 +17,77 @@ import {
 // Composant mémorisé pour un tech tag
 const TechTag = memo(({ tech, bgAccent }) => (
   <motion.span
-    className={`px-4 py-2 text-sm ${bgAccent} text-white rounded-full backdrop-blur-sm`}
+    className={`px-4 py-2 text-sm ${bgAccent} text-white rounded-full backdrop-blur-sm cursor-default`}
     whileHover={{
       scale: 1.05,
       backgroundColor: "rgba(255, 255, 255, 0.15)",
     }}
-    whileTap={{ scale: 0.95 }}
+    whileTap={{ scale: 1.02 }}
     style={{ willChange: "transform" }}
+    transition={{ duration: 0.15, ease: "easeInOut" }}
   >
     {tech}
   </motion.span>
+));
+
+// Composant mémorisé pour le bouton GitHub
+const GitHubButton = memo(({ githubUrl, projectTitle, accentColor }) => (
+  <motion.a
+    href={githubUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-gray-800/80 to-black/80 hover:from-gray-700/90 hover:to-black/90 backdrop-blur-sm border border-white/20 text-white font-medium transition-all duration-300 group"
+    whileHover={{
+      scale: 1.02,
+      boxShadow: `0 10px 30px -5px rgba(0, 0, 0, 0.3)`,
+    }}
+    whileTap={{ scale: 0.98 }}
+    style={{ willChange: "transform, box-shadow" }}
+    transition={{ duration: 0.2 }}
+  >
+    <motion.div
+      className="flex items-center gap-2"
+      whileHover={{ x: 2 }}
+      transition={{ duration: 0.2 }}
+    >
+      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+        <path
+          fillRule="evenodd"
+          d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+          clipRule="evenodd"
+        />
+      </svg>
+      <span>View on GitHub</span>
+      <motion.svg
+        className="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        animate={{ x: 0 }}
+        whileHover={{ x: 3 }}
+        transition={{ duration: 0.2 }}
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+        />
+      </motion.svg>
+    </motion.div>
+  </motion.a>
 ));
 
 // Composant mémorisé pour un indicateur de progression
 const ProgressIndicator = memo(
   ({ index, projectIndex, onPageChange, totalProjects }) => (
     <motion.button
-      className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+      className={`w-2.5 h-2.5 rounded-full transition-all duration-300 touch-manipulation ${
         index === projectIndex ? "w-8 bg-white" : "bg-white/40"
       }`}
       onClick={() => onPageChange(index)}
-      whileHover={{ scale: 1.2 }}
-      whileTap={{ scale: 0.8 }}
+      whileHover={{ scale: 1.15 }}
+      whileTap={{ scale: 1.05 }}
       animate={{
         scale: index === projectIndex ? [1, 1.1, 1] : 1,
         transition: {
@@ -47,7 +96,14 @@ const ProgressIndicator = memo(
           repeatType: "reverse",
         },
       }}
-      style={{ willChange: "transform" }}
+      style={{
+        willChange: "transform",
+        minWidth: "24px",
+        minHeight: "24px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
     />
   )
 );
@@ -56,17 +112,32 @@ const ProgressIndicator = memo(
 const NavigationButton = memo(({ direction, onClick, children }) => (
   <motion.button
     className={`absolute ${
-      direction === "left" ? "left-6" : "right-6"
-    } top-1/2 -translate-y-1/2 bg-white/5 hover:bg-white/10 rounded-full p-4 backdrop-blur-sm z-10 border border-white/10`}
+      direction === "left" ? "left-3 sm:left-6" : "right-3 sm:right-6"
+    } top-1/2 -translate-y-1/2 bg-white/5 hover:bg-white/10 rounded-full p-3 sm:p-4 backdrop-blur-sm z-10 border border-white/10 touch-manipulation`}
     whileHover={{
-      scale: 1.1,
       backgroundColor: "rgba(255, 255, 255, 0.15)",
+      borderColor: "rgba(255, 255, 255, 0.2)",
     }}
-    whileTap={{ scale: 0.9 }}
+    whileTap={{
+      backgroundColor: "rgba(255, 255, 255, 0.25)",
+    }}
     onClick={onClick}
-    style={{ willChange: "transform" }}
+    style={{
+      willChange: "background-color, border-color",
+      minWidth: "48px",
+      minHeight: "48px",
+      transformOrigin: "center",
+    }}
+    transition={{ duration: 0.2, ease: "easeInOut" }}
   >
-    {children}
+    <motion.div
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.95 }}
+      transition={{ duration: 0.15 }}
+      style={{ willChange: "transform" }}
+    >
+      {children}
+    </motion.div>
   </motion.button>
 ));
 
@@ -102,6 +173,7 @@ const Projects = () => {
           "Built a real-time messaging platform for seamless communication. Implemented WebSockets for instant message updates.",
         tech: ["BaaS", "React.js", "Firebase", "FireStore", "TailwindCSS"],
         image: "/images/project5.png",
+        github: "https://github.com/iliasofir/ChatWithMeV2",
         color: "from-cyan-500 to-blue-600",
         bgAccent: "bg-blue-500/20",
         accentColor: "rgb(59, 130, 246)",
@@ -114,6 +186,7 @@ const Projects = () => {
           "Developed a web app for event creation and attendee management. Integrated Spring Boot for backend and Thymeleaf & TailwindCSS for UI.",
         tech: ["Spring Boot", "Thymeleaf", "MySQL", "Git", "TailwindCSS"],
         image: "/images/project4.jpeg",
+        github: "https://github.com/iliasofir/Eventure_BLOG",
         color: "from-violet-500 to-purple-600",
         bgAccent: "bg-purple-500/20",
         accentColor: "rgb(168, 85, 247)",
@@ -126,6 +199,7 @@ const Projects = () => {
           "Designed a multi-client recruitment platform for companies and job seekers. Enabled job postings and interactive journals.",
         tech: ["JavaFX", "MySQL", "IntelliJ IDEA"],
         image: "/images/project1.jpeg",
+        github: "https://github.com/AhmedDevST/AgenceRecrutement",
         color: "from-emerald-400 to-teal-600",
         bgAccent: "bg-emerald-500/20",
         accentColor: "rgb(16, 185, 129)",
@@ -138,6 +212,7 @@ const Projects = () => {
           "Developed a full-stack sentiment analysis application using FastAPI backend and Streamlit frontend. Integrated with Hugging Face Inference API for real-time text sentiment analysis.",
         tech: ["FastAPI", "Streamlit", "Hugging Face", "Python", "ML"],
         image: "/images/deployDocker.png",
+        github: "https://github.com/iliasofir/Sentiment_Analysis",
         color: "from-amber-400 to-orange-600",
         bgAccent: "bg-amber-500/20",
         accentColor: "rgb(245, 158, 11)",
@@ -150,6 +225,7 @@ const Projects = () => {
           "Enhanced an existing GCN model through hyperparameter optimization and dataset augmentation using Kaggle datasets. Achieved improved accuracy through fine-tuning and cross-validation techniques.",
         tech: ["PyTorch", "Kaggle", "GNN", "Python", "Data Analysis"],
         image: "/images/final_test_results.png",
+        github: "#",
         color: "from-amber-400 to-orange-600",
         bgAccent: "bg-amber-500/20",
         accentColor: "rgb(245, 158, 11)",
@@ -169,7 +245,9 @@ const Projects = () => {
           "Qwen/Qwen2-VL-7B-Instruct",
         ],
         image: "/images/io_assistant.png",
+        github: "https://github.com/iliasofir/.IO_Assistant",
         color: "from-violet-500 to-purple-600",
+
         bgAccent: "bg-purple-500/20",
         accentColor: "rgb(168, 90, 134)",
       },
@@ -181,6 +259,7 @@ const Projects = () => {
           "Developed a mobile app for booking sport fields with real-time availability and payment integration.",
         tech: ["Flutter", "Laravel", "MySQL", "Material-UI"],
         image: "/images/KouraZone.png",
+        github: "https://github.com/AhmedDevST/play-match-reservation",
         color: "from-amber-400 to-blue-600",
         bgAccent: "bg-red-500/20",
         accentColor: "rgb(16, 185, 129)",
@@ -356,8 +435,8 @@ const Projects = () => {
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                       </motion.div>
 
-                      <div className="lg:col-span-5 flex flex-col justify-between py-4">
-                        <div>
+                      <div className="lg:col-span-5 flex flex-col py-4 min-h-[400px]">
+                        <div className="flex-1">
                           <motion.div
                             className="flex items-center justify-between mb-6"
                             initial={{ opacity: 0, y: 20 }}
@@ -383,7 +462,7 @@ const Projects = () => {
                             {projects[projectIndex].description}
                           </motion.p>
                           <motion.p
-                            className="text-base text-gray-300 leading-relaxed mb-8"
+                            className="text-base text-gray-300 leading-relaxed mb-6"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.3, duration: 0.4 }}
@@ -391,21 +470,39 @@ const Projects = () => {
                             {projects[projectIndex].details}
                           </motion.p>
                         </div>
-                        <motion.div
-                          className="flex flex-wrap gap-2.5"
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.4, duration: 0.4 }}
-                          style={{ willChange: "transform, opacity" }}
-                        >
-                          {projects[projectIndex].tech.map((tech) => (
-                            <TechTag
-                              key={tech}
-                              tech={tech}
-                              bgAccent={projects[projectIndex].bgAccent}
+
+                        <div className="mt-auto space-y-4">
+                          <motion.div
+                            className="flex flex-wrap gap-2.5"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.4, duration: 0.4 }}
+                            style={{ willChange: "transform, opacity" }}
+                          >
+                            {projects[projectIndex].tech.map((tech) => (
+                              <TechTag
+                                key={tech}
+                                tech={tech}
+                                bgAccent={projects[projectIndex].bgAccent}
+                              />
+                            ))}
+                          </motion.div>
+
+                          {/* Bouton GitHub */}
+                          <motion.div
+                            className="flex justify-start"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.5, duration: 0.4 }}
+                            style={{ willChange: "transform, opacity" }}
+                          >
+                            <GitHubButton
+                              githubUrl={projects[projectIndex].github}
+                              projectTitle={projects[projectIndex].title}
+                              accentColor={projects[projectIndex].accentColor}
                             />
-                          ))}
-                        </motion.div>
+                          </motion.div>
+                        </div>
                       </div>
                     </div>
                   </div>

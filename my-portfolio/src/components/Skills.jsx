@@ -107,21 +107,20 @@ const Skills = () => {
       {
         title: "Programming Languages",
         skills: [
-          { name: "Python", image: "/images/tech/python.png" },
           { name: "Java", image: "/images/tech/java.png" },
           { name: "JavaScript", image: "/images/tech/javascript.png" },
-          { name: "Dart", image: "/images/tech/dart.svg" },
+          { name: "Python", image: "/images/tech/python.png" },
         ],
       },
       {
         title: "Web Development",
         skills: [
+          { name: "Spring Boot", image: "/images/tech/spring-boot.png" },
           { name: "React.js", image: "/images/tech/react.webp" },
           { name: "Node.js", image: "/images/tech/nodejs.png" },
-          { name: "Spring Boot", image: "/images/tech/spring-boot.png" },
-          { name: "Django", image: "/images/tech/django.svg" },
           { name: "Nest.js", image: "/images/tech/nestjs.png" },
           { name: "Laravel", image: "/images/tech/Laravel.png" },
+          { name: "Django", image: "/images/tech/django.svg" },
         ],
       },
       {
@@ -130,6 +129,7 @@ const Skills = () => {
           { name: "MySQL", image: "/images/tech/mysql.svg" },
           { name: "PostgreSQL", image: "/images/tech/postgresql.png" },
           { name: "MongoDB", image: "/images/tech/mongodb.webp" },
+          { name: "Oracle DB", image: "/images/tech/OracleDB.png" },
         ],
       },
       {
@@ -137,7 +137,7 @@ const Skills = () => {
         skills: [
           { name: "PyTorch", image: "/images/tech/pytorch.png" },
           { name: "Neural Networks", image: "/images/tech/neural.png" },
-          { name: "Data Clustering", image: "/images/tech/clustering.png" },
+          { name: "Fine-Tuning", image: "/images/tech/fine.png" },
         ],
       },
       {
@@ -145,8 +145,8 @@ const Skills = () => {
         skills: [
           { name: "Git", image: "/images/tech/git.png" },
           { name: "Docker", image: "/images/tech/docker.png" },
-          { name: "REST APIs", image: "/images/tech/rest.png" },
-          { name: "GraphQL", image: "/images/tech/graphql.png" },
+          { name: "Kubernetes", image: "/images/tech/kubernetes.png" },
+          { name: "Terraform", image: "/images/tech/terraform.png" },
           { name: "Oracle Cloud", image: "/images/tech/oracle.png" },
           { name: "Jenkins", image: "/images/tech/jenkins.png" },
         ],
@@ -164,7 +164,11 @@ const Skills = () => {
   );
 
   return (
-    <div id="skills" className="relative min-h-screen py-20 bg-slate-900" ref={containerRef}>
+    <div
+      id="skills"
+      className="relative min-h-screen py-20 bg-slate-900"
+      ref={containerRef}
+    >
       {/* Background simplifié sans animations coûteuses */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-900/20 to-transparent" />
 

@@ -138,7 +138,8 @@ const Certification = () => {
           "Oracle Cloud Infrastructure Foundations 2024 Certified Associate",
         issuer: "Oracle",
         date: "Feb 2025",
-        credential: "OCIFA-123456",
+        credentialUrl:
+          "https://catalog-education.oracle.com/pls/certview/sharebadge?id=179EEB1994E84E7775CE1A02A09FB5756CD771CE6432B02C74E00C7184EDA076",
         logo: "/images/oracle.png",
         color: "from-red-300 to-red-600 ",
         bgAccent: "bg-blue-500/20",
@@ -148,7 +149,7 @@ const Certification = () => {
         title: "MERN Stack Developer",
         issuer: "Udemy",
         date: "Aug 2024",
-        credential: "MSD-123456",
+        credentialUrl: "https://www.linkedin.com/in/ilias-ofir-445b91295/details/certifications/1726409009042/single-media-viewer/?profileId=ACoAAEeLNjUBZGYFEyr2xQDond17qZWEny61fwE",
         logo: "/images/Udemy-Logo.png",
         color: "from-fuchsia-500 to-purple-600",
         bgAccent: "bg-violet-500/20",
@@ -158,7 +159,7 @@ const Certification = () => {
         title: "Big Data Foundations - Level 2",
         issuer: "IBM",
         date: "May 2025",
-        credential: "IBM-BDFL2-789012",
+        credentialUrl: "https://www.credly.com/badges/4db3fdd4-ee7f-45c2-af7c-6cb4617e2bd6/linked_in_profile",
         logo: "/images/IBM_logo.png",
         color: "from-blue-500 to-cyan-400",
         bgAccent: "bg-blue-500/20",
@@ -428,43 +429,36 @@ const Certification = () => {
                   </div>
                 </div>
 
-                <motion.div
-                  initial={false}
+                <motion.button
                   whileHover={{
-                    y: -5,
-                    boxShadow: "0 15px 30px -10px rgba(139, 92, 246, 0.2)",
+                    y: -2,
+                    boxShadow: "0 10px 25px -5px rgba(139, 92, 246, 0.3)",
                   }}
-                  className="relative mt-6 p-4 rounded-xl border border-white/10 backdrop-blur-sm bg-gradient-to-br from-white/[0.07] to-transparent"
+                  whileTap={{ scale: 0.98 }}
+                  className="relative mt-6 w-full p-3 rounded-xl border border-white/20 backdrop-blur-sm bg-gradient-to-br from-white/[0.07] to-transparent hover:from-white/[0.12] transition-all duration-300 group"
+                  onClick={() => window.open(cert.credentialUrl, "_blank")}
                 >
-                  <AnimatePresence>
-                    {hoveredCard === cert.id && (
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        transition={{ duration: 0.3 }}
-                        className="absolute -right-2 -top-2 p-1.5 rounded-full bg-gradient-to-br from-violet-500/80 to-blue-500/80 text-xs font-medium"
-                      >
-                        Verified
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  <div className="flex items-center space-x-2">
-                    <motion.span
-                      animate={{
-                        textShadow:
-                          hoveredCard === cert.id
-                            ? "0 0 8px rgba(139, 92, 246, 0.7)"
-                            : "none",
-                      }}
-                      className="text-sm font-medium text-violet-300"
-                    >
-                      Credential ID:
+                  <div className="flex items-center justify-center space-x-2">
+                    <motion.span className="text-sm font-medium text-white group-hover:text-violet-300 transition-colors">
+                      Get Crendential
                     </motion.span>
-                    <span className="text-sm text-white/80 font-mono tracking-wider">
-                      {cert.credential}
-                    </span>
+                    <motion.svg
+                      animate={{
+                        x: hoveredCard === cert.id ? 3 : 0,
+                        rotate: hoveredCard === cert.id ? 45 : 0,
+                      }}
+                      className="w-4 h-4 text-violet-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                      />
+                    </motion.svg>
                   </div>
 
                   <motion.div
@@ -473,7 +467,7 @@ const Certification = () => {
                     transition={{ duration: 0.8 }}
                     className={`absolute bottom-0 left-0 h-px bg-gradient-to-r ${cert.color} opacity-50`}
                   />
-                </motion.div>
+                </motion.button>
               </div>
             </motion.div>
           ))}
