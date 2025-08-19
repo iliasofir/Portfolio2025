@@ -6,7 +6,7 @@ import Skills from "./components/Skills";
 import Education from "./components/Education";
 import Experience from "./components/Experience";
 import Footer from "./components/Footer";
-import Projects from "./components/Projects";
+import ProjectsManager from "./components/ProjectsManager";
 import Certification from "./components/Certification";
 import "./styles/globals.css";
 
@@ -32,7 +32,7 @@ function App() {
             <Hero />
             <Skills />
             <Certification />
-            <Projects />
+            <ProjectsManager />
             <Education />
             <Experience />
             <Footer />
