@@ -1,9 +1,6 @@
 import React, { useState, useRef, useEffect, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const welcomeMessage =
-  "Hi! I'm here to tell you about Ilias Ofir. He's a talented developer who loves building cool stuff with code. What would you like to know about him?";
-
 // Fonction pour améliorer le formatage des réponses
 const formatResponse = (text) => {
   if (!text) return text;
@@ -29,28 +26,28 @@ const formatResponse = (text) => {
   );
 };
 
-// Composant mémorisé pour un message de chat
-const ChatMessage = memo(({ message, isBot, isTyping }) => (
+// Composant mémorisé pour un message de chat mobile
+const ChatMessageMobile = memo(({ message, isBot, isTyping }) => (
   <motion.div
     initial={{ opacity: 0, y: 20, scale: 0.95 }}
     animate={{ opacity: 1, y: 0, scale: 1 }}
-    className={`flex items-start gap-3 ${
+    className={`flex items-start gap-2 ${
       isBot ? "justify-start" : "justify-end"
-    }`}
+    } px-2`}
   >
     {isBot && (
       <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ delay: 0.1 }}
-        className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold shadow-lg"
+        className="w-6 h-6 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white text-xs font-bold shadow-lg flex-shrink-0"
       >
         🤖
       </motion.div>
     )}
 
     <motion.div
-      className={`max-w-[80%] p-3 rounded-2xl ${
+      className={`max-w-[85%] p-2.5 rounded-2xl ${
         isBot
           ? "bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 rounded-bl-md"
           : "bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-br-md"
@@ -63,7 +60,7 @@ const ChatMessage = memo(({ message, isBot, isTyping }) => (
           {[0, 1, 2].map((i) => (
             <motion.div
               key={i}
-              className="w-2 h-2 bg-gray-500 rounded-full"
+              className="w-1.5 h-1.5 bg-gray-500 rounded-full"
               animate={{
                 scale: [1, 1.5, 1],
                 opacity: [0.5, 1, 0.5],
@@ -77,7 +74,7 @@ const ChatMessage = memo(({ message, isBot, isTyping }) => (
           ))}
         </div>
       ) : (
-        <p className="text-sm leading-relaxed">{message}</p>
+        <p className="text-xs leading-relaxed">{message}</p>
       )}
     </motion.div>
 
@@ -86,7 +83,7 @@ const ChatMessage = memo(({ message, isBot, isTyping }) => (
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ delay: 0.1 }}
-        className="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center text-white text-sm font-bold shadow-lg"
+        className="w-6 h-6 rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center text-white text-xs font-bold shadow-lg flex-shrink-0"
       >
         👤
       </motion.div>
@@ -94,18 +91,18 @@ const ChatMessage = memo(({ message, isBot, isTyping }) => (
   </motion.div>
 ));
 
-// Composant pour les suggestions de questions
-const QuickSuggestions = memo(({ suggestions, onSuggestionClick }) => (
+// Composant pour les suggestions de questions mobiles
+const QuickSuggestionsMobile = memo(({ suggestions, onSuggestionClick }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
-    className="flex flex-wrap gap-2 mt-4"
+    className="flex flex-wrap gap-1.5 mt-3 px-2"
   >
     {suggestions.map((suggestion, index) => (
       <motion.button
         key={index}
         onClick={() => onSuggestionClick(suggestion)}
-        className="px-3 py-1.5 text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-full border border-blue-200 transition-colors duration-200"
+        className="px-2.5 py-1.5 text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-full border border-blue-200 transition-colors duration-200"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         initial={{ opacity: 0, scale: 0.8 }}
@@ -118,7 +115,7 @@ const QuickSuggestions = memo(({ suggestions, onSuggestionClick }) => (
   </motion.div>
 ));
 
-const Chatbot = ({ isOpen, onClose }) => {
+const ChatbotMobile = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -126,16 +123,16 @@ const Chatbot = ({ isOpen, onClose }) => {
   const [hasResumeData, setHasResumeData] = useState(false);
   const messagesEndRef = useRef(null);
 
-  // Messages d'accueil et suggestions
+  // Messages d'accueil et suggestions pour mobile
   const welcomeMessage =
-    "Hello! I'm Ilias Ofir's portfolio assistant. I have detailed information about his background as a Computer Science Engineering student, his internship experiences, technical skills, and projects. What would you like to know about him? 👨‍💻";
+    "Hi! I'm Ilias Ofir's AI assistant. I can tell you about his skills, projects, and experience. What would you like to know? 👨‍💻";
 
   const suggestions = [
-    "What are Ilias's main programming skills?",
-    "Tell me about his internship experiences",
-    "What projects has Ilias built?",
-    "What's his educational background?",
-    "What cloud technologies does he know?",
+    "His main skills?",
+    "Tell me about projects",
+    "His experience?",
+    "Education background?",
+    "Contact info?",
   ];
 
   // Initialiser avec le message d'accueil
@@ -192,7 +189,7 @@ About Ilias Ofir:
 - Certifications: Oracle Cloud Infrastructure Foundations Associate, IBM BIG DATA FOUNDATIONS, Mern Stack development
 - Projects: ChatWithMe (real-time chat app), KouraZone (sport field reservation mobile app), Recruiting Agency App (JavaFX), Sentiment Analysis & GNN Optimization
 
-Be helpful and informative about his background. Share specific details about his skills, projects, and experience. Keep responses under 80 words and always respond in English.`,
+Be helpful and informative about his background. Share specific details about his skills, projects, and experience. Keep responses under 60 words for mobile and always respond in English.`,
                 },
                 {
                   role: "user",
@@ -200,7 +197,7 @@ Be helpful and informative about his background. Share specific details about hi
                 },
               ],
               model: "openai/gpt-oss-20b:hyperbolic",
-              max_tokens: 300,
+              max_tokens: 200,
               temperature: 0.6,
             }),
             signal: controller.signal,
@@ -247,7 +244,7 @@ About Ilias Ofir:
 - Certifications: Oracle Cloud Infrastructure Foundations Associate, IBM BIG DATA FOUNDATIONS, Mern Stack development
 - Projects: ChatWithMe (real-time chat app), KouraZone (sport field reservation mobile app), Recruiting Agency App (JavaFX), Sentiment Analysis & GNN Optimization
 
-Be helpful and informative about his background. Share specific details about his skills, projects, and experience. Keep responses under 80 words and always respond in English.`,
+Be helpful and informative about his background. Share specific details about his skills, projects, and experience. Keep responses under 60 words for mobile and always respond in English.`,
               },
               {
                 role: "user",
@@ -255,13 +252,12 @@ Be helpful and informative about his background. Share specific details about hi
               },
             ],
             model: "openai/gpt-oss-20b:hyperbolic",
-            max_tokens: 300,
+            max_tokens: 200,
             temperature: 0.6,
           }),
         });
 
         console.log("📡 Netlify response status:", response.status);
-        console.log("📡 Netlify response headers:", response.headers);
 
         if (!response.ok) {
           const errorText = await response.text();
@@ -300,31 +296,23 @@ Be helpful and informative about his background. Share specific details about hi
       }
     } catch (error) {
       console.error("❌ Chat API Error:", error);
-      console.error("❌ Error details:", {
-        name: error.name,
-        message: error.message,
-        stack: error.stack,
-        isProduction: window.location.hostname !== "localhost",
-      });
 
       // Messages d'erreur plus spécifiques
       if (error.name === "AbortError") {
-        return "⏱️ Request timed out. Please try again with a shorter question.";
+        return "⏱️ Timeout. Please try again.";
       } else if (error.message.includes("HTTP error")) {
-        return `🔌 Connection issue (${error.message}). The AI service might be busy. Please try again in a moment.`;
+        return "🔌 Connection issue. Try again.";
       } else if (error.message.includes("fetch")) {
-        return "🌐 Network error. Please check your connection and try again.";
-      } else if (error.message.includes("JSON")) {
-        return "� Response parsing error. The AI service returned invalid data.";
+        return "🌐 Network error. Check connection.";
       } else {
-        return `�😅 I'm having trouble thinking right now (${error.message}). Please try again or contact Ilias directly for immediate assistance.`;
+        return "😅 Having trouble. Contact Ilias directly.";
       }
     }
   };
 
   // Gérer l'envoi de message
   const handleSendMessage = async (messageText = inputValue) => {
-    if (!messageText.trim() || isTyping) return; // Empêcher l'envoi si déjà en cours
+    if (!messageText.trim() || isTyping) return;
 
     console.log("📤 Processing message:", messageText);
 
@@ -341,7 +329,6 @@ Be helpful and informative about his background. Share specific details about hi
     setIsTyping(true);
 
     try {
-      // Délai plus réaliste pour la simulation de typing
       const botResponse = await sendToAPI(messageText);
 
       const botMessage = {
@@ -358,7 +345,7 @@ Be helpful and informative about his background. Share specific details about hi
 
       const errorMessage = {
         id: Date.now() + 1,
-        text: "😅 Something went wrong. Please try again or contact Ilias directly.",
+        text: "😅 Something went wrong. Please try again.",
         isBot: true,
         timestamp: new Date(),
       };
@@ -386,19 +373,20 @@ Be helpful and informative about his background. Share specific details about hi
 
   return (
     <AnimatePresence>
-      {/* Chat Window - Bottom Right Corner - Responsive */}
+      {/* Mobile Chat Window - Full Screen Centered */}
       <motion.div
-        initial={{ opacity: 0, x: 400, y: 100 }}
-        animate={{ opacity: 1, x: 0, y: 0 }}
-        exit={{ opacity: 0, x: 400, y: 100 }}
-        className="fixed bottom-6 right-6 z-50 w-96 h-[600px] max-h-[80vh] max-w-[90vw] sm:max-w-96"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
       >
         <motion.div
-          className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 w-full h-full flex flex-col overflow-hidden"
-          whileHover={{ scale: 1.02 }}
-          transition={{ duration: 0.2 }}
+          className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 w-full max-w-sm h-[70vh] max-h-[600px] flex flex-col overflow-hidden mx-auto"
+          initial={{ y: 50 }}
+          animate={{ y: 0 }}
+          transition={{ duration: 0.3 }}
         >
-          {/* Modern Header */}
+          {/* Mobile Header */}
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-3 text-white">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -411,7 +399,7 @@ Be helpful and informative about his background. Share specific details about hi
                     repeat: Infinity,
                     repeatType: "loop",
                   }}
-                  className="w-8 h-8 rounded-full bg-white/25 backdrop-blur-sm flex items-center justify-center text-lg"
+                  className="w-7 h-7 rounded-full bg-white/25 backdrop-blur-sm flex items-center justify-center text-sm"
                 >
                   🤖
                 </motion.div>
@@ -425,20 +413,20 @@ Be helpful and informative about his background. Share specific details about hi
                         className="px-1.5 py-0.5 bg-green-500 text-white text-xs rounded-full flex items-center gap-1"
                         title="Enhanced with CV data"
                       >
-                        <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
+                        <span className="w-1 h-1 bg-white rounded-full animate-pulse"></span>
                         CV
                       </motion.div>
                     )}
                   </div>
                   <p className="text-xs opacity-80">
-                    {hasResumeData ? "Enhanced responses" : "Ready to chat"}
+                    {hasResumeData ? "Enhanced responses" : "Ready to help"}
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <motion.button
                   onClick={onClose}
-                  className="w-7 h-7 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors text-sm"
+                  className="w-6 h-6 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors text-sm"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                 >
@@ -449,20 +437,20 @@ Be helpful and informative about his background. Share specific details about hi
           </div>
 
           {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-3 space-y-3 min-h-0 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+          <div className="flex-1 overflow-y-auto py-3 space-y-3 min-h-0">
             {messages.map((message) => (
-              <ChatMessage
+              <ChatMessageMobile
                 key={message.id}
                 message={formatResponse(message.text)}
                 isBot={message.isBot}
               />
             ))}
 
-            {isTyping && <ChatMessage isBot={true} isTyping={true} />}
+            {isTyping && <ChatMessageMobile isBot={true} isTyping={true} />}
 
             {/* Suggestions */}
             {showSuggestions && messages.length === 1 && (
-              <QuickSuggestions
+              <QuickSuggestionsMobile
                 suggestions={suggestions}
                 onSuggestionClick={handleSuggestionClick}
               />
@@ -471,8 +459,8 @@ Be helpful and informative about his background. Share specific details about hi
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Modern Input */}
-          <div className="border-t border-gray-200/50 bg-white/80 backdrop-blur-sm p-3">
+          {/* Mobile Input */}
+          <div className="border-t border-gray-200/50 bg-white/90 backdrop-blur-sm p-3">
             <div className="flex gap-2">
               <input
                 type="text"
@@ -486,7 +474,7 @@ Be helpful and informative about his background. Share specific details about hi
               <motion.button
                 onClick={() => handleSendMessage()}
                 disabled={!inputValue.trim() || isTyping}
-                className="w-9 h-9 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                className="w-8 h-8 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                 whileHover={{ scale: inputValue.trim() ? 1.05 : 1 }}
                 whileTap={{ scale: inputValue.trim() ? 0.95 : 1 }}
               >
@@ -502,7 +490,7 @@ Be helpful and informative about his background. Share specific details about hi
                   />
                 ) : (
                   <svg
-                    className="w-4 h-4"
+                    className="w-3 h-3"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -524,4 +512,4 @@ Be helpful and informative about his background. Share specific details about hi
   );
 };
 
-export default Chatbot;
+export default ChatbotMobile;

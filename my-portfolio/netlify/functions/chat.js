@@ -132,18 +132,22 @@ exports.handler = async (event, context) => {
         let enhancedContent = message.content;
 
         if (resumeContent) {
-          enhancedContent += `\n\nCONTENU COMPLET DU CV D'ILIAS:\n${resumeContent}\n\nINSTRUCTIONS STRICTES:
-- You are an AI assistant presenting ILIAS SOFIR's professional profile to visitors
-- ALWAYS respond in ENGLISH only
-- CRITICAL: Only mention projects, experiences, and skills that are EXPLICITLY listed in the CV content above
-- NEVER invent or make up projects, companies, or experiences that are not in the CV
-- If you don't have specific information about something, say "I'd need to check his portfolio for more details"
-- Be friendly and conversational, not robotic or formal
-- Your role is to inform visitors about Ilias's REAL skills, experience, projects, and background from his CV
-- You do NOT help visitors with their own projects or problems
-- Keep responses SHORT and natural (maximum 80 words)
-- Use simple, engaging language like introducing a friend
-- Be warm and personable but FACTUALLY ACCURATE only`;
+          enhancedContent += `\n\nILIAS'S COMPLETE RESUME:\n${resumeContent}\n\nYou are Ilias Ofir's portfolio assistant. I have access to his full resume above and can share specific details about his background.
+
+About Ilias Ofir:
+- Current Student: Computer Science Engineering at FST Settat
+- Experience: Data Science & Software Engineering Intern at Hassania School, QA Automation Engineering Intern at ONCF
+- Skills: Python, Java, JavaScript, React.js, Node.js, Spring Boot, Django, TailwindCSS, MySQL, PostgreSQL, MongoDB, Oracle Cloud (OCI Certified), Docker, Git, PyTorch, Machine Learning
+- Certifications: Oracle Cloud Infrastructure Foundations Associate, Mern Stack Developer, IBM Big Data Foundations
+- Projects: ChatWithMe (Real-time chat app), KouraZone (sport field reservation mobile app), Recruiting Agency App (JavaFX), Sentiment Analysis & GNN Optimization
+
+Guidelines:
+- Use the resume content above to give specific, accurate answers
+- Share concrete details about his skills, projects, and experience
+- If asked about something not in the resume, say "That's not detailed in his current resume, but you can contact him for more information"
+- Be conversational and helpful
+- Keep responses under 80 words
+- Always respond in English`;
         }
 
         return {
@@ -208,13 +212,24 @@ exports.handler = async (event, context) => {
     }
   } catch (error) {
     console.error("Erreur dans la fonction chat:", error);
+    console.error("Error details:", {
+      message: error.message,
+      stack: error.stack,
+      hasHFToken: !!process.env.HF_TOKEN,
+      tokenLength: process.env.HF_TOKEN ? process.env.HF_TOKEN.length : 0,
+    });
+
     return {
       statusCode: 500,
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify({ error: error.message }),
+      body: JSON.stringify({
+        error: error.message,
+        details: "Check Netlify function logs for more information",
+        hasToken: !!process.env.HF_TOKEN,
+      }),
     };
   }
 };

@@ -343,7 +343,10 @@ const WelcomeModal = ({ isOpen, onClose, onStartChat }) => {
                     className="flex flex-col sm:flex-row gap-4 lg:gap-6"
                   >
                     <motion.button
-                      onClick={onStartChat}
+                      onClick={() => {
+                        onStartChat();
+                        onClose();
+                      }}
                       custom={0}
                       variants={buttonVariants}
                       initial="hidden"

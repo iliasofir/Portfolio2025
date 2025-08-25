@@ -10,12 +10,30 @@ import Footer from "./components/Footer";
 import ProjectsManager from "./components/ProjectsManager";
 import Certification from "./components/Certification";
 import Chatbot from "./components/Chatbot";
+import ChatbotMobile from "./components/mobile/ChatbotMobile";
 import WelcomeModal from "./components/WelcomeModal";
 import "./styles/globals.css";
 
 function App() {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Détecter si c'est un appareil mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      const isMobileDevice =
+        window.innerWidth <= 768 ||
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent
+        );
+      setIsMobile(isMobileDevice);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   // Afficher le modal de bienvenue après 3 secondes
   useEffect(() => {
@@ -83,11 +101,18 @@ function App() {
             repeat: Infinity,
           }}
         >
-          💬
+          🤖
         </motion.button>
 
-        {/* Chatbot */}
-        <Chatbot isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+        {/* Chatbot - Conditional rendering based on device */}
+        {isMobile ? (
+          <ChatbotMobile
+            isOpen={isChatOpen}
+            onClose={() => setIsChatOpen(false)}
+          />
+        ) : (
+          <Chatbot isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+        )}
 
         {/* Welcome Modal */}
         <WelcomeModal
