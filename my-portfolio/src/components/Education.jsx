@@ -6,6 +6,7 @@ import {
   AnimatePresence,
 } from "framer-motion";
 import { useRef, useState, useEffect, useMemo, useCallback, memo } from "react";
+import QuantumBackground from "./QuantumBackground";
 
 // Composant mémorisé pour les particules flottantes
 const FloatingParticles = memo(({ isActive, accent, count = 10 }) => {
@@ -287,22 +288,12 @@ const Education = memo(() => {
   );
 
   return (
-    <div
+    <QuantumBackground
       id="education"
-      className="relative min-h-screen py-20 overflow-hidden"
-      ref={containerRef}
+      containerRef={containerRef}
+      variant="orange"
+      className="py-20 overflow-hidden"
     >
-      {/* Preserved Background Elements */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(120,119,198,0.1),rgba(0,0,0,0))]" />
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle at center, rgba(99,102,241,0.05) 0%, transparent 8%)",
-          backgroundSize: "3rem 3rem",
-        }}
-      />
-
       {/* Dynamic cursor follower - 2025 trend */}
       {isHydrated && (
         <motion.div
@@ -358,45 +349,64 @@ const Education = memo(() => {
           >
             <div className="w-3/4 h-32 bg-gradient-to-r from-violet-600/20 via-fuchsia-500/20 to-indigo-600/20 rounded-full blur-3xl" />
           </motion.div>
-
-          {/* En-tête typographique moderne optimisé */}
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
+          <motion.div
+            initial={{ opacity: 0, y: -50 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true }}
-            className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-violet-400 to-purple-600 bg-clip-text text-transparent text-center mb-16"
-            style={{ willChange: "transform, opacity" }}
+            transition={{ duration: 1, type: "spring", stiffness: 100 }}
+            className="mb-20 relative text-center"
           >
-            Education
-          </motion.h2>
+            <motion.div
+              animate={{
+                scale: [1, 1.1, 1],
+                opacity: [0.4, 0.7, 0.4],
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              className="absolute inset-0 flex justify-center items-center -z-10"
+            >
+              <div className="w-full h-24 bg-gradient-to-r from-transparent via-violet-500/20 to-transparent blur-2xl rounded-full" />
+            </motion.div>
 
-          {/* Séparateur de ligne animé optimisé */}
-          <div className="relative h-6 flex justify-center">
-            {[0, 1, 2].map((i) => (
-              <motion.div
-                key={i}
-                initial={{ width: "0%" }}
-                whileInView={{
-                  width: ["0%", "40%", i === 1 ? "60%" : "40%", "40%"],
-                }}
-                transition={{
-                  duration: 3,
-                  delay: i * 0.2,
-                  repeat: Infinity,
-                  repeatType: "mirror",
-                  repeatDelay: 2,
-                }}
-                className={`h-px absolute bg-gradient-to-r from-transparent via-violet-400/${
-                  30 - i * 5
-                } to-transparent mx-auto`}
-                style={{
-                  top: `${i * 4}px`,
-                  willChange: "width",
-                }}
-              />
-            ))}
-          </div>
+            <motion.h2
+              className="text-5xl md:text-7xl font-black relative"
+              animate={{
+                textShadow: [
+                  "0 0 20px rgba(139, 92, 246, 0.5)",
+                  "0 0 40px rgba(139, 92, 246, 0.8)",
+                  "0 0 20px rgba(139, 92, 246, 0.5)",
+                ],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-violet-200 to-cyan-200">
+                Education
+              </span>
+            </motion.h2>
+
+            <motion.div
+              initial={{ width: 0 }}
+              whileInView={{ width: "60%" }}
+              transition={{ duration: 2, delay: 0.5 }}
+              className="h-0.5 bg-gradient-to-r from-transparent via-violet-400 to-transparent mx-auto mt-6 rounded-full"
+            />
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ delay: 0.8 }}
+              className="mt-6 text-gray-300 text-lg font-light max-w-2xl mx-auto"
+            >
+              Formal education in Computer Science, establishing a robust
+              foundation in software engineering principles and advanced
+              computational theory.
+            </motion.p>
+          </motion.div>
         </motion.div>
 
         {/* Rail de timeline optimisé */}
@@ -830,7 +840,7 @@ const Education = memo(() => {
           ))}
         </div>
       </motion.div>
-    </div>
+    </QuantumBackground>
   );
 });
 

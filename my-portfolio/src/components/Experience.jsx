@@ -1,5 +1,6 @@
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { useRef, useState, useMemo, memo } from "react";
+import QuantumBackground from "./QuantumBackground";
 
 // Composant mémorisé pour une expérience dans la timeline
 const ExperienceCard = memo(({ experience, index, isLeft }) => (
@@ -229,17 +230,12 @@ const Experience = () => {
   );
 
   return (
-    <div
+    <QuantumBackground
       id="experience"
-      className="relative min-h-screen py-20"
-      ref={containerRef}
+      containerRef={containerRef}
+      variant="purple"
+      className="py-20"
     >
-      {/* Background effects */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-grid-pattern opacity-5" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-violet-500/5 to-transparent animate-pulse" />
-      </div>
-
       <motion.div
         style={{
           opacity: useSpring(opacity, springConfig),
@@ -247,17 +243,63 @@ const Experience = () => {
         }}
         className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10"
       >
-        {/* Title */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: -50 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
+          transition={{ duration: 1, type: "spring", stiffness: 100 }}
+          className="mb-20 relative text-center"
         >
-          <motion.h2 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-violet-400 to-purple-600 bg-clip-text text-transparent mb-4">
-            Experiences
+          <motion.div
+            animate={{
+              scale: [1, 1.1, 1],
+              opacity: [0.4, 0.7, 0.4],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="absolute inset-0 flex justify-center items-center -z-10"
+          >
+            <div className="w-full h-24 bg-gradient-to-r from-transparent via-violet-500/20 to-transparent blur-2xl rounded-full" />
+          </motion.div>
+
+          <motion.h2
+            className="text-5xl md:text-7xl font-black relative"
+            animate={{
+              textShadow: [
+                "0 0 20px rgba(139, 92, 246, 0.5)",
+                "0 0 40px rgba(139, 92, 246, 0.8)",
+                "0 0 20px rgba(139, 92, 246, 0.5)",
+              ],
+            }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          >
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-violet-200 to-cyan-200">
+              Experience
+            </span>
           </motion.h2>
+
+          <motion.div
+            initial={{ width: 0 }}
+            whileInView={{ width: "60%" }}
+            transition={{ duration: 2, delay: 0.5 }}
+            className="h-0.5 bg-gradient-to-r from-transparent via-violet-400 to-transparent mx-auto mt-6 rounded-full"
+          />
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
+            className="mt-6 text-gray-300 text-lg font-light max-w-2xl mx-auto"
+          >
+            Proven track record of delivering full-stack web applications and
+            data-driven solutions for enterprise clients.
+          </motion.p>
         </motion.div>
 
         {/* Timeline container */}
@@ -312,7 +354,7 @@ const Experience = () => {
           </div>
         </div>
       </motion.div>
-    </div>
+    </QuantumBackground>
   );
 };
 

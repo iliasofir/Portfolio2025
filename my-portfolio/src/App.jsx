@@ -6,9 +6,11 @@ import Hero from "./components/Hero";
 import Skills from "./components/Skills";
 import Education from "./components/Education";
 import Experience from "./components/Experience";
+import ExperienceMobile from "./components/mobile/ExperienceMobile";
 import Footer from "./components/Footer";
 import ProjectsManager from "./components/ProjectsManager";
 import Certification from "./components/Certification";
+import CertificationMobile from "./components/mobile/CertificationMobile";
 import Chatbot from "./components/Chatbot";
 import ChatbotMobile from "./components/mobile/ChatbotMobile";
 import WelcomeModal from "./components/WelcomeModal";
@@ -76,10 +78,10 @@ function App() {
             <Navbar />
             <Hero />
             <Skills />
-            <Certification />
+            {isMobile ? <CertificationMobile /> : <Certification />}
             <ProjectsManager />
             <Education />
-            <Experience />
+            {isMobile ? <ExperienceMobile /> : <Experience />}
             <Footer />
           </motion.div>
         </AnimatePresence>

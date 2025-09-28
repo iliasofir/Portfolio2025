@@ -1,5 +1,6 @@
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { useRef, useMemo, memo, useCallback, useState } from "react";
+import QuantumBackground from "./QuantumBackground";
 
 // Composant mémorisé pour une compétence individuelle optimisé
 const SkillItem = memo(({ skill, skillIdx }) => {
@@ -164,14 +165,12 @@ const Skills = () => {
   );
 
   return (
-    <div
+    <QuantumBackground
       id="skills"
-      className="relative min-h-screen py-20 bg-slate-900"
-      ref={containerRef}
+      containerRef={containerRef}
+      variant="blue"
+      className="py-20"
     >
-      {/* Background simplifié sans animations coûteuses */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-900/20 to-transparent" />
-
       <motion.div
         style={{
           opacity: useSpring(opacity, springConfig),
@@ -181,16 +180,39 @@ const Skills = () => {
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10"
       >
         <motion.h2
-          initial={{ opacity: 0, y: -15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-4xl md:text-6xl font-bold text-center mb-16"
-          style={{ willChange: "transform" }}
+          className="text-5xl md:text-7xl font-black relative text-center"
+          animate={{
+            textShadow: [
+              "0 0 20px rgba(139, 92, 246, 0.5)",
+              "0 0 40px rgba(139, 92, 246, 0.8)",
+              "0 0 20px rgba(139, 92, 246, 0.5)",
+            ],
+          }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
         >
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400">
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-violet-200 to-cyan-200">
             Skills & Technologies
           </span>
         </motion.h2>
+        <motion.div
+          initial={{ width: 0 }}
+          whileInView={{ width: "60%" }}
+          transition={{ duration: 2, delay: 0.5 }}
+          className="h-0.5 bg-gradient-to-r from-transparent via-violet-400 to-transparent mx-auto mt-6  rounded-full"
+        />
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ delay: 0.8 }}
+          className="mt-6 text-gray-300 text-lg font-light mb-16 max-w-2xl mx-auto text-center"
+        >
+          A diverse technical arsenal spanning full-stack development
+          frameworks, cloud infrastructure management, and data science .
+        </motion.p>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {skillCategories.map((category, idx) => (
@@ -198,7 +220,7 @@ const Skills = () => {
           ))}
         </div>
       </motion.div>
-    </div>
+    </QuantumBackground>
   );
 };
 

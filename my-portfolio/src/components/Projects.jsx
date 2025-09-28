@@ -13,6 +13,7 @@ import {
   useTransform,
   useSpring,
 } from "framer-motion";
+import QuantumBackground from "./QuantumBackground";
 
 // Composant mémorisé pour un tech tag
 const TechTag = memo(({ tech, bgAccent }) => (
@@ -384,10 +385,11 @@ const Projects = () => {
   }, [isPaused, page, paginate]);
 
   return (
-    <div
+    <QuantumBackground
       id="projects"
-      className="relative min-h-screen py-20 "
-      ref={containerRef}
+      containerRef={containerRef}
+      variant="green"
+      className="py-20"
     >
       <motion.div
         className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8"
@@ -398,215 +400,247 @@ const Projects = () => {
         }}
       >
         <motion.div
-          className="mb-20"
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          style={{ willChange: "transform, opacity" }}
+          animate={{
+            scale: [1, 1.1, 1],
+            opacity: [0.4, 0.7, 0.4],
+          }}
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="absolute inset-0 flex justify-center items-center -z-10"
         >
-          <h2 className="text-6xl md:text-7xl font-bold text-center">
-            <span className="text-4xl md:text-6xl bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
-              Featured Projects
-            </span>
-          </h2>
+          <div className="w-full h-24 bg-gradient-to-r from-transparent via-violet-500/20 to-transparent blur-2xl rounded-full" />
         </motion.div>
 
-        <motion.div
-          className="relative h-[580px] sm:h-[620px] md:h-[600px] lg:h-[650px] overflow-hidden rounded-2xl"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          style={{ willChange: "transform, opacity" }}
+        <motion.h2
+          className="text-5xl md:text-7xl font-black relative text-center"
+          animate={{
+            textShadow: [
+              "0 0 20px rgba(139, 92, 246, 0.5)",
+              "0 0 40px rgba(139, 92, 246, 0.8)",
+              "0 0 20px rgba(139, 92, 246, 0.5)",
+            ],
+          }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
         >
-          <AnimatePresence initial={false} custom={direction}>
-            <motion.div
-              key={page}
-              custom={direction}
-              variants={variants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{
-                x: { type: "spring", stiffness: 300, damping: 30 },
-                opacity: { duration: 0.2 },
-              }}
-              drag="x"
-              dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={1}
-              onDragStart={() => {
-                setIsDragging(true);
-                setIsPaused(true);
-              }}
-              onDragEnd={(e, { offset, velocity }) => {
-                setIsDragging(false);
-                setIsPaused(false);
-                const swipe = swipePower(offset.x, velocity.x);
-                if (swipe < -swipeConfidenceThreshold) {
-                  paginate(1);
-                } else if (swipe > swipeConfidenceThreshold) {
-                  paginate(-1);
-                }
-              }}
-              className="absolute w-full h-full flex items-center justify-center"
-              style={{ willChange: "transform, opacity" }}
-            >
-              <div className="w-full h-full px-12 sm:px-16 md:px-4 flex items-center justify-center">
-                <motion.div
-                  className="w-full max-w-6xl mx-auto"
-                  whileHover={{ scale: 1.02 }}
-                  transition={{ duration: 0.3 }}
-                  style={{ willChange: "transform" }}
-                >
-                  <div className="relative rounded-2xl overflow-hidden backdrop-blur-md bg-white/[0.03] border border-white/10 shadow-2xl">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 p-4 sm:p-6 lg:p-8">
-                      <motion.div
-                        className="lg:col-span-7 relative rounded-xl overflow-hidden aspect-[16/9] sm:aspect-[16/10]"
-                        whileHover={{ scale: 1.03 }}
-                        transition={{ duration: 0.2 }}
-                        style={{ willChange: "transform" }}
-                      >
-                        <img
-                          src={projects[projectIndex].image}
-                          alt={projects[projectIndex].title}
-                          className="object-cover w-full h-full"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-                      </motion.div>
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-violet-200 to-cyan-200">
+            Featured Projects
+          </span>
+        </motion.h2>
 
-                      <div className="lg:col-span-5 flex flex-col py-2 sm:py-4 max-h-[480px] sm:max-h-[520px] lg:max-h-[580px] overflow-hidden">
-                        <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20 pr-2">
-                          <motion.div
-                            className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.4 }}
-                            style={{ willChange: "transform, opacity" }}
-                          >
-                            <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2 sm:mb-0">
-                              {projects[projectIndex].title}
-                            </h3>
-                            <div
-                              className={`px-3 py-1 sm:px-4 sm:py-1.5 rounded-full ${projects[projectIndex].bgAccent} text-xs sm:text-sm self-start sm:self-auto`}
-                            >
-                              {projects[projectIndex].period}
-                            </div>
-                          </motion.div>
-                          <motion.p
-                            className="text-lg sm:text-xl text-white/90 mb-3 sm:mb-4"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.2, duration: 0.4 }}
-                          >
-                            {projects[projectIndex].description}
-                          </motion.p>
-                          <motion.p
-                            className="text-sm sm:text-base text-gray-300 leading-relaxed mb-4 sm:mb-6"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.3, duration: 0.4 }}
-                          >
-                            {projects[projectIndex].details}
-                          </motion.p>
-                        </div>
+        <motion.div
+          initial={{ width: 0 }}
+          whileInView={{ width: "60%" }}
+          transition={{ duration: 2, delay: 0.5 }}
+          className="h-0.5 bg-gradient-to-r from-transparent via-violet-400 to-transparent mx-auto mt-6 rounded-full"
+        />
 
-                        <div className="mt-4 space-y-3 flex-shrink-0">
-                          <motion.div
-                            className="flex flex-wrap gap-2 sm:gap-2.5 max-h-20 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.4, duration: 0.4 }}
-                            style={{ willChange: "transform, opacity" }}
-                          >
-                            {projects[projectIndex].tech.map((tech) => (
-                              <TechTag
-                                key={tech}
-                                tech={tech}
-                                bgAccent={projects[projectIndex].bgAccent}
-                              />
-                            ))}
-                          </motion.div>
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ delay: 0.8 }}
+          className="mt-6 text-gray-300 text-lg font-light max-w-2xl mx-auto text-center"
+        >
+          A portfolio of deployed full-stack applications, integrating modern
+          frameworks with cloud infrastructure for scalable solutions.
+        </motion.p>
+      </motion.div>
 
-                          {/* Bouton GitHub */}
-                          <motion.div
-                            className="flex justify-start"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.5, duration: 0.4 }}
-                            style={{ willChange: "transform, opacity" }}
+      <motion.div
+        className="relative h-[580px] sm:h-[620px] md:h-[600px] lg:h-[650px] overflow-hidden rounded-2xl"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        style={{ willChange: "transform, opacity" }}
+      >
+        <AnimatePresence initial={false} custom={direction}>
+          <motion.div
+            key={page}
+            custom={direction}
+            variants={variants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{
+              x: { type: "spring", stiffness: 300, damping: 30 },
+              opacity: { duration: 0.2 },
+            }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={1}
+            onDragStart={() => {
+              setIsDragging(true);
+              setIsPaused(true);
+            }}
+            onDragEnd={(e, { offset, velocity }) => {
+              setIsDragging(false);
+              setIsPaused(false);
+              const swipe = swipePower(offset.x, velocity.x);
+              if (swipe < -swipeConfidenceThreshold) {
+                paginate(1);
+              } else if (swipe > swipeConfidenceThreshold) {
+                paginate(-1);
+              }
+            }}
+            className="absolute w-full h-full flex items-center justify-center"
+            style={{ willChange: "transform, opacity" }}
+          >
+            <div className="w-full h-full px-12 sm:px-16 md:px-4 flex items-center justify-center">
+              <motion.div
+                className="w-full max-w-6xl mx-auto"
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.3 }}
+                style={{ willChange: "transform" }}
+              >
+                <div className="relative rounded-2xl overflow-hidden backdrop-blur-md bg-white/[0.03] border border-white/10 shadow-2xl">
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 p-4 sm:p-6 lg:p-8">
+                    <motion.div
+                      className="lg:col-span-7 relative rounded-xl overflow-hidden aspect-[16/9] sm:aspect-[16/10]"
+                      whileHover={{ scale: 1.03 }}
+                      transition={{ duration: 0.2 }}
+                      style={{ willChange: "transform" }}
+                    >
+                      <img
+                        src={projects[projectIndex].image}
+                        alt={projects[projectIndex].title}
+                        className="object-cover w-full h-full"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                    </motion.div>
+
+                    <div className="lg:col-span-5 flex flex-col py-2 sm:py-4 max-h-[480px] sm:max-h-[520px] lg:max-h-[580px] overflow-hidden">
+                      <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20 pr-2">
+                        <motion.div
+                          className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.4 }}
+                          style={{ willChange: "transform, opacity" }}
+                        >
+                          <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2 sm:mb-0">
+                            {projects[projectIndex].title}
+                          </h3>
+                          <div
+                            className={`px-3 py-1 sm:px-4 sm:py-1.5 rounded-full ${projects[projectIndex].bgAccent} text-xs sm:text-sm self-start sm:self-auto`}
                           >
-                            <GitHubButton
-                              githubUrl={projects[projectIndex].github}
-                              projectTitle={projects[projectIndex].title}
-                              accentColor={projects[projectIndex].accentColor}
+                            {projects[projectIndex].period}
+                          </div>
+                        </motion.div>
+                        <motion.p
+                          className="text-lg sm:text-xl text-white/90 mb-3 sm:mb-4"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 0.2, duration: 0.4 }}
+                        >
+                          {projects[projectIndex].description}
+                        </motion.p>
+                        <motion.p
+                          className="text-sm sm:text-base text-gray-300 leading-relaxed mb-4 sm:mb-6"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 0.3, duration: 0.4 }}
+                        >
+                          {projects[projectIndex].details}
+                        </motion.p>
+                      </div>
+
+                      <div className="mt-4 space-y-3 flex-shrink-0">
+                        <motion.div
+                          className="flex flex-wrap gap-2 sm:gap-2.5 max-h-20 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.4, duration: 0.4 }}
+                          style={{ willChange: "transform, opacity" }}
+                        >
+                          {projects[projectIndex].tech.map((tech) => (
+                            <TechTag
+                              key={tech}
+                              tech={tech}
+                              bgAccent={projects[projectIndex].bgAccent}
                             />
-                          </motion.div>
-                        </div>
+                          ))}
+                        </motion.div>
+
+                        {/* Bouton GitHub */}
+                        <motion.div
+                          className="flex justify-start"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.5, duration: 0.4 }}
+                          style={{ willChange: "transform, opacity" }}
+                        >
+                          <GitHubButton
+                            githubUrl={projects[projectIndex].github}
+                            projectTitle={projects[projectIndex].title}
+                            accentColor={projects[projectIndex].accentColor}
+                          />
+                        </motion.div>
                       </div>
                     </div>
                   </div>
-                </motion.div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
+        </AnimatePresence>
 
-          {/* Navigation buttons optimisés */}
-          <NavigationButton
-            direction="left"
-            onClick={() => handleNavigation(-1)}
+        {/* Navigation buttons optimisés */}
+        <NavigationButton direction="left" onClick={() => handleNavigation(-1)}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+            className="w-6 h-6 text-white"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="currentColor"
-              className="w-6 h-6 text-white"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15.75 19.5L8.25 12l7.5-7.5"
-              />
-            </svg>
-          </NavigationButton>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15.75 19.5L8.25 12l7.5-7.5"
+            />
+          </svg>
+        </NavigationButton>
 
-          <NavigationButton
-            direction="right"
-            onClick={() => handleNavigation(1)}
+        <NavigationButton direction="right" onClick={() => handleNavigation(1)}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+            className="w-6 h-6 text-white"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="currentColor"
-              className="w-6 h-6 text-white"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M8.25 4.5l7.5 7.5-7.5 7.5"
-              />
-            </svg>
-          </NavigationButton>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M8.25 4.5l7.5 7.5-7.5 7.5"
+            />
+          </svg>
+        </NavigationButton>
 
-          {/* Indicateurs de progression optimisés */}
-          <div className="absolute bottom-16 sm:bottom-6 left-1/2 -translate-x-1/2 flex space-x-3 z-20">
-            {projects.map((_, index) => (
-              <ProgressIndicator
-                key={index}
-                index={index}
-                projectIndex={projectIndex}
-                onPageChange={handlePageChange}
-                totalProjects={projects.length}
-              />
-            ))}
-          </div>
-        </motion.div>
+        {/* Indicateurs de progression optimisés */}
+        <div className="absolute bottom-16 sm:bottom-6 left-1/2 -translate-x-1/2 flex space-x-3 z-20">
+          {projects.map((_, index) => (
+            <ProgressIndicator
+              key={index}
+              index={index}
+              projectIndex={projectIndex}
+              onPageChange={handlePageChange}
+              totalProjects={projects.length}
+            />
+          ))}
+        </div>
       </motion.div>
-    </div>
+    </QuantumBackground>
   );
 };
 

@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { FaGithub, FaLinkedin, FaEnvelope } from "react-icons/fa";
-import { useMemo, memo } from "react";
+import { useMemo, memo, useRef } from "react";
+import QuantumBackground from "./QuantumBackground";
 
 // Composant mémorisé pour un lien social
 const SocialLink = memo(({ link, index }) => (
@@ -27,6 +28,8 @@ const SocialLink = memo(({ link, index }) => (
 ));
 
 const Footer = () => {
+  const containerRef = useRef(null);
+
   // Mémorisation des liens sociaux
   const socialLinks = useMemo(
     () => [
@@ -53,7 +56,11 @@ const Footer = () => {
   const currentYear = useMemo(() => new Date().getFullYear(), []);
 
   return (
-    <footer className="relative py-24 bg-gradient-to-b from-transparent to-[rgba(0,0,0,0.1)] backdrop-blur-sm">
+    <QuantumBackground
+      containerRef={containerRef}
+      variant="default"
+      className="py-24"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="glass-effect rounded-3xl p-12 text-center shadow-xl border border-[rgba(255,255,255,0.1)] backdrop-blur-md">
           <motion.h2
@@ -103,7 +110,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>
+    </QuantumBackground>
   );
 };
 
