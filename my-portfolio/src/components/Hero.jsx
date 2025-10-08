@@ -506,40 +506,6 @@ const Hero = () => {
       {/* Enhanced quantum field */}
       <QuantumField scrollY={scrollY} />
 
-      {/* Mobile HUD - Top compact version */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.8 }}
-        className="absolute top-8 left-8 right-8 z-30 md:hidden"
-      >
-        <div className="flex justify-between items-center backdrop-blur-xl bg-black/20 border border-white/10 rounded-2xl px-4 py-3">
-          <div className="flex items-center gap-3">
-            <motion.div
-              animate={{ opacity: [0.5, 1, 0.5] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="w-2 h-2 bg-green-400 rounded-full shadow-lg shadow-green-400/50"
-            />
-            <span className="text-green-400 font-mono text-xs">ONLINE</span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <div className="w-12 h-1 bg-gradient-to-r from-violet-500 to-cyan-500 rounded-full">
-              <motion.div
-                animate={{ x: [-16, 32, -16] }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                className="w-3 h-1 bg-white rounded-full shadow-lg"
-              />
-            </div>
-            <span className="text-xs text-gray-400 font-mono">SCAN</span>
-          </div>
-        </div>
-      </motion.div>
-
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
