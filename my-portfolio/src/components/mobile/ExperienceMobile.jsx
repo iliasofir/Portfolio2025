@@ -2,21 +2,24 @@ import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { useRef, useMemo, memo } from "react";
 
 // Mobile-optimized Experience Card
-const ExperienceCardMobile = memo(({ experience, index }) => (
+const ExperienceCardMobile = memo(({ experience, index, isLast }) => (
   <motion.div
-    initial={{ opacity: 0, y: 50 }}
+    initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.6, delay: index * 0.2 }}
     viewport={{ once: true }}
-    className="relative mb-8 last:mb-0"
+    className="relative"
   >
     {/* Timeline connector */}
-    <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gradient-to-b from-violet-400 to-purple-500 opacity-30" />
+    <div
+      className="absolute left-4 top-0 w-0.5 bg-gradient-to-b from-violet-400 to-purple-500 opacity-30 transform -translate-x-1/2"
+      style={{ height: isLast ? "100%" : "calc(100% + 4rem)" }}
+    />
 
     {/* Timeline dot */}
     <motion.div
       whileHover={{ scale: 1.2 }}
-      className="absolute left-2 top-6 w-4 h-4 bg-gradient-to-br from-violet-400 to-purple-500 rounded-full border-2 border-gray-900 z-20 shadow-lg shadow-violet-500/30"
+      className="absolute left-4 top-6 w-4 h-4 bg-gradient-to-br from-violet-400 to-purple-500 rounded-full border-2 border-gray-900 z-20 shadow-lg shadow-violet-500/30 transform -translate-x-1/2"
     />
 
     {/* Experience Card */}
@@ -187,10 +190,21 @@ const ExperienceMobile = () => {
   const experiences = useMemo(
     () => [
       {
+        role: "Full Stack Java/Angular Engineering Intern",
+        company: "Attijariwafa Bank",
+        location: "Casablanca, Maroc",
+        period: "August 2025 - September 2025",
+        status: "Completed",
+        logo: "/images/AWF.png",
+        description:
+          "Built a general assembly application using Spring Boot (Java) and PostgreSQL. Developing a modern Angular + TailwindCSS frontend with a fluid user experience. Integrating advanced features such as JWT authentication, OTP-based login, and automated voting and quorum tracking.",
+        technologies: ["Java", "Spring Boot", "Angular", "PostgreSQL", "SMTP"],
+      },
+      {
         role: "QA Automation Engineering Intern",
         company: "ONCF Group",
         location: "Rabat, Maroc",
-        period: "Juin 2025 - Juillet 2025",
+        period: "June 2025 - July 2025",
         status: "Completed",
         logo: "/images/oncf.png",
         description:
@@ -201,7 +215,7 @@ const ExperienceMobile = () => {
         role: "Data Science & Software Engineering Intern",
         company: "Hassania School of Public Works",
         location: "Casablanca, Maroc",
-        period: "Juin 2024 - Juillet 2024",
+        period: "June 2024 - July 2024",
         status: "Completed",
         logo: "/images/ehtp.png",
         description:
@@ -221,7 +235,7 @@ const ExperienceMobile = () => {
   return (
     <div
       id="experience"
-      className="relative min-h-screen py-16 px-4"
+      className="relative min-h-screen py-20 px-6"
       ref={containerRef}
     >
       {/* Background effects */}
@@ -235,26 +249,50 @@ const ExperienceMobile = () => {
           opacity: useSpring(opacity, springConfig),
           scale: useSpring(scale, springConfig),
         }}
-        className="max-w-lg mx-auto relative z-10"
+        className="max-w-xl mx-auto relative z-10 px-2"
       >
-        {/* Title */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
+        <motion.h2
+          className="text-5xl md:text-7xl font-black relative text-center"
+          animate={{
+            textShadow: [
+              "0 0 15px rgba(139, 92, 246, 0.4)",
+              "0 0 25px rgba(139, 92, 246, 0.6)",
+              "0 0 15px rgba(139, 92, 246, 0.4)",
+            ],
+          }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
         >
-          <motion.h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-violet-400 to-purple-600 bg-clip-text text-transparent mb-4">
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-violet-200 to-cyan-200">
             Experiences
-          </motion.h2>
-        </motion.div>
+          </span>
+        </motion.h2>
+
+        <motion.div
+          initial={{ width: 0 }}
+          whileInView={{ width: "70%" }}
+          transition={{ duration: 1.5, delay: 0.3 }}
+          className="h-0.5 bg-gradient-to-r from-transparent via-violet-400 to-transparent mx-auto mt-4 rounded-full"
+        />
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          className="mt-4 text-gray-300 text-base font-light max-w-sm mx-auto mb-24 text-center "
+        >
+          Proven track record of delivering full-stack web applications and
+          data-driven solutions for enterprise clients.
+        </motion.p>
 
         {/* Timeline container */}
         <div className="relative" ref={timelineRef}>
           {/* Animated scroll point for mobile */}
           <motion.div
-            className="absolute left-2 w-4 h-4 bg-gradient-to-br from-violet-300 to-purple-400 rounded-full border-2 border-white z-30 shadow-xl shadow-violet-500/50 transform -translate-x-1/2"
+            className="absolute left-4 w-4 h-4 bg-gradient-to-br from-violet-300 to-purple-400 rounded-full border-2 border-white z-30 shadow-xl shadow-violet-500/50 transform -translate-x-1/2"
             style={{
               top: springPointY,
               opacity: useTransform(
@@ -280,12 +318,13 @@ const ExperienceMobile = () => {
           </motion.div>
 
           {/* Experience cards */}
-          <div className="space-y-0">
+          <div className="space-y-16">
             {experiences.map((experience, index) => (
               <ExperienceCardMobile
                 key={index}
                 experience={experience}
                 index={index}
+                isLast={index === experiences.length - 1}
               />
             ))}
           </div>

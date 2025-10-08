@@ -66,12 +66,31 @@ const Footer = () => {
           <motion.h2
             initial={{ opacity: 0, y: -20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="text-4xl md:text-5xl font-bold gradient-text mb-10 tracking-tight"
+            className="text-4xl md:text-5xl font-black relative text-center mb-10 tracking-tight"
+            animate={{
+              opacity: 1,
+              y: 0,
+              textShadow: [
+                "0 0 15px rgba(139, 92, 246, 0.4)",
+                "0 0 25px rgba(139, 92, 246, 0.6)",
+                "0 0 15px rgba(139, 92, 246, 0.4)",
+              ],
+            }}
+            transition={{
+              opacity: { duration: 0.6 },
+              y: { duration: 0.6 },
+              textShadow: {
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut",
+              },
+            }}
             style={{ willChange: "transform, opacity" }}
           >
-            Let's Connect
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-violet-200 to-cyan-200">
+              Let's Connect
+            </span>
           </motion.h2>
 
           <motion.div

@@ -198,10 +198,27 @@ const Experience = () => {
   const experiences = useMemo(
     () => [
       {
+        role: "Full Stack Java/Angular Engineering Intern",
+        company: "Attijariwafa Bank",
+        location: "Casablanca, Maroc",
+        period: "August 2025 - September 2025",
+        status: "Completed",
+        logo: "/images/AWF.png",
+        description:
+          "Built a general assembly application using Spring Boot (Java) and PostgreSQL. Developing a modern Angular + TailwindCSS frontend with a fluid user experience. Integrating advanced features such as JWT authentication, OTP-based login, and automated voting and quorum tracking.",
+        technologies: [
+          "Java",
+          "Spring Boot",
+          "Angular",
+          "PostgreSQL",
+          "SMTP",
+        ],
+      },
+      {
         role: "QA Automation Engineering Intern",
         company: "ONCF Group",
         location: "Rabat, Maroc",
-        period: "Juin 2025 - Juillet 2025",
+        period: "June 2025 - July 2025",
         status: "Completed",
         logo: "/images/oncf.png",
         description:
@@ -212,7 +229,7 @@ const Experience = () => {
         role: "Data Science & Software Engineering Intern",
         company: "Hassania School of Public Works",
         location: "Casablanca, Maroc",
-        period: "Juin 2024 - Juillet 2024",
+        period: "June 2024 - July 2024",
         status: "Completed",
         logo: "/images/ehtp.png",
         description:
@@ -225,6 +242,7 @@ const Experience = () => {
           "Data Science",
         ],
       },
+       
     ],
     []
   );
@@ -280,7 +298,7 @@ const Experience = () => {
             }}
           >
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-violet-200 to-cyan-200">
-              Experience
+              Experiences
             </span>
           </motion.h2>
 

@@ -335,19 +335,41 @@ const ProjectsMobile = () => {
           willChange: "transform, opacity",
         }}
       >
-        <motion.div
-          className="mb-12"
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          style={{ willChange: "transform, opacity" }}
-        >
-          <h2 className="text-3xl font-bold text-center">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
-              Featured Projects
-            </span>
-          </h2>
-        </motion.div>
+        <motion.h2
+                    className="text-5xl md:text-7xl font-black relative text-center"
+                    animate={{
+                      textShadow: [
+                        "0 0 15px rgba(139, 92, 246, 0.4)",
+                        "0 0 25px rgba(139, 92, 246, 0.6)",
+                        "0 0 15px rgba(139, 92, 246, 0.4)",
+                      ],
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-violet-200 to-cyan-200">
+                      Projects
+                    </span>
+                  </motion.h2>
+        
+                  <motion.div
+                    initial={{ width: 0 }}
+                    whileInView={{ width: "70%" }}
+                    transition={{ duration: 1.5, delay: 0.3 }}
+                    className="h-0.5 bg-gradient-to-r from-transparent via-violet-400 to-transparent mx-auto mt-4 rounded-full"
+                  />
+        
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    transition={{ delay: 0.6 }}
+                    className="mt-4 text-gray-300 text-base font-light max-w-sm mx-auto mb-24 text-center "
+                  >
+ A portfolio of deployed full-stack applications, integrating modern
+          frameworks with cloud infrastructure for scalable solutions.                  </motion.p>
 
         <motion.div
           className="relative h-[520px] overflow-hidden rounded-xl mx-2"

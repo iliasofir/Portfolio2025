@@ -446,7 +446,7 @@ const CertificationMobile = () => {
           </motion.div>
 
           <motion.h2
-            className="text-4xl md:text-5xl font-black relative"
+            className="text-5xl md:text-7xl font-black relative"
             animate={{
               textShadow: [
                 "0 0 15px rgba(139, 92, 246, 0.4)",

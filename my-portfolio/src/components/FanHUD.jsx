@@ -117,11 +117,12 @@ const FanHUD = ({
       {...eventHandlers}
     >
       <div className="relative">
+   
         {/* Elite Command Panel Trigger */}
         <motion.div
           variants={centerButtonVariants}
           animate={isActive ? "open" : "closed"}
-          className="relative w-30 h-48 cursor-pointer group"
+          className="relative w-30 h-48 cursor-pointer group p-2"
         >
           {/* Quantum energy ripple */}
           <motion.div
