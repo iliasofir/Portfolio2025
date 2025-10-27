@@ -14,7 +14,6 @@ import CertificationMobile from "./components/mobile/CertificationMobile";
 import Chatbot from "./components/Chatbot";
 import ChatbotMobile from "./components/mobile/ChatbotMobile";
 import WelcomeModal from "./components/WelcomeModal";
-import FanHUD from "./components/FanHUD";
 import "./styles/globals.css";
 
 function App() {
@@ -132,130 +131,7 @@ function App() {
           onClose={handleWelcomeClose}
           onStartChat={handleStartChat}
         />
-
-        {/* Global Fan HUD Panel - Always Visible (Desktop Only) */}
-        {!isMobile && (
-          <FanHUD
-            animationType="hover"
-            position={{ top: 250, right: 20 }}
-            className="hidden md:block"
-          >
-            {/* System Status */}
-            <div className="flex flex-col items-center justify-center gap-1 text-center w-full">
-              <motion.div
-                animate={{ opacity: [0.5, 1, 0.5] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="relative w-6 h-6 flex items-center justify-center"
-              >
-                <div className="w-4 h-4 bg-green-400 rounded-full shadow-lg shadow-green-400/50" />
-                <motion.div
-                  animate={{ scale: [1, 2, 1], opacity: [0.8, 0, 0.8] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="absolute w-4 h-4 bg-green-400/30 rounded-full"
-                />
-              </motion.div>
-              <span className="text-green-400 font-mono text-[10px] font-semibold tracking-wider">
-                SYS
-              </span>
-              <span className="text-white font-mono text-xs font-bold">
-                98%
-              </span>
-            </div>
-
-            {/* Network Status */}
-            <div className="flex flex-col items-center justify-center gap-1 text-center w-full">
-              <motion.div
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-                className="relative w-6 h-6 flex items-center justify-center"
-              >
-                <div className="w-4 h-4 bg-cyan-400 rounded-full shadow-lg shadow-cyan-400/50" />
-                <motion.div
-                  animate={{ scale: [1, 1.8, 1], opacity: [0.6, 0, 0.6] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                  className="absolute w-4 h-4 border border-cyan-400/50 rounded-full"
-                />
-              </motion.div>
-              <span className="text-cyan-400 font-mono text-[10px] font-semibold tracking-wider">
-                NET
-              </span>
-              <span className="text-white font-mono text-xs font-bold">
-                100%
-              </span>
-            </div>
-
-            {/* CPU Status */}
-            <div className="flex flex-col items-center justify-center gap-1 text-center w-full">
-              <motion.div
-                animate={{
-                  background: [
-                    "conic-gradient(from 0deg, #22c55e 45%, rgba(34,197,94,0.1) 45%)",
-                    "conic-gradient(from 0deg, #22c55e 60%, rgba(34,197,94,0.1) 60%)",
-                    "conic-gradient(from 0deg, #22c55e 45%, rgba(34,197,94,0.1) 45%)",
-                  ],
-                }}
-                transition={{ duration: 3, repeat: Infinity }}
-                className="w-6 h-6 rounded-full border-2 border-green-400/30 shadow-lg shadow-green-400/20"
-              >
-                <div className="w-full h-full rounded-full bg-green-400/10" />
-              </motion.div>
-              <span className="text-green-400 font-mono text-[10px] font-semibold tracking-wider">
-                CPU
-              </span>
-              <span className="text-white font-mono text-xs font-bold">
-                45%
-              </span>
-            </div>
-
-            {/* Memory Status */}
-            <div className="flex flex-col items-center justify-center gap-1 text-center w-full">
-              <motion.div
-                animate={{
-                  background: [
-                    "conic-gradient(from 0deg, #3b82f6 67%, rgba(59,130,246,0.1) 67%)",
-                    "conic-gradient(from 0deg, #3b82f6 70%, rgba(59,130,246,0.1) 70%)",
-                    "conic-gradient(from 0deg, #3b82f6 67%, rgba(59,130,246,0.1) 67%)",
-                  ],
-                }}
-                transition={{ duration: 2.5, repeat: Infinity }}
-                className="w-6 h-6 rounded-full border-2 border-blue-400/30 shadow-lg shadow-blue-400/20"
-              >
-                <div className="w-full h-full rounded-full bg-blue-400/10" />
-              </motion.div>
-              <span className="text-blue-400 font-mono text-[10px] font-semibold tracking-wider">
-                MEM
-              </span>
-              <span className="text-white font-mono text-xs font-bold">
-                67%
-              </span>
-            </div>
-
-            {/* Time Display */}
-            <div className="flex flex-col items-center justify-center gap-1 text-center w-full">
-              <motion.div
-                animate={{ rotate: [0, 360] }}
-                transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-                className="relative w-6 h-6 flex items-center justify-center"
-              >
-                <div className="w-5 h-5 border-2 border-violet-400/30 border-t-violet-400 rounded-full" />
-                <motion.div
-                  animate={{ scale: [1, 1.3, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="absolute w-2 h-2 bg-violet-400 rounded-full"
-                />
-              </motion.div>
-              <span className="text-violet-400 font-mono text-[10px] font-semibold tracking-wider">
-                TIME
-              </span>
-              <span className="text-white font-mono text-xs font-bold">
-                {currentTime.toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </span>
-            </div>
-          </FanHUD>
-        )}
+       
       </div>
     </Router>
   );
