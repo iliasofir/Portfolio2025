@@ -435,6 +435,18 @@ const Certification = () => {
         bgAccent: "bg-blue-500/10",
         category: "Data Science",
       },
+         {
+        id: 4,
+        title: "Oracle Cloud Infrastructure 2025 Certified DevOps Professional",
+        issuer: "Oracle",
+        date: "Oct 2025",
+        credentialUrl:
+          "https://catalog-education.oracle.com/ords/certview/sharebadge?id=BC2817D66FE80005AE4C6DA8B5461FB2F42B7FBF434BC1B48DC36E8811CC974D",
+        logo: "/images/oracle.png",
+        color: "from-blue-400 to-cyan-500",
+        bgAccent: "bg-blue-500/10",
+        category: "Cloud Computing",
+      },
     ],
     []
   );

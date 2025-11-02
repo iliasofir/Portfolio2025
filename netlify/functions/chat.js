@@ -138,7 +138,8 @@ About Ilias Ofir:
 - Current Student: Computer Science Engineering at FST Settat
 - Experience: Data Science & Software Engineering Intern at Hassania School, QA Automation Engineering Intern at ONCF
 - Skills: Python, Java, JavaScript, React.js, Node.js, Spring Boot, Django, TailwindCSS, MySQL, PostgreSQL, MongoDB, Oracle Cloud (OCI Certified), Docker, Git, PyTorch, Machine Learning
-- Certifications: Oracle Cloud Infrastructure Foundations Associate, Mern Stack Developer, IBM Big Data Foundations
+- Certifications: Oracle Cloud Infrastructure Foundations Associate, Mern Stack Developer, IBM Big Data Foundations, Oracle Cloud Infrastructure 2025 Certified DevOps Professional
+
 - Projects: ChatWithMe (Real-time chat app), KouraZone (sport field reservation mobile app), Recruiting Agency App (JavaFX), Sentiment Analysis & GNN Optimization
 
 Guidelines:

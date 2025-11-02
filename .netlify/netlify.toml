@@ -1,16 +1,15 @@
-functionsDirectory = "/Users/admin/Desktop/PROJECTS/COMPLETED/Portfolio2025/my-portfolio/netlify/functions"
+functionsDirectory = "/Users/admin/Desktop/PROJECTS/COMPLETED/Portfolio2025/netlify/functions"
 functionsDirectoryOrigin = "config"
 redirectsOrigin = "config"
 plugins = []
 headers = []
 
 [build]
-publish = "/Users/admin/Desktop/PROJECTS/COMPLETED/Portfolio2025/my-portfolio/dist"
+publish = "/Users/admin/Desktop/PROJECTS/COMPLETED/Portfolio2025/dist"
 publishOrigin = "config"
 commandOrigin = "config"
-base = "/Users/admin/Desktop/PROJECTS/COMPLETED/Portfolio2025/my-portfolio"
 command = "npm run build"
-functions = "/Users/admin/Desktop/PROJECTS/COMPLETED/Portfolio2025/my-portfolio/netlify/functions"
+functions = "/Users/admin/Desktop/PROJECTS/COMPLETED/Portfolio2025/netlify/functions"
 
 [build.environment]
 NODE_VERSION = "18"
