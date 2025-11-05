@@ -118,7 +118,7 @@ const Skills = () => {
         skills: [
           { name: "Spring Boot", image: "/images/tech/spring-boot.png" },
           { name: "React.js", image: "/images/tech/react.webp" },
-          { name: "Node.js", image: "/images/tech/nodejs.png" },
+          { name: "Angular.js", image: "/images/tech/Angular.png" },
           { name: "Nest.js", image: "/images/tech/nestjs.png" },
           { name: "Laravel", image: "/images/tech/Laravel.png" },
           { name: "Django", image: "/images/tech/django.svg" },
@@ -145,11 +145,13 @@ const Skills = () => {
         title: "Tools & DevOps",
         skills: [
           { name: "Git", image: "/images/tech/git.png" },
+          { name: "supabase", image: "/images/tech/supabase.png" },
           { name: "Docker", image: "/images/tech/docker.png" },
           { name: "Kubernetes", image: "/images/tech/kubernetes.png" },
           { name: "Terraform", image: "/images/tech/terraform.png" },
           { name: "Oracle Cloud", image: "/images/tech/oracle.png" },
           { name: "Jenkins", image: "/images/tech/jenkins.png" },
+          { name: "AWS Cloud", image: "/images/tech/aws.png" },
         ],
       },
       {

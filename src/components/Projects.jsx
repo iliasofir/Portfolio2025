@@ -309,6 +309,20 @@ const Projects = () => {
         bgAccent: "bg-amber-500/20",
         accentColor: "rgb(16, 185, 129)",
       },
+            {
+        title: "PORTFOLIO WEBSITE",
+        period: "2025",
+        description: "Personal Portfolio Website",
+        details:
+          "Developed a personal portfolio website to showcase my projects and skills. Implemented a responsive design with modern UI/UX principles.",
+        tech: ["React.js", "TailwindCSS", "NETLIFY", "Framer Motion"],
+        image: "/images/Portfolio.png",
+        github:
+          "https://github.com/iliasofir/Portfolio2025",
+        color: "from-amber-400 to-orange-600",
+        bgAccent: "bg-amber-200/20",
+        accentColor: "rgb(16, 185, 120)",
+      },
     ],
     []
   );
