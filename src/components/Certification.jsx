@@ -411,17 +411,18 @@ const Certification = () => {
         bgAccent: "bg-red-500/10",
         category: "Cloud Computing",
       },
+
       {
         id: 2,
-        title: "MERN Stack Developer",
-        issuer: "Udemy",
-        date: "Aug 2024",
+        title: "Oracle Cloud Infrastructure 2025 Certified DevOps Professional",
+        issuer: "Oracle",
+        date: "Oct 2025",
         credentialUrl:
-          "https://www.linkedin.com/in/ilias-ofir-445b91295/details/certifications/1726409009042/single-media-viewer/?profileId=ACoAAEeLNjUBZGYFEyr2xQDond17qZWEny61fwE",
-        logo: "/images/Udemy-Logo.png",
-        color: "from-purple-400 to-violet-600",
-        bgAccent: "bg-violet-500/10",
-        category: "Web Development",
+          "https://catalog-education.oracle.com/ords/certview/sharebadge?id=BC2817D66FE80005AE4C6DA8B5461FB2F42B7FBF434BC1B48DC36E8811CC974D",
+        logo: "/images/oracle.png",
+        color: "from-blue-400 to-cyan-500",
+        bgAccent: "bg-blue-500/10",
+        category: "Cloud Computing",
       },
       {
         id: 3,
@@ -435,17 +436,17 @@ const Certification = () => {
         bgAccent: "bg-blue-500/10",
         category: "Data Science",
       },
-         {
+      {
         id: 4,
-        title: "Oracle Cloud Infrastructure 2025 Certified DevOps Professional",
-        issuer: "Oracle",
-        date: "Oct 2025",
+        title: "MERN Stack Developer",
+        issuer: "Udemy",
+        date: "Aug 2024",
         credentialUrl:
-          "https://catalog-education.oracle.com/ords/certview/sharebadge?id=BC2817D66FE80005AE4C6DA8B5461FB2F42B7FBF434BC1B48DC36E8811CC974D",
-        logo: "/images/oracle.png",
-        color: "from-blue-400 to-cyan-500",
-        bgAccent: "bg-blue-500/10",
-        category: "Cloud Computing",
+          "https://www.linkedin.com/in/ilias-ofir-445b91295/details/certifications/1726409009042/single-media-viewer/?profileId=ACoAAEeLNjUBZGYFEyr2xQDond17qZWEny61fwE",
+        logo: "/images/Udemy-Logo.png",
+        color: "from-purple-400 to-violet-600",
+        bgAccent: "bg-violet-500/10",
+        category: "Web Development",
       },
     ],
     []
@@ -569,7 +570,7 @@ const Certification = () => {
         </motion.div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .perspective-1000 {
           perspective: 1000px;
         }

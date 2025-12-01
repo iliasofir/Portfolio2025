@@ -14,6 +14,8 @@ import CertificationMobile from "./components/mobile/CertificationMobile";
 import Chatbot from "./components/Chatbot";
 import ChatbotMobile from "./components/mobile/ChatbotMobile";
 import WelcomeModal from "./components/WelcomeModal";
+import About from "./components/About";
+import AboutMobile from "./components/mobile/AboutMobile";
 import "./styles/globals.css";
 
 function App() {
@@ -86,6 +88,7 @@ function App() {
           >
             <Navbar />
             <Hero />
+            {isMobile ? <AboutMobile /> : <About />}
             <Skills />
             {isMobile ? <CertificationMobile /> : <Certification />}
             <ProjectsManager />
@@ -98,21 +101,49 @@ function App() {
         {/* Floating Chat Button */}
         <motion.button
           onClick={() => setIsChatOpen(true)}
-          className="fixed bottom-6 right-6 z-40 w-14 h-14 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full shadow-2xl flex items-center justify-center text-white text-xl hover:scale-110 transition-transform"
+          className="fixed bottom-6 right-6 z-40 w-16 h-16 rounded-full shadow-2xl flex items-center justify-center group overflow-hidden"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          animate={{
-            boxShadow: [
-              "0 0 0 0 rgba(59, 130, 246, 0.7)",
-              "0 0 0 20px rgba(59, 130, 246, 0)",
-            ],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-          }}
         >
-          🤖
+          {/* Gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-violet-500 to-cyan-500 opacity-90" />
+
+          {/* Glass effect overlay */}
+          <div className="absolute inset-0 bg-slate-900/20 backdrop-blur-sm" />
+
+          {/* Animated pulsing ring */}
+          <motion.div
+            className="absolute inset-0 rounded-full"
+            animate={{
+              boxShadow: [
+                "0 0 0 0 rgba(139, 92, 246, 0.7)",
+                "0 0 0 20px rgba(139, 92, 246, 0)",
+              ],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+            }}
+          />
+
+          {/* Hover glow effect */}
+          <motion.div
+            className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100"
+            style={{
+              background:
+                "radial-gradient(circle at center, rgba(6, 182, 212, 0.4), transparent 70%)",
+              boxShadow: "0 0 30px rgba(6, 182, 212, 0.5)",
+            }}
+            transition={{ duration: 0.3 }}
+          />
+
+          {/* Bot icon */}
+          <img
+            src="/images/bot.png"
+            alt="AI Assistant"
+            className="w-8 h-8 object-contain relative z-10 group-hover:scale-110 transition-transform duration-300"
+            style={{ filter: "brightness(0) invert(1)" }}
+          />
         </motion.button>
 
         {/* Chatbot - Conditional rendering based on device */}
@@ -131,7 +162,6 @@ function App() {
           onClose={handleWelcomeClose}
           onStartChat={handleStartChat}
         />
-       
       </div>
     </Router>
   );

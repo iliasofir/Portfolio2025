@@ -110,6 +110,7 @@ const Skills = () => {
         skills: [
           { name: "Java", image: "/images/tech/java.png" },
           { name: "JavaScript", image: "/images/tech/javascript.png" },
+          { name: "TypeScript", image: "/images/tech/typescript.png" },
           { name: "Python", image: "/images/tech/python.png" },
         ],
       },
@@ -139,6 +140,7 @@ const Skills = () => {
           { name: "PyTorch", image: "/images/tech/pytorch.png" },
           { name: "Neural Networks", image: "/images/tech/neural.png" },
           { name: "Fine-Tuning", image: "/images/tech/fine.png" },
+          { name: "CrewAI", image: "/images/tech/crewai.png" },
         ],
       },
       {
@@ -160,6 +162,8 @@ const Skills = () => {
           { name: "MVC", image: "/images/tech/mvc.png" },
           { name: "Microservices", image: "/images/tech/microservice.png" },
           { name: "System Design", image: "/images/tech/system-design.png" },
+          { name: "Serverless Tech", image: "/images/tech/serverless.png" },
+
         ],
       },
     ],

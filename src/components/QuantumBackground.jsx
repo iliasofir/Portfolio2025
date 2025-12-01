@@ -1,5 +1,78 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { motion, useTransform, useScroll } from "framer-motion";
+
+// Code Rain Effect Component
+const CodeRain = () => {
+  const codeChars = useMemo(
+    () => [
+      "0",
+      "1",
+      "{",
+      "}",
+      "<",
+      ">",
+      "/",
+      "*",
+      "+",
+      "-",
+      "=",
+      ";",
+      "(",
+      ")",
+    ],
+    []
+  );
+
+  const streams = useMemo(
+    () =>
+      [...Array(30)].map((_, i) => ({
+        id: i,
+        left: Math.random() * 100,
+        delay: Math.random() * 5,
+        duration: 5 + Math.random() * 5,
+        chars: [...Array(8)].map(
+          () => codeChars[Math.floor(Math.random() * codeChars.length)]
+        ),
+      })),
+    [codeChars]
+  );
+
+  return (
+    <div className="absolute inset-0 overflow-hidden opacity-30 pointer-events-none">
+      {streams.map((stream) => (
+        <motion.div
+          key={stream.id}
+          className="absolute top-0 text-xs font-mono text-cyan-400"
+          style={{ left: `${stream.left}%` }}
+          animate={{
+            y: ["-100%", "100vh"],
+            opacity: [0, 1, 0],
+          }}
+          transition={{
+            duration: stream.duration,
+            repeat: Infinity,
+            delay: stream.delay,
+            ease: "linear",
+          }}
+        >
+          {stream.chars.map((char, i) => (
+            <motion.div
+              key={i}
+              animate={{ opacity: [1, 0.3, 1] }}
+              transition={{
+                duration: 0.5,
+                repeat: Infinity,
+                delay: i * 0.1,
+              }}
+            >
+              {char}
+            </motion.div>
+          ))}
+        </motion.div>
+      ))}
+    </div>
+  );
+};
 
 const QuantumBackground = ({
   containerRef,
@@ -85,6 +158,9 @@ const QuantumBackground = ({
       className={`relative min-h-screen py-24 overflow-hidden ${className}`}
       ref={containerRef}
     >
+      {/* Code Rain Effect */}
+      <CodeRain />
+
       {/* Quantum field background */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Primary energy field */}
@@ -179,7 +255,7 @@ const QuantumBackground = ({
       {/* Content */}
       <div className="relative z-10">{children}</div>
 
-      <style jsx>{`
+      <style>{`
         .animate-spin-slow {
           animation: spin 20s linear infinite;
         }

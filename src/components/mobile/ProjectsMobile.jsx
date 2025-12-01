@@ -111,7 +111,8 @@ const ProgressIndicatorMobile = memo(
           className={`absolute inset-0 rounded-full ${
             isActive ? "bg-violet-500/30" : "bg-white/10"
           } blur-md`}
-          animate={isActive ? { scale: [1, 1.3, 1] } : {}}
+          initial={{ scale: 1, opacity: 1 }}
+          animate={isActive ? { scale: [1, 1.3, 1] } : { scale: 1 }}
           transition={{ duration: 2, repeat: Infinity }}
         />
 
@@ -262,7 +263,7 @@ const ProjectsMobile = () => {
         bgAccent: "bg-amber-500/20",
       },
 
-       {
+      {
         title: "PORTFOLIO WEBSITE",
         period: "2025",
         description: "Personal Portfolio Website",
@@ -270,8 +271,7 @@ const ProjectsMobile = () => {
           "Developed a personal portfolio website to showcase my projects and skills. Implemented a responsive design with modern UI/UX principles.",
         tech: ["React.js", "TailwindCSS", "NETLIFY", "Framer Motion"],
         image: "/images/Portfolio.png",
-        github:
-          "https://github.com/iliasofir/Portfolio2025",
+        github: "https://github.com/iliasofir/Portfolio2025",
         color: "from-amber-400 to-orange-600",
         bgAccent: "bg-amber-200/20",
         accentColor: "rgb(16, 185, 120)",

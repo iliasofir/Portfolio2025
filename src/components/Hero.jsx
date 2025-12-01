@@ -1,12 +1,18 @@
 import Typewriter from "typewriter-effect";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
-import { HiDownload } from "react-icons/hi";
+import {
+  HiDownload,
+  HiCode,
+  HiLightningBolt,
+  HiSparkles,
+} from "react-icons/hi";
 import {
   motion,
   useMotionValue,
   useSpring,
   useTransform,
   useScroll,
+  AnimatePresence,
 } from "framer-motion";
 import { useState, useMemo, useCallback, useRef, memo, useEffect } from "react";
 import QuantumBackground from "./QuantumBackground";
@@ -214,6 +220,136 @@ const QuantumField = memo(({ scrollY }) => {
   );
 });
 
+// Component for bouncing logos inside the circle
+const BouncingLogo = memo(({ logo, index, circleRadius = 180 }) => {
+  const logoSize = 30; // Logo size in pixels - decrease to make smaller
+  const maxRadius = circleRadius - logoSize / 2;
+  const minRadius = circleRadius * 0.5; // Inner boundary - logos stay in outer ring only
+
+  // Random initial position and velocity in outer ring
+  const initialState = useMemo(() => {
+    const angle = Math.random() * Math.PI * 2;
+    const distance = minRadius + Math.random() * (maxRadius - minRadius);
+    return {
+      x: Math.cos(angle) * distance,
+      y: Math.sin(angle) * distance,
+      vx: (Math.random() - 0.5) * 2, // Velocity multiplier - increase to make faster
+      vy: (Math.random() - 0.5) * 2, // Velocity multiplier - increase to make faster
+    };
+  }, [maxRadius, minRadius]);
+
+  const [position, setPosition] = useState(initialState);
+
+  useEffect(() => {
+    let animationFrameId;
+    let lastTime = Date.now();
+
+    const animate = () => {
+      const currentTime = Date.now();
+      const deltaTime = (currentTime - lastTime) / 16.67; // Normalize to 60fps
+      lastTime = currentTime;
+
+      setPosition((prev) => {
+        let { x, y, vx, vy } = prev;
+
+        // Update position
+        x += vx * deltaTime;
+        y += vy * deltaTime;
+
+        // Calculate distance from center
+        const distance = Math.sqrt(x * x + y * y);
+
+        // Bounce off outer circle boundary
+        if (distance + logoSize / 2 > maxRadius) {
+          // Normalize position to circle boundary
+          const angle = Math.atan2(y, x);
+          x = Math.cos(angle) * (maxRadius - logoSize / 2);
+          y = Math.sin(angle) * (maxRadius - logoSize / 2);
+
+          // Reflect velocity (bounce)
+          const normalX = x / distance;
+          const normalY = y / distance;
+          const dotProduct = vx * normalX + vy * normalY;
+          vx = vx - 2 * dotProduct * normalX;
+          vy = vy - 2 * dotProduct * normalY;
+
+          // Add some damping/energy
+          const damping = 0.95;
+          vx *= damping;
+          vy *= damping;
+        }
+
+        // Bounce off inner circle boundary (prevent overlapping portrait center)
+        if (distance - logoSize / 2 < minRadius) {
+          // Push out to inner boundary
+          const angle = Math.atan2(y, x);
+          x = Math.cos(angle) * (minRadius + logoSize / 2);
+          y = Math.sin(angle) * (minRadius + logoSize / 2);
+
+          // Reflect velocity (bounce outward)
+          const normalX = x / distance;
+          const normalY = y / distance;
+          const dotProduct = vx * normalX + vy * normalY;
+          vx = vx - 2 * dotProduct * normalX;
+          vy = vy - 2 * dotProduct * normalY;
+
+          // Add some damping
+          const damping = 0.95;
+          vx *= damping;
+          vy *= damping;
+        }
+
+        return { x, y, vx, vy };
+      });
+
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
+  }, [maxRadius, logoSize]);
+
+  return (
+    <motion.div
+      className="absolute rounded-xl backdrop-blur-md bg-slate-800/80 border border-white/20 p-1 shadow-lg"
+      style={{
+        width: logoSize,
+        height: logoSize,
+        left: "50%",
+        top: "50%",
+        x: position.x,
+        y: position.y,
+        transform: "translate(-50%, -50%)",
+      }}
+      animate={{
+        rotate: [0, 360],
+      }}
+      transition={{
+        rotate: {
+          duration: 10 + index * 2,
+          repeat: Infinity,
+          ease: "linear",
+        },
+      }}
+    >
+      <img
+        src={logo.src}
+        alt={logo.name}
+        className="w-full h-full object-contain"
+        style={{
+          filter:
+            "brightness(10) drop-shadow(0 0 10px rgba(255, 255, 255, 0.8))",
+        }}
+      />
+    </motion.div>
+  );
+});
+
 // Composant pour un logo flottant individual
 const FloatingLogo = memo(({ logo, index, isHovered }) => {
   // Mémorisation des valeurs aléatoires
@@ -357,13 +493,15 @@ const FloatingLogo = memo(({ logo, index, isHovered }) => {
 const ImageParticles = memo(({ isHovered }) => {
   const particles = useMemo(
     () =>
-      [...Array(8)].map((_, i) => ({
+      [...Array(60)].map((_, i) => ({
         id: i,
-        x: Math.random() * 100 - 50,
-        y: Math.random() * 100 - 50,
+        x: (Math.random() - 0.5) * 300,
+        y: (Math.random() - 0.5) * 300,
         left: Math.random() * 100,
         top: Math.random() * 100,
-        duration: 2 + Math.random() * 2,
+        duration: 2 + Math.random() * 3,
+        scale: Math.random() * 1.2 + 0.3,
+        delay: Math.random() * 2,
       })),
     []
   );
@@ -379,22 +517,32 @@ const ImageParticles = memo(({ isHovered }) => {
       {particles.map((particle) => (
         <motion.div
           key={particle.id}
-          className="absolute w-2 h-2 rounded-full bg-violet-400/30"
+          className="absolute rounded-full"
           animate={{
-            x: [0, particle.x],
-            y: [0, particle.y],
-            scale: [0, 1.5, 0],
+            x: [0, particle.x, 0],
+            y: [0, particle.y, 0],
+            scale: [0, particle.scale, 0],
             opacity: [0, 0.6, 0],
           }}
           transition={{
             duration: particle.duration,
             repeat: Infinity,
             repeatType: "loop",
-            ease: "easeInOut",
+            ease: "easeOut",
+            delay: particle.delay,
           }}
           style={{
             left: `${particle.left}%`,
             top: `${particle.top}%`,
+            width: Math.random() * 2.5 + 1.5,
+            height: Math.random() * 2.5 + 1.5,
+            background:
+              particle.id % 3 === 0
+                ? "linear-gradient(135deg, rgba(139, 92, 246, 0.8), rgba(6, 182, 212, 0.8))"
+                : particle.id % 3 === 1
+                ? "linear-gradient(135deg, rgba(6, 182, 212, 0.8), rgba(236, 72, 153, 0.8))"
+                : "linear-gradient(135deg, rgba(236, 72, 153, 0.8), rgba(139, 92, 246, 0.8))",
+            boxShadow: "0 0 15px currentColor",
             willChange: "transform, opacity",
           }}
         />
@@ -405,7 +553,11 @@ const ImageParticles = memo(({ isHovered }) => {
 
 const Hero = () => {
   const [isHovered, setIsHovered] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [spotlightPos, setSpotlightPos] = useState({ x: 50, y: 50 });
+  const [isHeroVisible, setIsHeroVisible] = useState(true);
   const containerRef = useRef(null);
+  const photoRef = useRef(null);
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -420,14 +572,75 @@ const Hero = () => {
   const parallaxY = useTransform(scrollYProgress, [0, 1], [0, 100]);
 
   const springConfig = useMemo(
-    () => ({ damping: 20, stiffness: 150, mass: 0.5 }),
+    () => ({ damping: 30, stiffness: 200, mass: 0.3 }),
     []
   );
   const x = useSpring(mouseX, springConfig);
   const y = useSpring(mouseY, springConfig);
 
-  const rotateX = useTransform(y, [-0.5, 0.5], ["15deg", "-15deg"]);
-  const rotateY = useTransform(x, [-0.5, 0.5], ["-15deg", "15deg"]);
+  const rotateX = useTransform(y, [-0.5, 0.5], ["8deg", "-8deg"]);
+  const rotateY = useTransform(x, [-0.5, 0.5], ["-8deg", "8deg"]);
+
+  // Track Hero section visibility
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Only show buttons when Hero section is significantly visible
+        setIsHeroVisible(entry.isIntersecting && entry.intersectionRatio > 0.2);
+      },
+      {
+        threshold: [0, 0.2, 0.5, 1],
+        rootMargin: "-50px 0px -50px 0px",
+      }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => {
+      if (containerRef.current) {
+        observer.unobserve(containerRef.current);
+      }
+    };
+  }, []);
+
+  // Magnetic attraction effect for photo
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (photoRef.current) {
+        const rect = photoRef.current.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        const distX = e.clientX - centerX;
+        const distY = e.clientY - centerY;
+        const distance = Math.sqrt(distX * distX + distY * distY);
+
+        if (distance < 300) {
+          const strength = (300 - distance) / 300;
+          mouseX.set((distX / rect.width) * strength * 0.3);
+          mouseY.set((distY / rect.height) * strength * 0.3);
+        } else {
+          mouseX.set(0);
+          mouseY.set(0);
+        }
+      }
+
+      setMousePos({ x: e.clientX, y: e.clientY });
+
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        setSpotlightPos({
+          x: ((e.clientX - rect.left) / rect.width) * 100,
+          y: ((e.clientY - rect.top) / rect.height) * 100,
+        });
+      }
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [mouseX, mouseY]);
 
   // Optimisation du handleMouseMove avec throttling
   const handleMouseMoveThrottled = useThrottledCallback((event) => {
@@ -438,8 +651,6 @@ const Hero = () => {
     const mouseYPos = event.clientY - rect.top;
     const xPct = mouseXPos / width - 0.5;
     const yPct = mouseYPos / height - 0.5;
-    mouseX.set(xPct);
-    mouseY.set(yPct);
   }, 16); // ~60fps
 
   // Mémorisation des logos techniques
@@ -481,16 +692,29 @@ const Hero = () => {
         name: "GitHub",
         icon: <FaGithub className="w-6 h-6" />,
         href: "https://github.com/iliasofir",
+        gradient: "from-violet-500 to-purple-600",
+        hoverGlow: "rgba(139, 92, 246, 0.4)",
       },
       {
         name: "LinkedIn",
         icon: <FaLinkedin className="w-6 h-6" />,
         href: "https://www.linkedin.com/in/ilias-ofir-445b91295/",
+        gradient: "from-cyan-500 to-blue-600",
+        hoverGlow: "rgba(6, 182, 212, 0.4)",
       },
       {
         name: "Resume",
-        icon: <HiDownload className="w-6 h-6" />,
+        icon: (
+          <img
+            src="/images/readdotcv.png"
+            alt="Resume"
+            className="w-6 h-6 object-contain"
+            style={{ filter: "brightness(0) invert(1)" }}
+          />
+        ),
         href: "/Resume.pdf",
+        gradient: "from-violet-400 to-cyan-400",
+        hoverGlow: "rgba(139, 92, 246, 0.4)",
       },
     ],
     []
@@ -501,10 +725,78 @@ const Hero = () => {
       id="home"
       containerRef={containerRef}
       variant="default"
-      className="flex items-center justify-center py-20 px-4 overflow-hidden"
+      className="flex items-center justify-center py-20 px-4 overflow-hidden relative"
     >
-      {/* Enhanced quantum field */}
-      <QuantumField scrollY={scrollY} />
+      {/* Fixed positioned buttons at left border - only visible when Hero is in view and hidden on mobile */}
+      <motion.div
+        className="fixed left-0 top-1/3 -translate-y-1/2 flex-col gap-5 z-50 hidden lg:flex"
+        animate={{
+          opacity: isHeroVisible ? 1 : 0,
+          x: isHeroVisible ? 0 : -100,
+          pointerEvents: isHeroVisible ? "auto" : "none",
+        }}
+        transition={{ duration: 0.3 }}
+        style={{ pointerEvents: isHeroVisible ? "auto" : "none" }}
+      >
+        {socialPlatforms.map((platform, index) => (
+          <motion.a
+            key={platform.name}
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: isHeroVisible ? 1 : 0, x: 0 }}
+            transition={{ delay: 2 + index * 0.15, duration: 0.6 }}
+            whileHover={{ scale: 1.08, x: 8 }}
+            whileTap={{ scale: 0.95 }}
+            href={platform.href}
+            download={platform.name === "Resume"}
+            target={platform.name !== "Resume" ? "_blank" : undefined}
+            rel={platform.name !== "Resume" ? "noopener noreferrer" : undefined}
+            className="group relative overflow-hidden"
+            title={platform.name}
+          >
+            {/* Gradient background */}
+            <div
+              className={`absolute inset-0 bg-gradient-to-br ${platform.gradient} opacity-90 rounded-r-2xl`}
+            />
+
+            {/* Glass effect overlay */}
+            <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm rounded-r-2xl border-l-0 border-r border-t border-b border-white/20" />
+
+            {/* Hover glow effect */}
+            <motion.div
+              className="absolute inset-0 rounded-r-2xl opacity-0 group-hover:opacity-100"
+              style={{
+                background: `radial-gradient(circle at center, ${platform.hoverGlow}, transparent 70%)`,
+                boxShadow: `0 0 30px ${platform.hoverGlow}`,
+              }}
+              transition={{ duration: 0.3 }}
+            />
+
+            {/* Shimmer effect on hover */}
+            <motion.div
+              className="absolute inset-0 opacity-0 group-hover:opacity-100"
+              animate={{
+                x: ["-100%", "100%"],
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                repeatDelay: 1,
+              }}
+              style={{
+                background:
+                  "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)",
+                width: "50%",
+              }}
+            />
+
+            <div className="relative p-5 flex items-center justify-center">
+              <div className="text-white group-hover:scale-110 transition-transform duration-300 w-7 h-7 flex items-center justify-center">
+                {platform.icon}
+              </div>
+            </div>
+          </motion.a>
+        ))}
+      </motion.div>
 
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -512,213 +804,93 @@ const Hero = () => {
         transition={{ duration: 1, delay: 0.3 }}
         className="max-w-7xl w-full relative z-10"
       >
-        <div className="flex flex-col md:flex-row items-center gap-16">
-          {/* Enhanced holographic portrait container */}
+        <div className="flex flex-col md:flex-row-reverse items-center gap-16">
+          {/* Integrated Photo - No Card */}
           <motion.div
-            className="relative w-80 h-80 md:w-[450px] md:h-[450px]"
-            onMouseMove={handleMouseMoveThrottled}
+            ref={photoRef}
+            className="relative w-80 h-80 md:w-[400px] md:h-[400px]"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             style={{
-              rotateX,
-              rotateY,
               transformStyle: "preserve-3d",
-              willChange: "transform",
             }}
           >
-            {/* Holographic frame */}
+            {/* Subtle ambient glow only */}
             <motion.div
+              className="absolute -inset-12"
               animate={{
-                boxShadow: isHovered
-                  ? [
-                      "0 0 60px 20px rgba(139, 92, 246, 0.3)",
-                      "0 0 80px 30px rgba(6, 182, 212, 0.3)",
-                      "0 0 60px 20px rgba(139, 92, 246, 0.3)",
-                    ]
-                  : "0 0 40px 15px rgba(139, 92, 246, 0.15)",
+                opacity: isHovered ? 0.3 : 0.15,
               }}
-              transition={{ duration: 2, repeat: isHovered ? Infinity : 0 }}
-              className="absolute -inset-8 rounded-3xl"
+              transition={{ duration: 0.5 }}
+              style={{
+                background:
+                  "radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, transparent 70%)",
+                filter: "blur(60px)",
+              }}
             />
 
-            {/* Scanning frame effect */}
-            <motion.div
-              animate={{
-                rotate: isHovered ? [0, 360] : 0,
-              }}
-              transition={{
-                duration: 8,
-                repeat: isHovered ? Infinity : 0,
-                ease: "linear",
-              }}
-              className="absolute -inset-4 rounded-3xl border border-violet-400/30 opacity-60"
-            >
-              <motion.div
-                animate={{
-                  background: [
-                    "conic-gradient(from 0deg, rgba(139,92,246,0.8), transparent, transparent, transparent)",
-                    "conic-gradient(from 90deg, rgba(139,92,246,0.8), transparent, transparent, transparent)",
-                    "conic-gradient(from 180deg, rgba(139,92,246,0.8), transparent, transparent, transparent)",
-                    "conic-gradient(from 270deg, rgba(139,92,246,0.8), transparent, transparent, transparent)",
-                  ],
-                }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="w-full h-full rounded-3xl"
-              />
-            </motion.div>
-            {/* Effet de halo lumineux optimisé */}
-            <motion.div
-              className="absolute -inset-4 rounded-2xl"
-              animate={{
-                boxShadow: isHovered
-                  ? "0 0 80px 30px rgba(139, 92, 246, 0.15)"
-                  : "0 0 40px 15px rgba(139, 92, 246, 0.1)",
-              }}
-              transition={{ duration: 0.8 }}
-            />
-
-            {/* Logos flottants optimisés */}
-            <motion.div
-              className="absolute inset-0 z-30"
-              animate={{
-                opacity: isHovered ? 1 : 0,
-                scale: isHovered ? 1 : 0.8,
-              }}
-              transition={{ duration: 0.4 }}
-              style={{ willChange: "transform, opacity" }}
+            {/* Bouncing Tech Logos inside circle background */}
+            <div
+              className="absolute inset-0 pointer-events-none overflow-hidden rounded-full"
+              style={{ zIndex: 1 }}
             >
               {techLogos.map((logo, index) => (
-                <FloatingLogo
+                <BouncingLogo
                   key={logo.name}
                   logo={logo}
                   index={index}
-                  isHovered={isHovered}
+                  circleRadius={180}
                 />
               ))}
-            </motion.div>
+            </div>
 
-            {/* Holographic display container */}
-            <motion.div
-              className="relative w-full h-full rounded-3xl overflow-hidden"
-              style={{ transform: "translateZ(30px)" }}
-            >
-              {/* Multi-layer holographic background */}
-              <motion.div
-                animate={{
-                  background: [
-                    "radial-gradient(circle at 30% 30%, rgba(139,92,246,0.15), transparent 50%)",
-                    "radial-gradient(circle at 70% 70%, rgba(6,182,212,0.15), transparent 50%)",
-                    "radial-gradient(circle at 30% 70%, rgba(139,92,246,0.15), transparent 50%)",
-                  ],
-                }}
-                transition={{ duration: 8, repeat: Infinity }}
-                className="absolute inset-0 backdrop-blur-xl"
-              />
+            {
+              /* Portrait Container */
+              <motion.div className="relative w-full h-full">
+                {/* Portrait with circular mask and solid background */}
+                <motion.div className="relative w-full h-full overflow-hidden rounded-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+                  <motion.img
+                    src="/images/Hero_photo.png"
+                    alt="Ilias Ofir - Software Engineer"
+                    className="w-full h-full object-cover relative z-10"
+                    style={{
+                      maskImage:
+                        "radial-gradient(circle at center, black 35%, transparent 85%)",
+                      WebkitMaskImage:
+                        "radial-gradient(circle at center, black 35%, transparent 85%)",
+                      // Custom "Cyber" filter - Cool tones with enhanced clarity for futuristic look
+                      filter:
+                        "contrast(1.15) brightness(1.05) saturate(1.1) hue-rotate(-8deg)",
+                      willChange: "transform",
+                    }}
+                  />
 
-              {/* Glassmorphism container */}
-              <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-white/10 to-white/5 backdrop-blur-2xl border border-white/20 rounded-3xl" />
+                  {/* Cyber-theme overlay - Cool blue/violet tint */}
+                  <div
+                    className="absolute inset-0 rounded-full pointer-events-none mix-blend-overlay"
+                    style={{
+                      background:
+                        "radial-gradient(circle at 40% 40%, rgba(139, 92, 246, 0.08), rgba(6, 182, 212, 0.06) 60%, transparent 100%)",
+                    }}
+                  />
 
-              {/* Holographic grid overlay */}
-              <motion.div
-                animate={{
-                  opacity: isHovered ? 0.3 : 0.1,
-                }}
-                transition={{ duration: 0.5 }}
-                className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTAgMEg0MFY0MEgwVjB6IiBzdHJva2U9InJnYmEoMTM5LCA5MiwgMjQ2LCAwLjMpIiBzdHJva2Utd2lkdGg9IjAuNSIvPgo8L3N2Zz4=')] rounded-3xl"
-              />
-
-              {/* Main portrait */}
-              <motion.div
-                className="relative w-full h-full flex items-center justify-center"
-                animate={{
-                  scale: isHovered ? 1.02 : 1,
-                }}
-                transition={{ duration: 0.6 }}
-                style={{ transform: "translateZ(50px)" }}
-              >
-                <motion.img
-                  src="/images/your_photo.png"
-                  alt="Ilias Ofir - Software Engineer"
-                  className="w-[85%] h-[85%] object-contain relative z-10"
-                  style={{
-                    filter: isHovered
-                      ? "drop-shadow(0 0 30px rgba(139, 92, 246, 0.6)) contrast(1.1) brightness(1.1)"
-                      : "drop-shadow(0 0 20px rgba(139, 92, 246, 0.4))",
-                    willChange: "transform, filter",
-                  }}
-                />
-
-                {/* Holographic scan lines */}
-                <motion.div
-                  animate={{
-                    y: isHovered ? ["-100%", "100%"] : "-100%",
-                    opacity: isHovered ? [0, 0.6, 0] : 0,
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: isHovered ? Infinity : 0,
-                    ease: "easeInOut",
-                  }}
-                  className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent"
-                />
-
-                <motion.div
-                  animate={{
-                    y: isHovered ? ["-100%", "100%"] : "-100%",
-                    opacity: isHovered ? [0, 0.4, 0] : 0,
-                  }}
-                  transition={{
-                    duration: 2.5,
-                    repeat: isHovered ? Infinity : 0,
-                    ease: "easeInOut",
-                    delay: 0.3,
-                  }}
-                  className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-violet-400 to-transparent"
-                />
-              </motion.div>
-
-              {/* Enhanced particle system */}
-              <ImageParticles isHovered={isHovered} />
-
-              {/* Corner indicators */}
-              {[
-                { position: "top-4 left-4", rotate: 0 },
-                { position: "top-4 right-4", rotate: 90 },
-                { position: "bottom-4 left-4", rotate: 270 },
-                { position: "bottom-4 right-4", rotate: 180 },
-              ].map((corner, i) => (
-                <motion.div
-                  key={i}
-                  className={`absolute ${corner.position} w-6 h-6`}
-                  style={{ rotate: `${corner.rotate}deg` }}
-                  animate={{
-                    opacity: isHovered ? [0.3, 0.8, 0.3] : 0.3,
-                  }}
-                  transition={{
-                    duration: 1.5,
-                    repeat: Infinity,
-                    delay: i * 0.2,
-                  }}
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    className="w-full h-full"
-                  >
-                    <path
-                      d="M3 3h6m0 0v6m0-6l6 6"
-                      stroke="rgba(139, 92, 246, 0.8)"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                  {/* Subtle rim lighting */}
+                  <div
+                    className="absolute inset-0 rounded-full pointer-events-none"
+                    style={{
+                      background:
+                        "radial-gradient(circle at 50% 50%, transparent 60%, rgba(139, 92, 246, 0.1) 85%, rgba(6, 182, 212, 0.15) 100%)",
+                    }}
+                  />
                 </motion.div>
-              ))}
-            </motion.div>
+
+                {/* Enhanced particle system */}
+                <ImageParticles isHovered={isHovered} />
+              </motion.div>
+            }
           </motion.div>
 
-          {/* Enhanced content section */}
+          {/* Enhanced content section with boot sequence */}
           <div className="flex-1 text-center md:text-left relative">
             {/* Data stream visualization */}
             <motion.div
@@ -727,219 +899,340 @@ const Hero = () => {
               className="absolute -left-8 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-violet-400 to-transparent hidden md:block"
             />
 
-            {/* Greeting with terminal effect */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.8, duration: 0.8 }}
-              className="flex items-center gap-3 mb-6"
-            >
-              <motion.div
-                animate={{ opacity: [1, 0, 1] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-                className="w-2 h-2 bg-green-400 rounded-full shadow-lg shadow-green-400/50"
-              />
-              <span className="text-green-400 font-mono text-lg tracking-wide">
-                &gt; INITIALIZING_PROFILE...
-              </span>
-            </motion.div>
-
-            {/* Enhanced name display */}
+            {/* Name with gradient and refined typography */}
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1, duration: 1 }}
-              className="relative"
+              className="relative mb-8"
+              style={{ fontFamily: '"Syne", sans-serif' }}
             >
-              <span className="text-6xl md:text-8xl font-black bg-gradient-to-r from-white via-violet-200 to-cyan-200 bg-clip-text text-transparent mb-4 block">
-                ILIAS OFIR
-              </span>
+              <div className="flex flex-col gap-1">
+                <motion.span
+                  className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-white to-violet-200 bg-clip-text text-transparent block tracking-wide"
+                  initial={{ x: -50, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 1.2, duration: 0.8 }}
+                >
+                  ILIAS
+                </motion.span>
+                <motion.span
+                  className="text-7xl md:text-8xl font-extrabold bg-gradient-to-r from-cyan-300 via-violet-400 to-purple-400 bg-clip-text text-transparent block tracking-wider relative"
+                  initial={{ x: 50, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 1.4, duration: 0.8 }}
+                  style={{
+                    textShadow: "0 0 40px rgba(139, 92, 246, 0.3)",
+                    letterSpacing: "0.05em",
+                  }}
+                >
+                  OFIR
+                  {/* Animated underline */}
+                  <motion.div
+                    className="absolute -bottom-2 left-0 h-1 bg-gradient-to-r from-violet-500 to-cyan-400 rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: "100%" }}
+                    transition={{ delay: 1.8, duration: 1 }}
+                  />
+                </motion.span>
+              </div>
 
               {/* Glitch effect overlay */}
-              <motion.span
+              <motion.div
+                className="absolute inset-0 pointer-events-none"
                 animate={{
-                  opacity: [0, 0.7, 0],
-                  x: [0, 2, -2, 0],
+                  opacity: [0, 0.5, 0],
                 }}
                 transition={{
-                  duration: 0.3,
+                  duration: 0.2,
                   repeat: Infinity,
-                  repeatDelay: 3,
+                  repeatDelay: 5,
                 }}
-                className="absolute top-0 left-0 text-6xl md:text-8xl font-black text-cyan-400 mix-blend-screen"
+                style={{
+                  mixBlendMode: "screen",
+                  filter: "blur(1px)",
+                }}
               >
-                ILIAS OFIR
-              </motion.span>
+                <span className="text-7xl md:text-8xl font-extrabold bg-gradient-to-r from-cyan-400 to-violet-500 bg-clip-text text-transparent block">
+                  OFIR
+                </span>
+              </motion.div>
             </motion.h1>
 
-            {/* Enhanced role display with holographic effect */}
+            {/* Role with typewriter */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 1.3, duration: 0.8 }}
-              className="relative mb-8"
+              transition={{ delay: 1.6, duration: 0.8 }}
+              className="mb-8 relative"
             >
-              <div className="text-3xl md:text-5xl font-bold text-gray-300 mb-2">
+              <div className="inline-block relative">
                 <motion.div
-                  animate={{
-                    backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-                  }}
-                  transition={{ duration: 5, repeat: Infinity }}
-                  className="bg-gradient-to-r from-violet-400 via-cyan-400 to-violet-400 bg-[length:200%_100%] bg-clip-text text-transparent"
+                  className="absolute -left-3 top-0 bottom-0 w-1 bg-gradient-to-b from-violet-500 to-cyan-400 rounded-full"
+                  animate={{ scaleY: [0, 1] }}
+                  transition={{ delay: 1.8, duration: 0.6 }}
+                />
+                <h2
+                  className="text-2xl md:text-3xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-violet-300 to-cyan-300 pl-6"
+                  style={{ fontFamily: '"Syne", sans-serif' }}
                 >
                   <Typewriter
                     options={{
                       strings: [
-                        "SOFTWARE_ENGINEER.exe",
-                        "FULLSTACK_DEV.js",
-                        "PROBLEM_SOLVER.py",
-                        "CODE_ARCHITECT.java",
+                        "Software Engineer",
+                        "Full-Stack Developer",
+                        "Problem Solver",
+                        "Code Architect",
                       ],
                       autoStart: true,
                       loop: true,
+                      delay: 50,
                       deleteSpeed: 30,
-                      delay: 80,
                     }}
                   />
-                </motion.div>
-              </div>
-
-              {/* Status indicators */}
-              <div className="flex items-center gap-4 text-sm font-mono">
-                <motion.div
-                  animate={{ opacity: [0.5, 1, 0.5] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="flex items-center gap-2"
-                >
-                  <div className="w-2 h-2 bg-blue-400 rounded-full" />
-                  <span className="text-blue-400">LEARNING</span>
-                </motion.div>
-                <motion.div
-                  animate={{ opacity: [0.5, 1, 0.5] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-                  className="flex items-center gap-2"
-                >
-                  <div className="w-2 h-2 bg-green-400 rounded-full" />
-                  <span className="text-green-400">BUILDING</span>
-                </motion.div>
-                <motion.div
-                  animate={{ opacity: [0.5, 1, 0.5] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 1 }}
-                  className="flex items-center gap-2"
-                >
-                  <div className="w-2 h-2 bg-violet-400 rounded-full" />
-                  <span className="text-violet-400">INNOVATING</span>
-                </motion.div>
+                </h2>
               </div>
             </motion.div>
 
-            {/* Enhanced description */}
+            {/* Call to action buttons */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.5, duration: 0.8 }}
-              className="relative mb-10"
+              transition={{ delay: 2.4, duration: 0.8 }}
+              className="flex items-center gap-6 text-sm mb-8"
+              style={{ fontFamily: '"IBM Plex Sans", sans-serif' }}
             >
-              <motion.p
-                className="text-gray-300 text-lg leading-relaxed max-w-2xl"
+              <motion.div
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-emerald-400/10 border border-emerald-400/20"
                 animate={{
-                  filter: [
-                    "drop-shadow(0 0 0px rgba(139, 92, 246, 0))",
-                    "drop-shadow(0 0 8px rgba(139, 92, 246, 0.3))",
-                    "drop-shadow(0 0 0px rgba(139, 92, 246, 0))",
+                  boxShadow: [
+                    "0 0 10px rgba(52, 211, 153, 0.2)",
+                    "0 0 20px rgba(52, 211, 153, 0.4)",
+                    "0 0 10px rgba(52, 211, 153, 0.2)",
                   ],
                 }}
-                transition={{ duration: 4, repeat: Infinity }}
+                transition={{ duration: 2, repeat: Infinity }}
               >
-                Crafting the future through code. I architect scalable
-                solutions, engineer robust applications, and transform
-                innovative ideas into digital realities. Every line of code is a
-                step toward tomorrow.
-              </motion.p>
-
-              {/* Code snippet decoration */}
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                  className="w-2 h-2 border-2 border-emerald-400 border-t-transparent rounded-full"
+                />
+                <span className="text-emerald-400 font-medium">Creating</span>
+              </motion.div>
               <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: "100%" }}
-                transition={{ delay: 2, duration: 1.5 }}
-                className="h-px bg-gradient-to-r from-violet-400 via-cyan-400 to-transparent mt-4"
-              />
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-violet-500/10 to-violet-400/10 border border-violet-400/20"
+                animate={{
+                  boxShadow: [
+                    "0 0 10px rgba(139, 92, 246, 0.2)",
+                    "0 0 20px rgba(139, 92, 246, 0.4)",
+                    "0 0 10px rgba(139, 92, 246, 0.2)",
+                  ],
+                }}
+                transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+              >
+                <motion.div
+                  animate={{ scale: [1, 1.3, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="w-2 h-2 bg-violet-400 rounded-full"
+                />
+                <span className="text-violet-400 font-medium">Innovating</span>
+              </motion.div>
             </motion.div>
 
-            {/* Enhanced action buttons */}
+            {/* Description */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.8, duration: 0.8 }}
-              className="flex flex-wrap justify-center md:justify-start gap-4"
+              transition={{ delay: 2.1, duration: 0.8 }}
+              className="relative mb-12"
+            >
+              {/* Decorative accent */}
+              <motion.div
+                className="absolute -left-6 top-0 w-1.5 h-full bg-gradient-to-b from-violet-500 via-cyan-400 to-purple-500 rounded-full hidden md:block"
+                initial={{ scaleY: 0, opacity: 0 }}
+                animate={{ scaleY: 1, opacity: 0.6 }}
+                transition={{ delay: 2.3, duration: 1, ease: "easeOut" }}
+              />
+
+              <motion.p
+                className="text-lg md:text-xl text-gray-100/90 leading-relaxed max-w-2xl mx-auto md:mx-0"
+                style={{
+                  fontFamily: '"IBM Plex Sans", sans-serif',
+                  fontWeight: 300,
+                }}
+              >
+                <span className="text-white font-medium">Architecting</span>{" "}
+                <span className="relative inline-block">
+                  <span className="text-violet-300 font-semibold">
+                    elegant solutions
+                  </span>
+                  <motion.span
+                    className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-violet-400 to-transparent"
+                    initial={{ width: 0 }}
+                    animate={{ width: "100%" }}
+                    transition={{ delay: 2.5, duration: 0.6 }}
+                  />
+                </span>{" "}
+                with precision and purpose.{" "}
+                <span className="relative inline-block">
+                  <span className="text-cyan-300 font-semibold">
+                    Engineering systems
+                  </span>
+                  <motion.span
+                    className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-cyan-400 to-transparent"
+                    initial={{ width: 0 }}
+                    animate={{ width: "100%" }}
+                    transition={{ delay: 2.7, duration: 0.6 }}
+                  />
+                </span>{" "}
+                that drive innovation and excellence.
+              </motion.p>
+            </motion.div>
+
+            {/* Trusted by */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 2.5, duration: 0.8 }}
+              className="mt-16 relative"
+            >
+              {/* Top gradient line */}
+              <motion.div
+                className="h-px bg-gradient-to-r from-transparent via-violet-500/30 to-transparent mb-8"
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ delay: 2.7, duration: 0.8 }}
+              />
+
+              <div className="flex items-center gap-3 mb-8">
+                <motion.div
+                  className="w-8 h-px bg-gradient-to-r from-violet-500 to-cyan-400 rounded-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: 32 }}
+                  transition={{ delay: 2.8, duration: 0.5 }}
+                />
+                <h3
+                  className="text-base font-semibold text-transparent bg-clip-text bg-gradient-to-r from-violet-300 to-cyan-300 uppercase tracking-widest"
+                  style={{ fontFamily: '"Syne", sans-serif' }}
+                >
+                  Trusted By
+                </h3>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-10">
+                {/* FST Logo */}
+                <motion.div
+                  whileHover={{ scale: 1.08, y: -3 }}
+                  className="relative group"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 2.9, duration: 0.5 }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-violet-500/20 to-cyan-400/20 rounded-lg blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <img
+                    src="/images/fst.png"
+                    alt="FST"
+                    className="w-28 h-20 object-contain transition-all relative z-10"
+                    style={{
+                      filter: "brightness(0.1) invert(1)",
+                    }}
+                  />
+                </motion.div>
+
+                {/* ONCF Logo */}
+                <motion.div
+                  whileHover={{ scale: 1.08, y: -3 }}
+                  className="relative group"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 3, duration: 0.5 }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-violet-500/20 to-cyan-400/20 rounded-lg blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <img
+                    src="/images/oncf.png"
+                    alt="ONCF"
+                    className="w-28 h-20 object-contain transition-all relative z-10"
+                    style={{
+                      filter: "brightness(0.1) invert(1)",
+                    }}
+                  />
+                </motion.div>
+
+                {/* Attijariwafa Bank Logo */}
+                <motion.div
+                  whileHover={{ scale: 1.08, y: -3 }}
+                  className="relative group"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 3.1, duration: 0.5 }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-violet-500/20 to-cyan-400/20 rounded-lg blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <img
+                    src="/images/AWB2.png"
+                    alt="Attijariwafa Bank"
+                    className="w-28 h-20 object-contain transition-all opacity-90 relative z-10"
+                    style={{
+                      filter: "contrast(1.1) brightness(1.1) saturate(1.2)",
+                    }}
+                  />
+                </motion.div>
+              </div>
+            </motion.div>
+
+            {/* Mobile Social Buttons - Only visible on mobile/tablet */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 3.2, duration: 0.8 }}
+              className="mt-12 flex lg:hidden justify-center gap-4"
             >
               {socialPlatforms.map((platform, index) => (
-                <motion.a
+                <motion.div
                   key={platform.name}
-                  whileHover={{
-                    scale: 1.05,
-                    boxShadow: "0 10px 30px rgba(139, 92, 246, 0.3)",
-                  }}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 3.3 + index * 0.1, duration: 0.5 }}
+                  whileHover={{ scale: 1.1, y: -5 }}
                   whileTap={{ scale: 0.95 }}
-                  href={platform.href}
-                  download={platform.name === "Resume"}
-                  target={platform.name !== "Resume" ? "_blank" : undefined}
-                  rel={
-                    platform.name !== "Resume"
-                      ? "noopener noreferrer"
-                      : undefined
-                  }
-                  className="relative group"
-                  style={{ willChange: "transform" }}
                 >
-                  {/* Button background with holographic effect */}
-                  <motion.div
-                    animate={{
-                      background: [
-                        "linear-gradient(135deg, rgba(255,255,255,0.1), rgba(139,92,246,0.1))",
-                        "linear-gradient(135deg, rgba(139,92,246,0.15), rgba(6,182,212,0.1))",
-                        "linear-gradient(135deg, rgba(255,255,255,0.1), rgba(139,92,246,0.1))",
-                      ],
-                    }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      delay: index * 0.2,
-                    }}
-                    className="absolute inset-0 rounded-xl backdrop-blur-xl border border-white/20"
-                  />
+                  <a
+                    href={platform.href}
+                    download={platform.name === "Resume"}
+                    target={platform.name !== "Resume" ? "_blank" : undefined}
+                    rel={
+                      platform.name !== "Resume"
+                        ? "noopener noreferrer"
+                        : undefined
+                    }
+                    className="group relative overflow-hidden rounded-2xl block"
+                    title={platform.name}
+                  >
+                    {/* Gradient background */}
+                    <div
+                      className={`absolute inset-0 bg-gradient-to-br ${platform.gradient} opacity-90`}
+                    />
 
-                  {/* Scanning line effect */}
-                  <motion.div
-                    animate={{
-                      x: ["-100%", "100%"],
-                      opacity: [0, 1, 0],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      repeatDelay: 3,
-                      delay: index * 0.3,
-                    }}
-                    className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 rounded-xl"
-                  />
+                    {/* Glass effect overlay */}
+                    <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm border border-white/20" />
 
-                  <div className="relative px-8 py-4 flex items-center gap-3 rounded-xl">
+                    {/* Hover glow effect */}
                     <motion.div
-                      animate={{ rotate: [0, 10, -10, 0] }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        delay: index * 0.5,
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100"
+                      style={{
+                        background: `radial-gradient(circle at center, ${platform.hoverGlow}, transparent 70%)`,
+                        boxShadow: `0 0 30px ${platform.hoverGlow}`,
                       }}
-                    >
-                      {platform.icon}
-                    </motion.div>
-                    <span className="font-semibold bg-gradient-to-r from-white to-violet-200 bg-clip-text text-transparent">
-                      {platform.name}
-                    </span>
-                  </div>
-                </motion.a>
+                      transition={{ duration: 0.3 }}
+                    />
+
+                    <div className="relative p-4 flex items-center justify-center">
+                      <div className="text-white group-hover:scale-110 transition-transform duration-300 w-6 h-6 flex items-center justify-center">
+                        {platform.icon}
+                      </div>
+                    </div>
+                  </a>
+                </motion.div>
               ))}
             </motion.div>
           </div>

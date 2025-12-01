@@ -31,11 +31,13 @@ const Navbar = () => {
   const [nav, setNav] = useState(false);
   const { scrollY } = useScroll();
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
 
   // Mémorisation des éléments de menu
   const menuItems = useMemo(
     () => [
-      { id: "home", name: "Home" },
+      { id: "about", name: "About" },
       { id: "skills", name: "Skills" },
       { id: "certifications", name: "Certifications" },
       { id: "projects", name: "Projects" },
@@ -57,35 +59,71 @@ const Navbar = () => {
   // Optimisation du toggle nav avec useCallback
   const toggleNav = useCallback(() => setNav((prev) => !prev), []);
 
-  // Optimisation de l'effet scroll
+  // Smart hide/show navbar on scroll with direction detection
   useEffect(() => {
-    return scrollY.onChange(() => setIsScrolled(scrollY.get() > 0));
-  }, [scrollY]);
+    return scrollY.on("change", (latest) => {
+      setIsScrolled(latest > 50);
+
+      // Hide navbar when scrolling down, show when scrolling up
+      if (latest > lastScrollY && latest > 100) {
+        setIsHidden(true);
+      } else {
+        setIsHidden(false);
+      }
+
+      setLastScrollY(latest);
+    });
+  }, [scrollY, lastScrollY]);
 
   return (
     <motion.div
       initial={{ y: -100 }}
-      animate={{ y: 0 }}
+      animate={{ y: isHidden ? -100 : 0 }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
       className="fixed w-full z-50"
     >
       <motion.div
+        animate={{
+          scale: isScrolled ? 0.98 : 1,
+          backdropFilter: isScrolled ? "blur(20px)" : "blur(10px)",
+        }}
+        transition={{ duration: 0.3 }}
         className={`glass-effect mx-4 my-4 rounded-2xl transition-all duration-300 ${
-          isScrolled ? "shadow-lg shadow-purple-500/10 bg-white/10" : ""
+          isScrolled
+            ? "shadow-lg shadow-purple-500/20 bg-white/10"
+            : "bg-white/5"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <motion.div
+            animate={{
+              height: isScrolled ? 56 : 64,
+            }}
+            transition={{ duration: 0.3 }}
+            className="flex items-center justify-between"
+          >
             <motion.h1
               whileHover={{ scale: 1.05 }}
-              className="text-2xl font-bold gradient-text cursor-pointer"
+              animate={{
+                fontSize: isScrolled ? "1.25rem" : "1.5rem",
+              }}
+              transition={{ duration: 0.3 }}
+              className="font-bold gradient-text cursor-pointer"
               onClick={() => scrollToSection("home")}
               style={{ willChange: "transform" }}
             >
               IO.
             </motion.h1>
 
-            {/* Desktop Menu optimisé */}
-            <ul className="hidden md:flex space-x-8">
+            {/* Desktop Menu with smooth fade */}
+            <motion.ul
+              animate={{
+                opacity: isScrolled ? 0.95 : 1,
+                gap: isScrolled ? "1.5rem" : "2rem",
+              }}
+              transition={{ duration: 0.3 }}
+              className="hidden md:flex"
+            >
               {menuItems.map((item) => (
                 <DesktopMenuItem
                   key={item.id}
@@ -93,7 +131,7 @@ const Navbar = () => {
                   scrollToSection={scrollToSection}
                 />
               ))}
-            </ul>
+            </motion.ul>
 
             {/* Mobile Menu Button optimisé */}
             <motion.div
@@ -105,7 +143,7 @@ const Navbar = () => {
             >
               {!nav ? <FaBars size={20} /> : <FaTimes size={20} />}
             </motion.div>
-          </div>
+          </motion.div>
         </div>
       </motion.div>
 

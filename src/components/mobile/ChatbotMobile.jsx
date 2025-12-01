@@ -40,17 +40,22 @@ const ChatMessageMobile = memo(({ message, isBot, isTyping }) => (
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ delay: 0.1 }}
-        className="w-6 h-6 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white text-xs font-bold shadow-lg flex-shrink-0"
+        className="w-6 h-6 rounded-full bg-gradient-to-r from-violet-500 to-cyan-500 flex items-center justify-center shadow-lg flex-shrink-0 p-1"
       >
-        🤖
+        <img
+          src="/images/bot.png"
+          alt="AI Assistant"
+          className="w-full h-full object-contain"
+          style={{ filter: "brightness(0) invert(1)" }}
+        />
       </motion.div>
     )}
 
     <motion.div
       className={`max-w-[85%] p-2.5 rounded-2xl ${
         isBot
-          ? "bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 rounded-bl-md"
-          : "bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-br-md"
+          ? "bg-gradient-to-r from-violet-50 to-cyan-50 text-gray-800 rounded-bl-md border border-violet-100"
+          : "bg-gradient-to-r from-violet-500 to-cyan-500 text-white rounded-br-md"
       } shadow-md`}
       whileHover={{ scale: 1.02 }}
       transition={{ duration: 0.2 }}
@@ -83,7 +88,7 @@ const ChatMessageMobile = memo(({ message, isBot, isTyping }) => (
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ delay: 0.1 }}
-        className="w-6 h-6 rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center text-white text-xs font-bold shadow-lg flex-shrink-0"
+        className="w-6 h-6 rounded-full bg-gradient-to-r from-cyan-500 to-violet-500 flex items-center justify-center text-white text-xs font-bold shadow-lg flex-shrink-0"
       >
         👤
       </motion.div>
@@ -102,7 +107,7 @@ const QuickSuggestionsMobile = memo(({ suggestions, onSuggestionClick }) => (
       <motion.button
         key={index}
         onClick={() => onSuggestionClick(suggestion)}
-        className="px-2.5 py-1.5 text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-full border border-blue-200 transition-colors duration-200"
+        className="px-2.5 py-1.5 text-xs bg-gradient-to-r from-violet-50 to-cyan-50 hover:from-violet-100 hover:to-cyan-100 text-violet-700 rounded-full border border-violet-200 transition-all duration-200 shadow-sm hover:shadow-md"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         initial={{ opacity: 0, scale: 0.8 }}
@@ -378,16 +383,18 @@ Be helpful and informative about his background. Share specific details about hi
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
+        onClick={onClose}
+        className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
       >
         <motion.div
+          onClick={(e) => e.stopPropagation()}
           className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 w-full max-w-sm h-[70vh] max-h-[600px] flex flex-col overflow-hidden mx-auto"
           initial={{ y: 50 }}
           animate={{ y: 0 }}
           transition={{ duration: 0.3 }}
         >
           {/* Mobile Header */}
-          <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-3 text-white">
+          <div className="bg-gradient-to-r from-violet-500 to-cyan-500 p-3 text-white">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <motion.div
@@ -399,9 +406,14 @@ Be helpful and informative about his background. Share specific details about hi
                     repeat: Infinity,
                     repeatType: "loop",
                   }}
-                  className="w-7 h-7 rounded-full bg-white/25 backdrop-blur-sm flex items-center justify-center text-sm"
+                  className="w-7 h-7 rounded-full bg-white/25 backdrop-blur-sm flex items-center justify-center p-1.5"
                 >
-                  🤖
+                  <img
+                    src="/images/bot.png"
+                    alt="AI Assistant"
+                    className="w-full h-full object-contain"
+                    style={{ filter: "brightness(0) invert(1)" }}
+                  />
                 </motion.div>
                 <div>
                   <div className="flex items-center gap-2">
@@ -410,7 +422,7 @@ Be helpful and informative about his background. Share specific details about hi
                       <motion.div
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
-                        className="px-1.5 py-0.5 bg-green-500 text-white text-xs rounded-full flex items-center gap-1"
+                        className="px-1.5 py-0.5 bg-cyan-400 text-white text-xs rounded-full flex items-center gap-1 shadow-lg"
                         title="Enhanced with CV data"
                       >
                         <span className="w-1 h-1 bg-white rounded-full animate-pulse"></span>
@@ -468,13 +480,13 @@ Be helpful and informative about his background. Share specific details about hi
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Ask about Ilias..."
-                className="flex-1 px-3 py-2 rounded-xl border border-gray-200 focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-200 transition-all text-sm bg-white/90 backdrop-blur-sm text-black placeholder-gray-500"
+                className="flex-1 px-3 py-2 rounded-xl border border-violet-200 focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-200 transition-all text-sm bg-white/90 backdrop-blur-sm text-black placeholder-gray-400"
                 disabled={isTyping}
               />
               <motion.button
                 onClick={() => handleSendMessage()}
                 disabled={!inputValue.trim() || isTyping}
-                className="w-8 h-8 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                className="w-8 h-8 rounded-xl bg-gradient-to-r from-violet-500 to-cyan-500 text-white flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transition-shadow"
                 whileHover={{ scale: inputValue.trim() ? 1.05 : 1 }}
                 whileTap={{ scale: inputValue.trim() ? 0.95 : 1 }}
               >
