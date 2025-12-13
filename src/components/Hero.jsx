@@ -221,134 +221,138 @@ const QuantumField = memo(({ scrollY }) => {
 });
 
 // Component for bouncing logos inside the circle
-const BouncingLogo = memo(({ logo, index, circleRadius = 180 }) => {
-  const logoSize = 30; // Logo size in pixels - decrease to make smaller
-  const maxRadius = circleRadius - logoSize / 2;
-  const minRadius = circleRadius * 0.5; // Inner boundary - logos stay in outer ring only
+const BouncingLogo = memo(
+  ({ logo, index, circleRadius = 180, isVisible = true }) => {
+    const logoSize = 30; // Logo size in pixels - decrease to make smaller
+    const maxRadius = circleRadius - logoSize / 2;
+    const minRadius = circleRadius * 0.5; // Inner boundary - logos stay in outer ring only
 
-  // Random initial position and velocity in outer ring
-  const initialState = useMemo(() => {
-    const angle = Math.random() * Math.PI * 2;
-    const distance = minRadius + Math.random() * (maxRadius - minRadius);
-    return {
-      x: Math.cos(angle) * distance,
-      y: Math.sin(angle) * distance,
-      vx: (Math.random() - 0.5) * 2, // Velocity multiplier - increase to make faster
-      vy: (Math.random() - 0.5) * 2, // Velocity multiplier - increase to make faster
-    };
-  }, [maxRadius, minRadius]);
+    // Random initial position and velocity in outer ring
+    const initialState = useMemo(() => {
+      const angle = Math.random() * Math.PI * 2;
+      const distance = minRadius + Math.random() * (maxRadius - minRadius);
+      return {
+        x: Math.cos(angle) * distance,
+        y: Math.sin(angle) * distance,
+        vx: (Math.random() - 0.5) * 2, // Velocity multiplier - increase to make faster
+        vy: (Math.random() - 0.5) * 2, // Velocity multiplier - increase to make faster
+      };
+    }, [maxRadius, minRadius]);
 
-  const [position, setPosition] = useState(initialState);
+    const [position, setPosition] = useState(initialState);
 
-  useEffect(() => {
-    let animationFrameId;
-    let lastTime = Date.now();
+    useEffect(() => {
+      // PERF-001: Pause animation when not visible
+      if (!isVisible) return;
+      let animationFrameId;
+      let lastTime = Date.now();
 
-    const animate = () => {
-      const currentTime = Date.now();
-      const deltaTime = (currentTime - lastTime) / 16.67; // Normalize to 60fps
-      lastTime = currentTime;
+      const animate = () => {
+        const currentTime = Date.now();
+        const deltaTime = (currentTime - lastTime) / 16.67; // Normalize to 60fps
+        lastTime = currentTime;
 
-      setPosition((prev) => {
-        let { x, y, vx, vy } = prev;
+        setPosition((prev) => {
+          let { x, y, vx, vy } = prev;
 
-        // Update position
-        x += vx * deltaTime;
-        y += vy * deltaTime;
+          // Update position
+          x += vx * deltaTime;
+          y += vy * deltaTime;
 
-        // Calculate distance from center
-        const distance = Math.sqrt(x * x + y * y);
+          // Calculate distance from center
+          const distance = Math.sqrt(x * x + y * y);
 
-        // Bounce off outer circle boundary
-        if (distance + logoSize / 2 > maxRadius) {
-          // Normalize position to circle boundary
-          const angle = Math.atan2(y, x);
-          x = Math.cos(angle) * (maxRadius - logoSize / 2);
-          y = Math.sin(angle) * (maxRadius - logoSize / 2);
+          // Bounce off outer circle boundary
+          if (distance + logoSize / 2 > maxRadius) {
+            // Normalize position to circle boundary
+            const angle = Math.atan2(y, x);
+            x = Math.cos(angle) * (maxRadius - logoSize / 2);
+            y = Math.sin(angle) * (maxRadius - logoSize / 2);
 
-          // Reflect velocity (bounce)
-          const normalX = x / distance;
-          const normalY = y / distance;
-          const dotProduct = vx * normalX + vy * normalY;
-          vx = vx - 2 * dotProduct * normalX;
-          vy = vy - 2 * dotProduct * normalY;
+            // Reflect velocity (bounce)
+            const normalX = x / distance;
+            const normalY = y / distance;
+            const dotProduct = vx * normalX + vy * normalY;
+            vx = vx - 2 * dotProduct * normalX;
+            vy = vy - 2 * dotProduct * normalY;
 
-          // Add some damping/energy
-          const damping = 0.95;
-          vx *= damping;
-          vy *= damping;
-        }
+            // Add some damping/energy
+            const damping = 0.95;
+            vx *= damping;
+            vy *= damping;
+          }
 
-        // Bounce off inner circle boundary (prevent overlapping portrait center)
-        if (distance - logoSize / 2 < minRadius) {
-          // Push out to inner boundary
-          const angle = Math.atan2(y, x);
-          x = Math.cos(angle) * (minRadius + logoSize / 2);
-          y = Math.sin(angle) * (minRadius + logoSize / 2);
+          // Bounce off inner circle boundary (prevent overlapping portrait center)
+          if (distance - logoSize / 2 < minRadius) {
+            // Push out to inner boundary
+            const angle = Math.atan2(y, x);
+            x = Math.cos(angle) * (minRadius + logoSize / 2);
+            y = Math.sin(angle) * (minRadius + logoSize / 2);
 
-          // Reflect velocity (bounce outward)
-          const normalX = x / distance;
-          const normalY = y / distance;
-          const dotProduct = vx * normalX + vy * normalY;
-          vx = vx - 2 * dotProduct * normalX;
-          vy = vy - 2 * dotProduct * normalY;
+            // Reflect velocity (bounce outward)
+            const normalX = x / distance;
+            const normalY = y / distance;
+            const dotProduct = vx * normalX + vy * normalY;
+            vx = vx - 2 * dotProduct * normalX;
+            vy = vy - 2 * dotProduct * normalY;
 
-          // Add some damping
-          const damping = 0.95;
-          vx *= damping;
-          vy *= damping;
-        }
+            // Add some damping
+            const damping = 0.95;
+            vx *= damping;
+            vy *= damping;
+          }
 
-        return { x, y, vx, vy };
-      });
+          return { x, y, vx, vy };
+        });
+
+        animationFrameId = requestAnimationFrame(animate);
+      };
 
       animationFrameId = requestAnimationFrame(animate);
-    };
 
-    animationFrameId = requestAnimationFrame(animate);
+      return () => {
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+        }
+      };
+    }, [maxRadius, logoSize, minRadius, isVisible]);
 
-    return () => {
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-      }
-    };
-  }, [maxRadius, logoSize]);
-
-  return (
-    <motion.div
-      className="absolute rounded-xl backdrop-blur-md bg-slate-800/80 border border-white/20 p-1 shadow-lg"
-      style={{
-        width: logoSize,
-        height: logoSize,
-        left: "50%",
-        top: "50%",
-        x: position.x,
-        y: position.y,
-        transform: "translate(-50%, -50%)",
-      }}
-      animate={{
-        rotate: [0, 360],
-      }}
-      transition={{
-        rotate: {
-          duration: 10 + index * 2,
-          repeat: Infinity,
-          ease: "linear",
-        },
-      }}
-    >
-      <img
-        src={logo.src}
-        alt={logo.name}
-        className="w-full h-full object-contain"
+    return (
+      <motion.div
+        className="absolute rounded-xl backdrop-blur-md bg-slate-800/80 border border-white/20 p-1 shadow-lg"
         style={{
-          filter:
-            "brightness(10) drop-shadow(0 0 10px rgba(255, 255, 255, 0.8))",
+          width: logoSize,
+          height: logoSize,
+          left: "50%",
+          top: "50%",
+          x: position.x,
+          y: position.y,
+          transform: "translate(-50%, -50%)",
         }}
-      />
-    </motion.div>
-  );
-});
+        animate={{
+          rotate: [0, 360],
+        }}
+        transition={{
+          rotate: {
+            duration: 10 + index * 2,
+            repeat: Infinity,
+            ease: "linear",
+          },
+        }}
+      >
+        <img
+          src={logo.src}
+          alt={logo.name}
+          className="w-full h-full object-contain"
+          style={{
+            filter:
+              "brightness(10) drop-shadow(0 0 10px rgba(255, 255, 255, 0.8))",
+          }}
+        />
+      </motion.div>
+    );
+  }
+);
 
 // Composant pour un logo flottant individual
 const FloatingLogo = memo(({ logo, index, isHovered }) => {
@@ -654,17 +658,13 @@ const Hero = () => {
   }, 16); // ~60fps
 
   // Mémorisation des logos techniques
+  // Reduced from 5 to 3 logos for better performance (PERF-001)
   const techLogos = useMemo(
     () => [
       {
         src: "/images/tech/javascript.png",
         name: "JavaScript",
         position: { x: -160, y: -120 },
-      },
-      {
-        src: "/images/tech/java.png",
-        name: "Java",
-        position: { x: 120, y: 0 },
       },
       {
         src: "/images/tech/python.png",
@@ -674,12 +674,7 @@ const Hero = () => {
       {
         src: "/images/tech/react.webp",
         name: "React",
-        position: { x: -160, y: -20 },
-      },
-      {
-        src: "/images/tech/spring-boot.png",
-        name: "Spring Boot",
-        position: { x: 110, y: -120 },
+        position: { x: 120, y: -20 },
       },
     ],
     []
@@ -840,6 +835,7 @@ const Hero = () => {
                   logo={logo}
                   index={index}
                   circleRadius={180}
+                  isVisible={isHeroVisible}
                 />
               ))}
             </div>
