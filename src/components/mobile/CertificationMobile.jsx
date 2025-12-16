@@ -1,5 +1,6 @@
 import React, { useRef, useState, useMemo, memo, useCallback } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import QuantumBackground from "../QuantumBackground";
 
 // Mobile-optimized certification card with reduced complexity for better performance
 const CertificationCardMobile = memo(
@@ -65,7 +66,7 @@ const CertificationCardMobile = memo(
               : "0 8px 30px -10px rgba(0, 0, 0, 0.3)",
           }}
           transition={{ duration: 0.3 }}
-          className="relative overflow-hidden rounded-2xl backdrop-blur-xl bg-gradient-to-br from-gray-900/50 via-gray-800/40 to-gray-900/50 p-6 h-full"
+          className="relative overflow-hidden rounded-2xl backdrop-blur-lg bg-gradient-to-br from-gray-900/50 via-gray-800/40 to-gray-900/50 p-6 h-full"
         >
           {/* Simplified network background for mobile */}
           <div className="absolute inset-0 opacity-5">
@@ -97,6 +98,7 @@ const CertificationCardMobile = memo(
                   y2={`${networkNodes[(i + 1) % networkNodes.length].y}%`}
                   stroke="#8b5cf6"
                   strokeWidth="0.5"
+                  initial={{ opacity: 0 }}
                   animate={{
                     opacity: isHovered ? [0, 0.2, 0] : 0,
                   }}
@@ -111,12 +113,13 @@ const CertificationCardMobile = memo(
 
           {/* Reduced floating particles for mobile performance */}
           <div className="absolute inset-0 overflow-hidden">
-            {Array.from({ length: 6 }).map((_, i) => (
+            {Array.from({ length: 3 }).map((_, i) => (
               <motion.div
                 key={i}
                 initial={{
                   x: `${20 + i * 15}%`,
                   y: `${30 + (i % 2) * 40}%`,
+                  opacity: 0,
                 }}
                 animate={{
                   x: [`${20 + i * 15}%`, `${25 + i * 15}%`, `${20 + i * 15}%`],
@@ -132,6 +135,7 @@ const CertificationCardMobile = memo(
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
+                style={{ opacity: 0 }}
                 className="absolute w-1 h-1 bg-violet-400/40 rounded-full"
               />
             ))}
@@ -148,15 +152,12 @@ const CertificationCardMobile = memo(
               className="relative w-16 h-16 mb-4 rounded-xl p-2 overflow-hidden"
             >
               {/* Simplified background for mobile */}
-              <motion.div
-                animate={{
-                  background: [
-                    "linear-gradient(45deg, rgba(139,92,246,0.15), rgba(6,182,212,0.1))",
-                    "linear-gradient(135deg, rgba(6,182,212,0.1), rgba(139,92,246,0.15))",
-                  ],
-                }}
-                transition={{ duration: 3, repeat: Infinity }}
+              <div
                 className="absolute inset-0 rounded-xl"
+                style={{
+                  background:
+                    "linear-gradient(45deg, rgba(139,92,246,0.15), rgba(6,182,212,0.1))",
+                }}
               />
 
               <img
@@ -176,6 +177,23 @@ const CertificationCardMobile = memo(
                 {cert.title}
               </span>
             </motion.h3>
+
+            {/* Category badge */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className="absolute top-4 right-4"
+            >
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                className="px-3 py-1.5 rounded-full backdrop-blur-xl bg-gradient-to-r from-violet-500/20 to-cyan-500/20 border border-violet-400/30"
+              >
+                <span className="text-xs font-semibold bg-clip-text text-transparent bg-gradient-to-r from-violet-300 to-cyan-300">
+                  {cert.category}
+                </span>
+              </motion.div>
+            </motion.div>
 
             {/* Info section optimized for mobile */}
             <motion.div
@@ -212,16 +230,6 @@ const CertificationCardMobile = memo(
                 </div>
                 <p className="text-gray-300 font-medium text-sm">{cert.date}</p>
               </div>
-
-              {/* Category badge for mobile */}
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="inline-flex items-center px-3 py-1 rounded-lg bg-gradient-to-r from-violet-500/10 to-cyan-500/10 border border-violet-400/20"
-              >
-                <span className="text-xs font-medium text-violet-300">
-                  {cert.category}
-                </span>
-              </motion.div>
             </motion.div>
 
             {/* Simplified CTA button for mobile */}
@@ -348,6 +356,18 @@ const CertificationMobile = () => {
       },
       {
         id: 4,
+        title: "Oracle Cloud Infrastructure 2025 Certified Architect Associate",
+        issuer: "Oracle",
+        date: "Dec 2025",
+        credentialUrl:
+          "https://catalog-education.oracle.com/ords/certview/sharebadge?id=25B257ACD9F5D0A50D1CBC16498B4442F543B8A12BF3651E16583FC9C49E66E6",
+        logo: "/images/oracle.png",
+        color: "from-violet-400 to-violet-600",
+        bgAccent: "bg-violet-500/10",
+        category: "Cloud Computing",
+      },
+      {
+        id: 5,
         title: "MERN Stack Developer",
         issuer: "Udemy",
         date: "Aug 2024",
@@ -363,78 +383,17 @@ const CertificationMobile = () => {
   );
 
   return (
-    <div
+    <QuantumBackground
       id="certifications"
-      className="relative min-h-screen py-16 px-4 overflow-hidden"
-      ref={containerRef}
+      containerRef={containerRef}
+      variant="purple"
     >
-      {/* Simplified background for mobile performance */}
-      <div className="absolute inset-0 pointer-events-none">
-        {/* Reduced complexity energy field */}
-        <motion.div style={{ y: backgroundY }} className="absolute inset-0">
-          <div className="absolute top-20 left-1/4 w-64 h-64 bg-gradient-radial from-violet-600/10 via-violet-600/3 to-transparent rounded-full blur-2xl" />
-          <div className="absolute bottom-20 right-1/4 w-56 h-56 bg-gradient-radial from-cyan-500/8 via-cyan-500/2 to-transparent rounded-full blur-2xl" />
-        </motion.div>
-
-        {/* Simplified grid pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <svg className="w-full h-full">
-            <defs>
-              <pattern
-                id="mobile-grid"
-                x="0"
-                y="0"
-                width="80"
-                height="80"
-                patternUnits="userSpaceOnUse"
-              >
-                <circle
-                  cx="40"
-                  cy="40"
-                  r="0.5"
-                  fill="rgba(139, 92, 246, 0.4)"
-                />
-                <path
-                  d="M 0 40 Q 20 20 40 40 T 80 40"
-                  stroke="rgba(139, 92, 246, 0.1)"
-                  strokeWidth="0.3"
-                  fill="none"
-                />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#mobile-grid)" />
-          </svg>
-        </div>
-
-        {/* Reduced floating orbs for mobile */}
-        {Array.from({ length: 3 }).map((_, i) => (
-          <motion.div
-            key={i}
-            animate={{
-              y: [0, -30, 0],
-              opacity: [0.2, 0.5, 0.2],
-            }}
-            transition={{
-              duration: 6 + i * 2,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: i,
-            }}
-            className="absolute w-3 h-3 rounded-full bg-gradient-to-r from-violet-400 to-cyan-400 blur-sm"
-            style={{
-              left: `${30 + i * 20}%`,
-              top: `${40 + (i % 2) * 20}%`,
-            }}
-          />
-        ))}
-      </div>
-
       <motion.div
         style={{
           opacity: useSpring(opacity, springConfig),
           scale: useSpring(scale, springConfig),
         }}
-        className="max-w-lg mx-auto relative z-10"
+        className="max-w-lg mx-auto relative z-10 px-4"
       >
         {/* Mobile-optimized title section */}
         <motion.div
@@ -536,13 +495,7 @@ const CertificationMobile = () => {
           </div>
         </motion.div>
       </motion.div>
-
-      <style>{`
-        .bg-gradient-radial {
-          background-image: radial-gradient(var(--tw-gradient-stops));
-        }
-      `}</style>
-    </div>
+    </QuantumBackground>
   );
 };
 

@@ -129,6 +129,7 @@ const ProgressIndicatorMobile = memo(
         {isActive && (
           <motion.div
             className="absolute inset-0 rounded-full border-2 border-violet-400"
+            initial={{ scale: 1, opacity: 1 }}
             animate={{ scale: [1, 1.5, 1], opacity: [1, 0, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
           />
@@ -455,7 +456,7 @@ const ProjectsMobile = () => {
                 style={{ willChange: "transform" }}
               >
                 {/* Quantum Card with Neural Network Border */}
-                <div className="relative rounded-2xl overflow-hidden backdrop-blur-2xl bg-gradient-to-br from-violet-950/30 via-purple-900/20 to-cyan-950/30 border-2 border-violet-500/30 shadow-2xl flex flex-col h-[540px]">
+                <div className="relative rounded-2xl overflow-hidden backdrop-blur-lg bg-gradient-to-br from-violet-950/30 via-purple-900/20 to-cyan-950/30 border-2 border-violet-500/30 shadow-2xl flex flex-col h-[540px]">
                   {/* Animated border glow */}
                   <motion.div
                     className="absolute inset-0 rounded-2xl"

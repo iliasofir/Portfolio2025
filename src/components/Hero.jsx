@@ -37,11 +37,11 @@ const QuantumField = memo(({ scrollY }) => {
   // Neural network connection points
   const networkNodes = useMemo(
     () =>
-      Array.from({ length: 12 }, (_, i) => ({
+      Array.from({ length: 6 }, (_, i) => ({
         id: i,
         x: Math.random() * 100,
         y: Math.random() * 100,
-        connections: Math.floor(Math.random() * 3) + 1,
+        connections: Math.floor(Math.random() * 2) + 1,
       })),
     []
   );
@@ -50,48 +50,24 @@ const QuantumField = memo(({ scrollY }) => {
     <div className="absolute inset-0 overflow-hidden">
       {/* Quantum energy fields */}
       <motion.div style={{ y: scrollY }} className="absolute inset-0">
-        {/* Primary energy core */}
-        <motion.div
-          animate={{
-            scale: [1, 1.3, 1],
-            opacity: [0.2, 0.4, 0.2],
-            rotate: [0, 180, 360],
+        {/* Primary energy core - static with CSS animation for efficiency */}
+        <div
+          className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-conic from-violet-500/20 via-cyan-500/20 to-violet-500/20 rounded-full blur-xl"
+          style={{
+            animation: "quantum-pulse 20s ease-in-out infinite",
+            opacity: 0.3,
           }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-          className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-conic from-violet-500/20 via-cyan-500/20 to-violet-500/20 rounded-full blur-3xl"
         />
 
-        {/* Secondary energy fields */}
-        <motion.div
-          animate={{
-            scale: [1.2, 0.8, 1.2],
-            opacity: [0.15, 0.35, 0.15],
-            rotate: [360, 0],
-          }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="absolute top-1/3 right-1/4 w-80 h-80 bg-gradient-radial from-blue-500/25 via-purple-500/15 to-transparent rounded-full blur-2xl"
+        {/* Secondary energy fields - static with subtle CSS */}
+        <div
+          className="absolute top-1/3 right-1/4 w-80 h-80 bg-gradient-radial from-blue-500/25 via-purple-500/15 to-transparent rounded-full blur-xl"
+          style={{ opacity: 0.25 }}
         />
 
-        <motion.div
-          animate={{
-            scale: [0.9, 1.4, 0.9],
-            opacity: [0.25, 0.45, 0.25],
-            x: [-20, 20, -20],
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="absolute bottom-1/4 left-1/2 w-72 h-72 bg-gradient-radial from-cyan-400/20 via-violet-500/10 to-transparent rounded-full blur-3xl"
+        <div
+          className="absolute bottom-1/4 left-1/2 w-72 h-72 bg-gradient-radial from-cyan-400/20 via-violet-500/10 to-transparent rounded-full blur-xl"
+          style={{ opacity: 0.35 }}
         />
       </motion.div>
 
@@ -99,13 +75,6 @@ const QuantumField = memo(({ scrollY }) => {
       <div className="absolute inset-0 opacity-15">
         <svg className="w-full h-full">
           <defs>
-            <filter id="glow">
-              <feGaussianBlur stdDeviation="2" result="coloredBlur" />
-              <feMerge>
-                <feMergeNode in="coloredBlur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
             <linearGradient
               id="neural-gradient"
               x1="0%"
@@ -122,26 +91,17 @@ const QuantumField = memo(({ scrollY }) => {
           {/* Dynamic network nodes */}
           {networkNodes.map((node) => (
             <motion.g key={node.id}>
-              <motion.circle
+              <circle
                 cx={`${node.x}%`}
                 cy={`${node.y}%`}
                 r="3"
                 fill="url(#neural-gradient)"
-                filter="url(#glow)"
-                animate={{
-                  opacity: [0.3, 0.8, 0.3],
-                  scale: [1, 1.5, 1],
-                }}
-                transition={{
-                  duration: 4 + Math.random() * 2,
-                  repeat: Infinity,
-                  delay: Math.random() * 2,
-                }}
+                opacity="0.5"
               />
 
               {/* Connection lines */}
               {networkNodes.slice(0, node.connections).map((target, i) => (
-                <motion.line
+                <line
                   key={i}
                   x1={`${node.x}%`}
                   y1={`${node.y}%`}
@@ -149,45 +109,16 @@ const QuantumField = memo(({ scrollY }) => {
                   y2={`${target.y}%`}
                   stroke="url(#neural-gradient)"
                   strokeWidth="0.5"
-                  opacity="0.4"
-                  animate={{
-                    strokeDasharray: ["0 10", "5 5", "10 0"],
-                    opacity: [0.2, 0.6, 0.2],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    delay: Math.random() * 3,
-                  }}
+                  opacity="0.3"
                 />
               ))}
             </motion.g>
           ))}
-
-          {/* Scanning lines */}
-          <motion.line
-            x1="0%"
-            y1="50%"
-            x2="100%"
-            y2="50%"
-            stroke="rgba(139, 92, 246, 0.3)"
-            strokeWidth="1"
-            animate={{
-              y1: ["0%", "100%", "0%"],
-              y2: ["0%", "100%", "0%"],
-              opacity: [0, 0.6, 0],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
         </svg>
       </div>
 
       {/* Floating data particles */}
-      {Array.from({ length: 20 }).map((_, i) => (
+      {Array.from({ length: 8 }).map((_, i) => (
         <motion.div
           key={i}
           className="absolute w-1 h-1 bg-violet-400/60 rounded-full"
@@ -513,6 +444,7 @@ const ImageParticles = memo(({ isHovered }) => {
   return (
     <motion.div
       className="absolute inset-0 z-20"
+      initial={{ opacity: 0 }}
       animate={{
         opacity: isHovered ? 1 : 0,
       }}
@@ -675,6 +607,11 @@ const Hero = () => {
         src: "/images/tech/react.webp",
         name: "React",
         position: { x: 120, y: -20 },
+      },
+      {
+        src: "images/tech/java.png",
+        name: "Java",
+        position: { x: 140, y: 100 },
       },
     ],
     []
@@ -890,6 +827,7 @@ const Hero = () => {
           <div className="flex-1 text-center md:text-left relative">
             {/* Data stream visualization */}
             <motion.div
+              initial={{ opacity: 0.3 }}
               animate={{ opacity: [0.3, 0.7, 0.3] }}
               transition={{ duration: 3, repeat: Infinity }}
               className="absolute -left-8 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-violet-400 to-transparent hidden md:block"
@@ -965,6 +903,7 @@ const Hero = () => {
               <div className="inline-block relative">
                 <motion.div
                   className="absolute -left-3 top-0 bottom-0 w-1 bg-gradient-to-b from-violet-500 to-cyan-400 rounded-full"
+                  initial={{ scaleY: 0 }}
                   animate={{ scaleY: [0, 1] }}
                   transition={{ delay: 1.8, duration: 0.6 }}
                 />
@@ -1028,6 +967,7 @@ const Hero = () => {
                 transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
               >
                 <motion.div
+                  initial={{ scale: 1 }}
                   animate={{ scale: [1, 1.3, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
                   className="w-2 h-2 bg-violet-400 rounded-full"
@@ -1236,7 +1176,7 @@ const Hero = () => {
       </motion.div>
 
       {/* Custom styles */}
-      <style jsx>{`
+      <style>{`
         .bg-gradient-conic {
           background-image: conic-gradient(var(--tw-gradient-stops));
         }
@@ -1263,17 +1203,17 @@ const Hero = () => {
           perspective: 1000px;
         }
 
-        @keyframes scan {
-          0% {
-            transform: translateY(-100%);
+        /* Removed scan-line infinite animation for performance */
+        
+        @keyframes quantum-pulse {
+          0%, 100% {
+            transform: scale(1) rotate(0deg);
+            opacity: 0.2;
           }
-          100% {
-            transform: translateY(100%);
+          50% {
+            transform: scale(1.3) rotate(180deg);
+            opacity: 0.4;
           }
-        }
-
-        .scan-line {
-          animation: scan 2s ease-in-out infinite;
         }
       `}</style>
     </QuantumBackground>

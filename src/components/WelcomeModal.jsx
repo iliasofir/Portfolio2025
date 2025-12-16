@@ -180,7 +180,7 @@ const WelcomeModal = ({ isOpen, onClose, onStartChat }) => {
             className="relative w-full max-w-2xl mx-4"
           >
             {/* Fond glassmorphism avancé */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-2xl border border-white/20 rounded-3xl shadow-2xl" />
+            <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl" />
 
             {/* Effets lumineux */}
             <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-3xl blur-xl opacity-50" />
@@ -308,6 +308,7 @@ const WelcomeModal = ({ isOpen, onClose, onStartChat }) => {
                         <motion.div
                           key={i}
                           className="w-1.5 h-1.5 bg-blue-400 rounded-full"
+                          initial={{ opacity: 0.3 }}
                           animate={{ opacity: [0.3, 1, 0.3] }}
                           transition={{
                             duration: 1,
@@ -323,6 +324,7 @@ const WelcomeModal = ({ isOpen, onClose, onStartChat }) => {
                     {currentText}
                     {isTyping && (
                       <motion.span
+                        initial={{ opacity: 1 }}
                         animate={{ opacity: [1, 0] }}
                         transition={{ duration: 0.5, repeat: Infinity }}
                         className="ml-1 text-blue-400"
@@ -382,11 +384,13 @@ const WelcomeModal = ({ isOpen, onClose, onStartChat }) => {
             {/* Éléments décoratifs simplifiés */}
             <motion.div
               className="absolute -top-2 -left-2 w-4 h-4 bg-blue-400/20 rounded-full"
+              initial={{ opacity: 0.3 }}
               animate={{ opacity: [0.3, 0.6, 0.3] }}
               transition={{ duration: 2, repeat: Infinity }}
             />
             <motion.div
               className="absolute -bottom-2 -right-2 w-3 h-3 bg-purple-400/20 rounded-full"
+              initial={{ opacity: 0.4 }}
               animate={{ opacity: [0.4, 0.7, 0.4] }}
               transition={{ duration: 1.5, repeat: Infinity, delay: 0.5 }}
             />

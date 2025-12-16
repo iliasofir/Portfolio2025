@@ -37,24 +37,21 @@ const AboutMobile = () => {
   const images = [
     {
       id: 1,
-      src: "/images/about/IMG_1942.jpg",
+      src: "/images/about/IMG_1942.webp",
       alt: "Professional Journey",
-      caption: "GITEX AFRICA 2025",
-      location: "Marrakech",
+      caption: "GITEX AFRICA 2025 - Marrakech",
     },
     {
       id: 2,
-      src: "/images/about/IMG_2756.jpg",
+      src: "/images/about/IMG_2756.webp",
       alt: "Innovation Mindset",
-      caption: "Career Forum 2025",
-      location: "ECC",
+      caption: "Career Forum 2025 - ECC",
     },
     {
       id: 3,
-      src: "/images/about/IMG_2426.jpg",
+      src: "/images/about/IMG_2426.webp",
       alt: "Tech Passion",
-      caption: "GenAI meeting 2025",
-      location: "EMSI",
+      caption: "GenAI meeting 2025 - EMSI",
     },
   ];
 
