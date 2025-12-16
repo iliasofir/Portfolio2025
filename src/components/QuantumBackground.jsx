@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect, useRef } from "react";
 import { motion, useTransform, useScroll } from "framer-motion";
 
 // Code Rain Effect Component
@@ -25,7 +25,7 @@ const CodeRain = () => {
 
   const streams = useMemo(
     () =>
-      [...Array(30)].map((_, i) => ({
+      [...Array(15)].map((_, i) => ({
         id: i,
         left: Math.random() * 100,
         delay: Math.random() * 5,
@@ -58,6 +58,7 @@ const CodeRain = () => {
           {stream.chars.map((char, i) => (
             <motion.div
               key={i}
+              initial={{ opacity: 1 }}
               animate={{ opacity: [1, 0.3, 1] }}
               transition={{
                 duration: 0.5,
@@ -81,6 +82,8 @@ const QuantumBackground = ({
   id,
   variant = "default",
 }) => {
+  const animationRef = useRef(null);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"],
@@ -88,6 +91,22 @@ const QuantumBackground = ({
 
   const backgroundY = useTransform(scrollYProgress, [0, 1], [-50, 50]);
   const rotateX = useTransform(scrollYProgress, [0, 0.5, 1], [15, 0, -15]);
+
+  // Cleanup effect to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      // Cleanup scroll listeners and transformations
+      if (scrollYProgress) {
+        scrollYProgress.clearListeners?.();
+      }
+      if (backgroundY) {
+        backgroundY.clearListeners?.();
+      }
+      if (rotateX) {
+        rotateX.clearListeners?.();
+      }
+    };
+  }, [scrollYProgress, backgroundY, rotateX]);
 
   // Different color schemes based on variant
   const getColorScheme = () => {
@@ -157,6 +176,7 @@ const QuantumBackground = ({
       id={id}
       className={`relative min-h-screen py-24 overflow-hidden ${className}`}
       ref={containerRef}
+      style={{ position: "relative" }}
     >
       {/* Code Rain Effect */}
       <CodeRain />

@@ -112,6 +112,7 @@ const ProgressIndicator = memo(
           className={`absolute inset-0 rounded-full ${
             isActive ? "bg-violet-500/30" : "bg-white/10"
           } blur-md`}
+          initial={{ scale: 1 }}
           animate={isActive ? { scale: [1, 1.3, 1] } : {}}
           transition={{ duration: 2, repeat: Infinity }}
         />
@@ -129,6 +130,7 @@ const ProgressIndicator = memo(
         {isActive && (
           <motion.div
             className="absolute inset-0 rounded-full border-2 border-violet-400"
+            initial={{ scale: 1, opacity: 1 }}
             animate={{ scale: [1, 1.6, 1], opacity: [1, 0, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
           />
@@ -309,7 +311,7 @@ const Projects = () => {
         bgAccent: "bg-amber-500/20",
         accentColor: "rgb(16, 185, 129)",
       },
-            {
+      {
         title: "PORTFOLIO WEBSITE",
         period: "2025",
         description: "Personal Portfolio Website",
@@ -317,8 +319,7 @@ const Projects = () => {
           "Developed a personal portfolio website to showcase my projects and skills. Implemented a responsive design with modern UI/UX principles.",
         tech: ["React.js", "TailwindCSS", "NETLIFY", "Framer Motion"],
         image: "/images/Portfolio.png",
-        github:
-          "https://github.com/iliasofir/Portfolio2025",
+        github: "https://github.com/iliasofir/Portfolio2025",
         color: "from-amber-400 to-orange-600",
         bgAccent: "bg-amber-200/20",
         accentColor: "rgb(16, 185, 120)",
@@ -519,7 +520,7 @@ const Projects = () => {
               transition={{ duration: 0.3 }}
             >
               {/* Quantum Card with Neural Network Border */}
-              <div className="relative h-[500px] sm:h-[520px] md:h-[480px] lg:h-[500px] rounded-3xl overflow-hidden backdrop-blur-2xl bg-gradient-to-br from-violet-950/30 via-purple-900/20 to-cyan-950/30 border-2 border-violet-500/30 shadow-2xl group">
+              <div className="relative h-[500px] sm:h-[520px] md:h-[480px] lg:h-[500px] rounded-3xl overflow-hidden backdrop-blur-lg bg-gradient-to-br from-violet-950/30 via-purple-900/20 to-cyan-950/30 border-2 border-violet-500/30 shadow-2xl group">
                 {/* Animated border glow */}
                 <motion.div
                   className="absolute inset-0 rounded-3xl"

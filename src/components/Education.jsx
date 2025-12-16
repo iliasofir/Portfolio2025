@@ -509,6 +509,7 @@ const Education = memo(() => {
                   transition={{ duration: 4, repeat: Infinity, repeatDelay: 0 }}
                   className="absolute -inset-0.5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                   style={{
+                    backgroundSize: "300% 300%",
                     willChange: "background, background-position, opacity",
                   }}
                 />
