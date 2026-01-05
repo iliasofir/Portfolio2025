@@ -1,12 +1,7 @@
-import {
-  motion,
-  useMotionValue,
-  useTransform,
-  useScroll,
-  useSpring,
-} from "framer-motion";
-import { useState, memo, useMemo, useRef } from "react";
+import { motion, useMotionValue, useTransform } from "framer-motion";
+import { useState, memo, useRef } from "react";
 import QuantumBackground from "./QuantumBackground";
+import { useInView } from "../hooks/useScrollAnimations";
 
 // Swipeable Card Component
 const SwipeableCard = memo(({ image, index, totalCards, onSwipe }) => {
@@ -162,35 +157,7 @@ const SwipeableCard = memo(({ image, index, totalCards, onSwipe }) => {
 
 const About = () => {
   const containerRef = useRef(null);
-
-  // Scroll-based fade in/out configuration
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  });
-
-  // Spring configuration for smooth animations
-  const springConfig = useMemo(
-    () => ({
-      stiffness: 120,
-      damping: 40,
-      mass: 0.8,
-      restDelta: 0.001,
-    }),
-    []
-  );
-
-  // Fade in/out transforms based on scroll
-  const opacity = useTransform(
-    scrollYProgress,
-    [0, 0.15, 0.85, 1],
-    [0, 1, 1, 0]
-  );
-  const scale = useTransform(
-    scrollYProgress,
-    [0, 0.15, 0.85, 1],
-    [0.95, 1, 1, 0.95]
-  );
+  const { ref: sectionRef, hasBeenInView } = useInView({ threshold: 0.1 });
 
   const [cards, setCards] = useState([
     {
@@ -223,106 +190,87 @@ const About = () => {
 
   return (
     <QuantumBackground id="about" containerRef={containerRef} variant="purple">
-      <motion.div
-        style={{
-          opacity: useSpring(opacity, springConfig),
-          scale: useSpring(scale, springConfig),
-          willChange: "transform, opacity",
+      <div
+        ref={(el) => {
+          containerRef.current = el;
+          sectionRef.current = el;
         }}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10"
+        className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 transition-all duration-1000 ${
+          hasBeenInView ? "opacity-100 scale-100" : "opacity-0 scale-95"
+        }`}
+        style={{ willChange: "transform, opacity" }}
       >
         {/* Enhanced title section */}
-        <motion.h2
+        <h2
           className="text-5xl md:text-7xl font-black relative text-center"
-          animate={{
-            textShadow: [
-              "0 0 20px rgba(139, 92, 246, 0.5)",
-              "0 0 40px rgba(139, 92, 246, 0.8)",
-              "0 0 20px rgba(139, 92, 246, 0.5)",
-            ],
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "easeInOut",
+          style={{
+            animation: hasBeenInView
+              ? "textGlow 3s ease-in-out infinite"
+              : "none",
           }}
         >
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-violet-200 to-cyan-200">
             About Me
           </span>
-        </motion.h2>
-        <motion.div
-          initial={{ width: 0 }}
-          whileInView={{ width: "60%" }}
-          transition={{ duration: 2, delay: 0.5 }}
-          className="h-0.5 bg-gradient-to-r from-transparent via-violet-400 to-transparent mx-auto mt-6 rounded-full"
+        </h2>
+        <div
+          className={`h-0.5 bg-gradient-to-r from-transparent via-violet-400 to-transparent mx-auto mt-6 rounded-full transition-all duration-1000 delay-500 ${
+            hasBeenInView ? "w-3/5" : "w-0"
+          }`}
         />
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          className="mt-6 text-gray-300 text-lg font-light mb-12 max-w-2xl mx-auto text-center"
+        <p
+          className={`mt-6 text-gray-300 text-lg font-light mb-12 max-w-2xl mx-auto text-center transition-opacity duration-700 delay-700 ${
+            hasBeenInView ? "opacity-100" : "opacity-0"
+          }`}
         >
           Passionate developer crafting innovative solutions with modern
           technologies and creative problem-solving.
-        </motion.p>
+        </p>
 
         <div className="grid lg:grid-cols-2 gap-16 items-start max-w-7xl mx-auto">
           {/* Left Side - Text Content */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="space-y-8 h-full flex flex-col justify-center"
+          <div
+            className={`space-y-8 h-full flex flex-col justify-center transition-all duration-800 ${
+              hasBeenInView
+                ? "opacity-100 translate-x-0"
+                : "opacity-0 -translate-x-12"
+            }`}
           >
             {/* Introduction Card with enhanced glassmorphism */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.6 }}
-              viewport={{ once: true }}
-              whileHover={{ y: -8, scale: 1.01 }}
-              className="relative group"
+            <div
+              className={`relative group transition-all duration-600 delay-300 hover:-translate-y-2 hover:scale-[1.01] ${
+                hasBeenInView
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-5"
+              }`}
             >
               <div className="backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 rounded-3xl p-8 border border-white/20 shadow-2xl relative overflow-hidden transition-all duration-300">
                 {/* Animated border gradient */}
-                <motion.div
+                <div
                   className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                   style={{
                     background:
                       "linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.4), rgba(6, 182, 212, 0.3), transparent)",
                     backgroundSize: "200% 100%",
-                  }}
-                  animate={{
-                    backgroundPosition: ["0% 0%", "200% 0%"],
-                  }}
-                  transition={{
-                    duration: 2.5,
-                    repeat: Infinity,
-                    ease: "linear",
+                    animation: "shine 2.5s linear infinite",
                   }}
                 />
 
                 <div className="relative z-10">
-                  <motion.h3
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    transition={{ delay: 0.4 }}
-                    viewport={{ once: true }}
-                    className="text-4xl font-bold mb-6 flex items-center gap-3"
+                  <h3
+                    className={`text-4xl font-bold mb-6 flex items-center gap-3 transition-opacity duration-700 delay-400 ${
+                      hasBeenInView ? "opacity-100" : "opacity-0"
+                    }`}
                   >
                     <span className="bg-gradient-to-r from-white via-violet-200 to-cyan-200 bg-clip-text text-transparent">
                       Hello! I'm Ilias Ofir
                     </span>
-                  </motion.h3>
+                  </h3>
 
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    transition={{ delay: 0.5 }}
-                    viewport={{ once: true }}
-                    className="text-gray-300/95 text-lg leading-relaxed"
+                  <p
+                    className={`text-gray-300/95 text-lg leading-relaxed transition-opacity duration-700 delay-500 ${
+                      hasBeenInView ? "opacity-100" : "opacity-0"
+                    }`}
                   >
                     Final-year{" "}
                     <span className="text-violet-400 font-semibold">
@@ -348,23 +296,23 @@ const About = () => {
                     . Currently seeking opportunities where I can grow,
                     innovate, and contribute to real-world engineering
                     challenges.
-                  </motion.p>
+                  </p>
                 </div>
 
                 {/* Decorative corner elements */}
                 <div className="absolute top-4 right-4 w-16 h-16 border-t-2 border-r-2 border-violet-500/30 rounded-tr-2xl" />
                 <div className="absolute bottom-4 left-4 w-16 h-16 border-b-2 border-l-2 border-cyan-500/30 rounded-bl-2xl" />
               </div>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
           {/* Right Side - Swipeable Card Stack */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="relative min-h-[600px] hidden lg:flex items-center justify-center"
+          <div
+            className={`relative min-h-[600px] hidden lg:flex items-center justify-center transition-all duration-800 ${
+              hasBeenInView
+                ? "opacity-100 translate-x-0"
+                : "opacity-0 translate-x-12"
+            }`}
           >
             {/* Card Stack Container */}
             <div className="relative w-[400px] h-[500px]">
@@ -380,58 +328,56 @@ const About = () => {
             </div>
 
             {/* Floating decorative elements */}
-            <motion.div
-              animate={{
-                y: [0, -25, 0],
-                rotate: [0, 10, 0],
-                scale: [1, 1.1, 1],
-              }}
-              transition={{
-                duration: 5,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
+            <div
               className="absolute top-12 right-12 text-7xl opacity-30 filter drop-shadow-lg"
+              style={{
+                animation: hasBeenInView
+                  ? "float 5s ease-in-out infinite"
+                  : "none",
+              }}
             >
               💻
-            </motion.div>
+            </div>
 
-            <motion.div
-              animate={{
-                y: [0, 25, 0],
-                rotate: [0, -10, 0],
-                scale: [1, 1.15, 1],
-              }}
-              transition={{
-                duration: 6,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: 1,
-              }}
+            <div
               className="absolute bottom-16 left-8 text-6xl opacity-30 filter drop-shadow-lg"
+              style={{
+                animation: hasBeenInView
+                  ? "float 6s ease-in-out infinite 1s"
+                  : "none",
+              }}
             >
               ☕
-            </motion.div>
+            </div>
 
-            <motion.div
-              animate={{
-                y: [0, -20, 0],
-                x: [0, 10, 0],
-                rotate: [0, 5, 0],
-              }}
-              transition={{
-                duration: 7,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: 0.5,
-              }}
+            <div
               className="absolute top-1/2 right-4 text-5xl opacity-25 filter drop-shadow-lg"
+              style={{
+                animation: hasBeenInView
+                  ? "floatAlt 7s ease-in-out infinite 0.5s"
+                  : "none",
+              }}
             >
               🚀
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         </div>
-      </motion.div>
+
+        <style>{`
+          @keyframes textGlow {
+            0%, 100% { text-shadow: 0 0 20px rgba(139, 92, 246, 0.5); }
+            50% { text-shadow: 0 0 40px rgba(139, 92, 246, 0.8); }
+          }
+          @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+            50% { transform: translateY(-25px) rotate(10deg) scale(1.1); }
+          }
+          @keyframes floatAlt {
+            0%, 100% { transform: translateY(0) translateX(0) rotate(0deg); }
+            50% { transform: translateY(-20px) translateX(10px) rotate(5deg); }
+          }
+        `}</style>
+      </div>
     </QuantumBackground>
   );
 };

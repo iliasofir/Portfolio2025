@@ -14,14 +14,24 @@ export default defineConfig({
       output: {
         manualChunks: {
           // Split vendor code
-          "react-vendor": ["react", "react-dom"],
-          "motion-vendor": ["framer-motion"],
+          "react-vendor": ["react", "react-dom", "react-router-dom"],
+          "motion-vendor": ["framer-motion"], // Kept separate for code splitting
+          "icons-vendor": ["react-icons"],
         },
       },
     },
     // Chunk size warning threshold
     chunkSizeWarningLimit: 1000,
-    // Use default esbuild minifier (faster and included by default)
+    // Use esbuild minifier (faster and included by default)
     minify: "esbuild",
+    // Additional optimizations
+    target: "esnext", // Modern browsers for better optimization
+    cssCodeSplit: true, // Split CSS for better caching
+    sourcemap: false, // Disable sourcemaps in production for smaller size
+  },
+  // Optimize dependencies
+  optimizeDeps: {
+    include: ["react", "react-dom", "react-router-dom"],
+    exclude: [], // Can exclude heavy deps if needed
   },
 });

@@ -1,36 +1,35 @@
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-import { useRef, useMemo, memo, useCallback, useState } from "react";
+import { useRef, useMemo, memo, useState } from "react";
 import QuantumBackground from "./QuantumBackground";
+import { useInView } from "../hooks/useScrollAnimations";
+import "../styles/animations.css";
 
-// Composant mémorisé pour une compétence individuelle optimisé
+// Optimized Skill Item with CSS animations
 const SkillItem = memo(({ skill, skillIdx }) => {
   const [isHovered, setIsHovered] = useState(false);
-
-  const handleMouseEnter = useCallback(() => setIsHovered(true), []);
-  const handleMouseLeave = useCallback(() => setIsHovered(false), []);
+  const { ref, hasBeenInView } = useInView({ threshold: 0.1 });
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      transition={{ delay: skillIdx * 0.05, duration: 0.4 }}
-      whileHover={{ scale: 1.02 }}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      className="group"
-      style={{ willChange: "transform" }}
+    <div
+      ref={ref}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className={`group transition-all duration-400 ${
+        hasBeenInView ? 'opacity-100 scale-100' : 'opacity-0 scale-80'
+      }`}
+      style={{
+        transitionDelay: `${skillIdx * 50}ms`,
+      }}
     >
-      <div className="flex flex-col items-center p-4 rounded-xl bg-white/5 hover:bg-white/8 transition-colors duration-200">
+      <div className="flex flex-col items-center p-4 rounded-xl bg-white/5 hover:bg-white/8 transition-all duration-200 hover-scale">
         <div className="h-12 mb-3 relative flex items-center justify-center">
-          {/* Animation de glow simplifiée - seulement au hover */}
-          <motion.div
-            animate={{
+          {/* Glow effect */}
+          <div
+            className={`absolute inset-0 bg-blue-500/20 rounded-full transition-all duration-300`}
+            style={{
               opacity: isHovered ? 0.6 : 0.2,
-              scale: isHovered ? 1.1 : 1,
+              transform: isHovered ? 'scale(1.1)' : 'scale(1)',
+              filter: 'blur(8px)',
             }}
-            transition={{ duration: 0.3 }}
-            className="absolute inset-0 bg-blue-500/20 rounded-full"
-            style={{ willChange: "transform, opacity", filter: "blur(8px)" }}
           />
           <img
             src={skill.image}
@@ -43,66 +42,48 @@ const SkillItem = memo(({ skill, skillIdx }) => {
           {skill.name}
         </p>
       </div>
-    </motion.div>
+    </div>
   );
 });
 
-// Composant mémorisé pour une catégorie de compétences optimisé
-const SkillCategory = memo(({ category, idx }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.4, delay: idx * 0.08 }}
-    className="bg-white/5 border border-white/10 rounded-2xl p-6"
-    style={{ willChange: "transform" }}
-  >
-    <h3 className="text-2xl font-bold mb-6">
-      <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
-        {category.title}
-      </span>
-    </h3>
+SkillItem.displayName = "SkillItem";
 
-    <div className="grid grid-cols-2 gap-4">
-      {category.skills.map((skill, skillIdx) => (
-        <SkillItem key={skill.name} skill={skill} skillIdx={skillIdx} />
-      ))}
+// Optimized Skill Category with CSS animations
+const SkillCategory = memo(({ category, idx }) => {
+  const { ref, hasBeenInView } = useInView({ threshold: 0.1 });
+
+  return (
+    <div
+      ref={ref}
+      className={`bg-white/5 border border-white/10 rounded-2xl p-6 transition-all duration-400 ${
+        hasBeenInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
+      }`}
+      style={{
+        transitionDelay: `${idx * 80}ms`,
+      }}
+    >
+      <h3 className="text-2xl font-bold mb-6">
+        <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+          {category.title}
+        </span>
+      </h3>
+
+      <div className="grid grid-cols-2 gap-4">
+        {category.skills.map((skill, skillIdx) => (
+          <SkillItem key={skill.name} skill={skill} skillIdx={skillIdx} />
+        ))}
+      </div>
     </div>
-  </motion.div>
-));
+  );
+});
+
+SkillCategory.displayName = "SkillCategory";
 
 const Skills = () => {
   const containerRef = useRef(null);
+  const { ref: headerRef, hasBeenInView: headerInView } = useInView({ threshold: 0.1 });
 
-  // Configuration de scroll optimisée avec throttling
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  });
-
-  // Mémorisation de la configuration du spring optimisée
-  const springConfig = useMemo(
-    () => ({
-      stiffness: 120,
-      damping: 40,
-      mass: 0.8,
-      restDelta: 0.001,
-    }),
-    []
-  );
-
-  // Transforms optimisés avec ranges plus agressifs
-  const opacity = useTransform(
-    scrollYProgress,
-    [0, 0.15, 0.85, 1],
-    [0, 1, 1, 0]
-  );
-  const scale = useTransform(
-    scrollYProgress,
-    [0, 0.15, 0.85, 1],
-    [0.95, 1, 1, 0.95]
-  );
-
-  // Mémorisation des catégories de compétences avec optimisation des images
+  // Mémorisation des catégories de compétences
   const skillCategories = useMemo(
     () => [
       {
@@ -163,7 +144,6 @@ const Skills = () => {
           { name: "Microservices", image: "/images/tech/microservice.png" },
           { name: "System Design", image: "/images/tech/system-design.png" },
           { name: "Serverless Tech", image: "/images/tech/serverless.png" },
-
         ],
       },
     ],
@@ -177,55 +157,57 @@ const Skills = () => {
       variant="blue"
       className="py-20"
     >
-      <motion.div
-        style={{
-          opacity: useSpring(opacity, springConfig),
-          scale: useSpring(scale, springConfig),
-          willChange: "transform, opacity",
-        }}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10"
-      >
-        <motion.h2
-          className="text-5xl md:text-7xl font-black relative text-center"
-          animate={{
-            textShadow: [
-              "0 0 20px rgba(139, 92, 246, 0.5)",
-              "0 0 40px rgba(139, 92, 246, 0.8)",
-              "0 0 20px rgba(139, 92, 246, 0.5)",
-            ],
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        >
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-violet-200 to-cyan-200">
-            Skills & Technologies
-          </span>
-        </motion.h2>
-        <motion.div
-          initial={{ width: 0 }}
-          whileInView={{ width: "60%" }}
-          transition={{ duration: 2, delay: 0.5 }}
-          className="h-0.5 bg-gradient-to-r from-transparent via-violet-400 to-transparent mx-auto mt-6  rounded-full"
-        />
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          className="mt-6 text-gray-300 text-lg font-light mb-16 max-w-2xl mx-auto text-center"
-        >
-          A diverse technical arsenal spanning full-stack development
-          frameworks, cloud infrastructure management, and data science .
-        </motion.p>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div ref={headerRef}>
+          {/* Title with text shadow animation */}
+          <h2 
+            className="text-5xl md:text-7xl font-black relative text-center"
+            style={{
+              animation: headerInView ? 'textGlow 3s ease-in-out infinite' : 'none',
+            }}
+          >
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-violet-200 to-cyan-200">
+              Skills & Technologies
+            </span>
+          </h2>
+
+          {/* Animated underline */}
+          <div
+            className={`h-0.5 bg-gradient-to-r from-transparent via-violet-400 to-transparent mx-auto mt-6 rounded-full transition-all duration-1000 ${
+              headerInView ? 'w-3/5 opacity-100' : 'w-0 opacity-0'
+            }`}
+            style={{ transitionDelay: '500ms' }}
+          />
+
+          {/* Subtitle */}
+          <p
+            className={`mt-6 text-gray-300 text-lg font-light mb-16 max-w-2xl mx-auto text-center transition-opacity duration-1000 ${
+              headerInView ? 'opacity-100' : 'opacity-0'
+            }`}
+            style={{ transitionDelay: '800ms' }}
+          >
+            A diverse technical arsenal spanning full-stack development
+            frameworks, cloud infrastructure management, and data science.
+          </p>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {skillCategories.map((category, idx) => (
             <SkillCategory key={category.title} category={category} idx={idx} />
           ))}
         </div>
-      </motion.div>
+      </div>
+
+      <style>{`
+        @keyframes textGlow {
+          0%, 100% {
+            text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+          }
+          50% {
+            text-shadow: 0 0 40px rgba(139, 92, 246, 0.8);
+          }
+        }
+      `}</style>
     </QuantumBackground>
   );
 };

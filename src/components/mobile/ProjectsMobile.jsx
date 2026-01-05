@@ -6,53 +6,29 @@ import React, {
   useCallback,
   memo,
 } from "react";
-import {
-  motion,
-  AnimatePresence,
-  useScroll,
-  useTransform,
-  useSpring,
-} from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useInView } from "../../hooks/useScrollAnimations";
 
 // Quantum-inspired Tech Tag mobile with holographic effect
 const TechTagMobile = memo(({ tech, index }) => (
-  <motion.span
-    initial={{ opacity: 0, scale: 0.8 }}
-    animate={{ opacity: 1, scale: 1 }}
-    transition={{ delay: index * 0.05 }}
-    className="px-2.5 py-1 text-xs font-semibold backdrop-blur-md bg-gradient-to-r from-violet-500/20 to-cyan-500/20 text-violet-200 rounded-lg border border-violet-400/30 hover:border-violet-400/60 transition-all duration-300 cursor-default"
-    whileHover={{
-      scale: 1.05,
-      backgroundColor: "rgba(139, 92, 246, 0.3)",
-      boxShadow: "0 0 15px rgba(139, 92, 246, 0.3)",
-    }}
+  <span
+    className="px-2.5 py-1 text-xs font-semibold backdrop-blur-md bg-gradient-to-r from-violet-500/20 to-cyan-500/20 text-violet-200 rounded-lg border border-violet-400/30 hover:border-violet-400/60 transition-all duration-300 cursor-default hover:scale-105 hover:bg-violet-500/30 hover:shadow-[0_0_15px_rgba(139,92,246,0.3)] animate-fadeIn"
+    style={{ animationDelay: `${index * 50}ms` }}
   >
     {tech}
-  </motion.span>
+  </span>
 ));
 
 // Neural Network GitHub Button mobile
 const GitHubButtonMobile = memo(({ githubUrl }) => (
-  <motion.a
+  <a
     href={githubUrl}
     target="_blank"
     rel="noopener noreferrer"
-    className="group relative inline-flex items-center gap-1.5 px-4 py-2 rounded-lg backdrop-blur-xl bg-gradient-to-r from-violet-600/20 to-cyan-600/20 border border-violet-400/30 text-white text-xs font-semibold overflow-hidden"
-    whileHover={{ scale: 1.05, borderColor: "rgba(139, 92, 246, 0.6)" }}
-    whileTap={{ scale: 0.98 }}
+    className="group relative inline-flex items-center gap-1.5 px-4 py-2 rounded-lg backdrop-blur-xl bg-gradient-to-r from-violet-600/20 to-cyan-600/20 border border-violet-400/30 text-white text-xs font-semibold overflow-hidden hover:scale-105 hover:border-violet-400/60 active:scale-[0.98] transition-all duration-300"
   >
     {/* Animated background pulse */}
-    <motion.div
-      className="absolute inset-0 bg-gradient-to-r from-violet-500/0 via-violet-500/30 to-cyan-500/0"
-      animate={{
-        x: ["-100%", "100%"],
-      }}
-      transition={{
-        duration: 2,
-        repeat: Infinity,
-        ease: "linear",
-      }}
-    />
+    <div className="absolute inset-0 bg-gradient-to-r from-violet-500/0 via-violet-500/30 to-cyan-500/0 animate-shimmer" />
 
     <svg
       className="w-4 h-4 relative z-10"
@@ -68,13 +44,11 @@ const GitHubButtonMobile = memo(({ githubUrl }) => (
 
     <span className="relative z-10">View Source</span>
 
-    <motion.svg
-      className="w-3 h-3 relative z-10"
+    <svg
+      className="w-3 h-3 relative z-10 group-hover:translate-x-1 transition-transform duration-300"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
-      animate={{ x: [0, 2, 0] }}
-      transition={{ duration: 1.5, repeat: Infinity }}
     >
       <path
         strokeLinecap="round"
@@ -82,8 +56,8 @@ const GitHubButtonMobile = memo(({ githubUrl }) => (
         strokeWidth={2}
         d="M14 5l7 7m0 0l-7 7m7-7H3"
       />
-    </motion.svg>
-  </motion.a>
+    </svg>
+  </a>
 ));
 
 // Holographic Progress Indicator mobile
@@ -92,11 +66,9 @@ const ProgressIndicatorMobile = memo(
     const isActive = index === projectIndex;
 
     return (
-      <motion.button
-        className="group relative"
+      <button
+        className="group relative hover:scale-120 active:scale-90 transition-transform duration-300"
         onClick={() => onPageChange(index)}
-        whileHover={{ scale: 1.2 }}
-        whileTap={{ scale: 0.9 }}
         aria-label={`Go to project ${index + 1}`}
         style={{
           minWidth: "28px",
@@ -107,13 +79,10 @@ const ProgressIndicatorMobile = memo(
         }}
       >
         {/* Outer glow ring */}
-        <motion.div
-          className={`absolute inset-0 rounded-full ${
-            isActive ? "bg-violet-500/30" : "bg-white/10"
-          } blur-md`}
-          initial={{ scale: 1, opacity: 1 }}
-          animate={isActive ? { scale: [1, 1.3, 1] } : { scale: 1 }}
-          transition={{ duration: 2, repeat: Infinity }}
+        <div
+          className={`absolute inset-0 rounded-full blur-md transition-all duration-300 ${
+            isActive ? "bg-violet-500/30 animate-pulse" : "bg-white/10"
+          }`}
         />
 
         {/* Main dot */}
@@ -127,14 +96,9 @@ const ProgressIndicatorMobile = memo(
 
         {/* Active indicator ring */}
         {isActive && (
-          <motion.div
-            className="absolute inset-0 rounded-full border-2 border-violet-400"
-            initial={{ scale: 1, opacity: 1 }}
-            animate={{ scale: [1, 1.5, 1], opacity: [1, 0, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          />
+          <div className="absolute inset-0 rounded-full border-2 border-violet-400 animate-ping" />
         )}
-      </motion.button>
+      </button>
     );
   }
 );
@@ -144,12 +108,9 @@ const NavigationButtonMobile = memo(({ direction, onClick, children }) => {
   const isLeft = direction === "left";
 
   return (
-    <motion.button
-      className="absolute top-1/2 p-3 rounded-xl backdrop-blur-xl bg-gradient-to-r from-violet-600/20 to-cyan-600/20 border border-violet-400/30 hover:border-violet-400/60 z-30 transition-all duration-300 overflow-hidden touch-manipulation select-none"
+    <button
+      className="absolute top-1/2 p-3 rounded-xl backdrop-blur-xl bg-gradient-to-r from-violet-600/20 to-cyan-600/20 border border-violet-400/30 hover:border-violet-400/60 z-30 transition-all duration-300 overflow-hidden touch-manipulation select-none hover:scale-105 active:scale-[0.98]"
       onClick={onClick}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.98 }}
-      layout={false}
       style={{
         [isLeft ? "left" : "right"]: "0.5rem",
         transform: "translateY(-50%)",
@@ -160,20 +121,13 @@ const NavigationButtonMobile = memo(({ direction, onClick, children }) => {
       }}
     >
       {/* Animated background pulse */}
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-violet-500/0 via-violet-500/30 to-cyan-500/0"
-        animate={{
-          x: isLeft ? ["100%", "-100%"] : ["-100%", "100%"],
-        }}
-        transition={{
-          duration: 2,
-          repeat: Infinity,
-          ease: "linear",
-        }}
+      <div
+        className="absolute inset-0 bg-gradient-to-r from-violet-500/0 via-violet-500/30 to-cyan-500/0 animate-shimmer"
+        style={{ animationDirection: isLeft ? "reverse" : "normal" }}
       />
 
       <div className="relative z-10">{children}</div>
-    </motion.button>
+    </button>
   );
 });
 
@@ -182,21 +136,7 @@ const ProjectsMobile = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const containerRef = useRef(null);
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  });
-
-  // Mémorisation de la configuration du spring
-  const springConfig = useMemo(() => ({ stiffness: 100, damping: 30 }), []);
-
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.9, 1], [0, 1, 1, 0]);
-  const scale = useTransform(
-    scrollYProgress,
-    [0, 0.2, 0.9, 1],
-    [0.8, 1, 1, 0.8]
-  );
+  const { ref: sectionRef, hasBeenInView } = useInView({ threshold: 0.2 });
 
   // Mémorisation des projets
   const projects = useMemo(
@@ -362,58 +302,36 @@ const ProjectsMobile = () => {
       className="relative min-h-screen py-16"
       ref={containerRef}
     >
-      <motion.div
-        className="max-w-full mx-auto px-3"
-        style={{
-          opacity: useSpring(opacity, springConfig),
-          scale: useSpring(scale, springConfig),
-          willChange: "transform, opacity",
-        }}
+      <div
+        ref={sectionRef}
+        className={`max-w-full mx-auto px-3 transition-all duration-1000 ${
+          hasBeenInView ? "opacity-100 scale-100" : "opacity-0 scale-95"
+        }`}
+        style={{ willChange: "transform, opacity" }}
       >
-        <motion.h2
-          className="text-5xl md:text-7xl font-black relative text-center"
-          animate={{
-            textShadow: [
-              "0 0 15px rgba(139, 92, 246, 0.4)",
-              "0 0 25px rgba(139, 92, 246, 0.6)",
-              "0 0 15px rgba(139, 92, 246, 0.4)",
-            ],
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        >
+        <h2 className="text-5xl md:text-7xl font-black relative text-center animate-textGlow">
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-violet-200 to-cyan-200">
             Projects
           </span>
-        </motion.h2>
+        </h2>
 
-        <motion.div
-          initial={{ width: 0 }}
-          whileInView={{ width: "70%" }}
-          transition={{ duration: 1.5, delay: 0.3 }}
-          className="h-0.5 bg-gradient-to-r from-transparent via-violet-400 to-transparent mx-auto mt-4 rounded-full"
+        <div
+          className="h-0.5 bg-gradient-to-r from-transparent via-violet-400 to-transparent mx-auto mt-4 rounded-full animate-expand"
+          style={{ animationDelay: "300ms" }}
         />
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-          className="mt-4 text-gray-300 text-base font-light max-w-sm mx-auto mb-24 text-center "
+        <p
+          className="mt-4 text-gray-300 text-base font-light max-w-sm mx-auto mb-24 text-center animate-fadeIn"
+          style={{ animationDelay: "600ms" }}
         >
           A portfolio of deployed full-stack applications, integrating modern
           frameworks with cloud infrastructure for scalable solutions.{" "}
-        </motion.p>
+        </p>
 
-        <motion.div
+        <div
           className="relative h-[600px] overflow-hidden rounded-xl mx-2"
           onTouchStart={() => setIsPaused(true)}
           onTouchEnd={() => setIsPaused(false)}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
           style={{ willChange: "transform, opacity" }}
         >
           <AnimatePresence initial={false} custom={direction} mode="wait">
@@ -449,10 +367,8 @@ const ProjectsMobile = () => {
               className="absolute w-full h-full flex items-center justify-center px-10"
               style={{ willChange: "transform, opacity" }}
             >
-              <motion.div
-                className="w-full max-w-sm mx-auto"
-                whileHover={{ scale: 1.01 }}
-                transition={{ duration: 0.3 }}
+              <div
+                className="w-full max-w-sm mx-auto hover:scale-[1.01] transition-transform duration-300"
                 style={{ willChange: "transform" }}
               >
                 {/* Quantum Card with Neural Network Border */}
@@ -485,41 +401,20 @@ const ProjectsMobile = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-violet-950/90 via-purple-900/40 to-transparent" />
 
                     {/* Period badge */}
-                    <motion.div
-                      className="absolute top-3 right-3 px-3 py-1.5 rounded-lg backdrop-blur-md bg-gradient-to-r from-violet-500/30 to-cyan-500/30 border border-violet-400/40 text-xs font-semibold text-violet-100"
-                      whileHover={{ scale: 1.05 }}
-                    >
+                    <div className="absolute top-3 right-3 px-3 py-1.5 rounded-lg backdrop-blur-md bg-gradient-to-r from-violet-500/30 to-cyan-500/30 border border-violet-400/40 text-xs font-semibold text-violet-100 hover:scale-105 transition-transform duration-300">
                       {projects[projectIndex].period}
-                    </motion.div>
+                    </div>
 
                     {/* Holographic corner accent */}
-                    <motion.div
-                      className="absolute top-0 left-0 w-24 h-24 bg-gradient-to-br from-cyan-400/30 to-transparent blur-2xl"
-                      animate={{
-                        opacity: [0.3, 0.6, 0.3],
-                        scale: [1, 1.2, 1],
-                      }}
-                      transition={{ duration: 3, repeat: Infinity }}
-                    />
+                    <div className="absolute top-0 left-0 w-24 h-24 bg-gradient-to-br from-cyan-400/30 to-transparent blur-2xl animate-pulse" />
                   </div>
 
                   {/* Project Content */}
                   <div className="relative p-4 flex flex-col flex-1 min-h-0">
                     <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-violet-500/30 space-y-2.5 pr-2">
                       {/* Title with Glow */}
-                      <motion.h3
-                        className="text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-white via-violet-200 to-cyan-200 leading-tight break-words min-w-0"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{
-                          opacity: 1,
-                          y: 0,
-                          textShadow: [
-                            "0 0 8px rgba(139, 92, 246, 0.3)",
-                            "0 0 15px rgba(139, 92, 246, 0.5)",
-                            "0 0 8px rgba(139, 92, 246, 0.3)",
-                          ],
-                        }}
-                        transition={{ duration: 2 }}
+                      <h3
+                        className="text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-white via-violet-200 to-cyan-200 leading-tight break-words min-w-0 animate-textGlow"
                         style={{
                           overflow: "hidden",
                           textOverflow: "ellipsis",
@@ -529,72 +424,58 @@ const ProjectsMobile = () => {
                         }}
                       >
                         {projects[projectIndex].title}
-                      </motion.h3>
+                      </h3>
 
                       {/* Description */}
-                      <motion.p
-                        className="text-sm text-gray-100 font-medium leading-relaxed"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.1, duration: 0.4 }}
+                      <p
+                        className="text-sm text-gray-100 font-medium leading-relaxed animate-fadeIn"
                         style={{
                           overflow: "hidden",
                           textOverflow: "ellipsis",
                           display: "-webkit-box",
                           WebkitLineClamp: 1,
                           WebkitBoxOrient: "vertical",
+                          animationDelay: "100ms",
                         }}
                       >
                         {projects[projectIndex].description}
-                      </motion.p>
+                      </p>
 
                       {/* Details */}
-                      <motion.p
-                        className="text-xs text-gray-300 leading-relaxed"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.2, duration: 0.4 }}
+                      <p
+                        className="text-xs text-gray-300 leading-relaxed animate-fadeIn"
                         style={{
                           overflow: "hidden",
                           textOverflow: "ellipsis",
                           display: "-webkit-box",
                           WebkitLineClamp: 3,
                           WebkitBoxOrient: "vertical",
+                          animationDelay: "200ms",
                         }}
                       >
                         {projects[projectIndex].details}
-                      </motion.p>
+                      </p>
                     </div>
 
                     {/* Tech Stack & GitHub Button */}
                     <div className="mt-3 pt-3 space-y-2.5 flex-shrink-0 border-t border-violet-500/20">
                       {/* Tech tags */}
-                      <motion.div
-                        className="flex flex-wrap gap-1.5 max-h-16 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-violet-500/30"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3, duration: 0.4 }}
-                      >
+                      <div className="flex flex-wrap gap-1.5 max-h-16 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-violet-500/30">
                         {projects[projectIndex].tech.map((tech, idx) => (
                           <TechTagMobile key={tech} tech={tech} index={idx} />
                         ))}
-                      </motion.div>
+                      </div>
 
                       {/* GitHub Button */}
-                      <motion.div
-                        className="flex justify-center"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.4, duration: 0.4 }}
-                      >
+                      <div className="flex justify-center">
                         <GitHubButtonMobile
                           githubUrl={projects[projectIndex].github}
                         />
-                      </motion.div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             </motion.div>
           </AnimatePresence>
 
@@ -638,27 +519,15 @@ const ProjectsMobile = () => {
               />
             </svg>
           </NavigationButtonMobile>
-        </motion.div>
+        </div>
 
         {/* Holographic Progress Indicators */}
-        <motion.div
-          className="flex justify-center mt-8 gap-3 px-4 py-2.5 rounded-full backdrop-blur-xl bg-gradient-to-r from-violet-950/50 to-cyan-950/50 border border-violet-500/30 mx-auto w-fit"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
+        <div
+          className="flex justify-center mt-8 gap-3 px-4 py-2.5 rounded-full backdrop-blur-xl bg-gradient-to-r from-violet-950/50 to-cyan-950/50 border border-violet-500/30 mx-auto w-fit relative animate-fadeInUp"
+          style={{ animationDelay: "600ms" }}
         >
           {/* Animated background glow */}
-          <motion.div
-            className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500/0 via-violet-500/20 to-cyan-500/0"
-            animate={{
-              x: ["-100%", "100%"],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-          />
+          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-500/0 via-violet-500/20 to-cyan-500/0 animate-shimmer" />
 
           {projects.map((_, index) => (
             <ProgressIndicatorMobile
@@ -669,8 +538,8 @@ const ProjectsMobile = () => {
               totalProjects={projects.length}
             />
           ))}
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
     </div>
   );
 };

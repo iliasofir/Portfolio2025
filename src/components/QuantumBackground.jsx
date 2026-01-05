@@ -1,7 +1,6 @@
-import React, { useMemo, useEffect, useRef } from "react";
-import { motion, useTransform, useScroll } from "framer-motion";
+import React, { useMemo } from "react";
 
-// Code Rain Effect Component
+// Simplified Code Rain Effect Component using CSS
 const CodeRain = () => {
   const codeChars = useMemo(
     () => [
@@ -25,12 +24,14 @@ const CodeRain = () => {
 
   const streams = useMemo(
     () =>
-      [...Array(15)].map((_, i) => ({
+      [...Array(8)].map((_, i) => ({
+        // Reduced from 15 to 8 streams
         id: i,
         left: Math.random() * 100,
         delay: Math.random() * 5,
         duration: 5 + Math.random() * 5,
-        chars: [...Array(8)].map(
+        chars: [...Array(6)].map(
+          // Reduced from 8 to 6 chars
           () => codeChars[Math.floor(Math.random() * codeChars.length)]
         ),
       })),
@@ -38,38 +39,27 @@ const CodeRain = () => {
   );
 
   return (
-    <div className="absolute inset-0 overflow-hidden opacity-30 pointer-events-none">
+    <div className="absolute inset-0 overflow-hidden opacity-20 pointer-events-none">
       {streams.map((stream) => (
-        <motion.div
+        <div
           key={stream.id}
           className="absolute top-0 text-xs font-mono text-cyan-400"
-          style={{ left: `${stream.left}%` }}
-          animate={{
-            y: ["-100%", "100vh"],
-            opacity: [0, 1, 0],
-          }}
-          transition={{
-            duration: stream.duration,
-            repeat: Infinity,
-            delay: stream.delay,
-            ease: "linear",
+          style={{
+            left: `${stream.left}%`,
+            animation: `codeRain ${stream.duration}s linear infinite`,
+            animationDelay: `${stream.delay}s`,
           }}
         >
           {stream.chars.map((char, i) => (
-            <motion.div
+            <div
               key={i}
-              initial={{ opacity: 1 }}
-              animate={{ opacity: [1, 0.3, 1] }}
-              transition={{
-                duration: 0.5,
-                repeat: Infinity,
-                delay: i * 0.1,
-              }}
+              className="animate-pulse-slow"
+              style={{ animationDelay: `${i * 0.1}s` }}
             >
               {char}
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       ))}
     </div>
   );
@@ -82,32 +72,6 @@ const QuantumBackground = ({
   id,
   variant = "default",
 }) => {
-  const animationRef = useRef(null);
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  });
-
-  const backgroundY = useTransform(scrollYProgress, [0, 1], [-50, 50]);
-  const rotateX = useTransform(scrollYProgress, [0, 0.5, 1], [15, 0, -15]);
-
-  // Cleanup effect to prevent memory leaks
-  useEffect(() => {
-    return () => {
-      // Cleanup scroll listeners and transformations
-      if (scrollYProgress) {
-        scrollYProgress.clearListeners?.();
-      }
-      if (backgroundY) {
-        backgroundY.clearListeners?.();
-      }
-      if (rotateX) {
-        rotateX.clearListeners?.();
-      }
-    };
-  }, [scrollYProgress, backgroundY, rotateX]);
-
   // Different color schemes based on variant
   const getColorScheme = () => {
     switch (variant) {
@@ -181,16 +145,10 @@ const QuantumBackground = ({
       {/* Code Rain Effect */}
       <CodeRain />
 
-      {/* Quantum field background */}
+      {/* Quantum field background - Simplified without scroll parallax */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Primary energy field */}
-        <motion.div
-          style={{
-            y: backgroundY,
-            rotateX: rotateX,
-          }}
-          className="absolute inset-0"
-        >
+        <div className="absolute inset-0">
           <div
             className={`absolute top-20 left-1/4 w-96 h-96 bg-gradient-radial from-${
               colors.primary
@@ -210,7 +168,7 @@ const QuantumBackground = ({
           <div
             className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-conic from-${colors.conic} via-transparent to-${colors.conicTo} rounded-full blur-2xl animate-spin-slow`}
           />
-        </motion.div>
+        </div>
 
         {/* Neural network grid */}
         <div className="absolute inset-0 opacity-20">
@@ -247,29 +205,24 @@ const QuantumBackground = ({
           </svg>
         </div>
 
-        {/* Floating energy orbs */}
-        {Array.from({ length: 6 }).map((_, i) => (
-          <motion.div
-            key={i}
-            animate={{
-              x: [0, 100, 0],
-              y: [0, -50, 0],
-              opacity: [0.3, 0.8, 0.3],
-              scale: [1, 1.2, 1],
-            }}
-            transition={{
-              duration: 8 + i * 2,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: i * 0.5,
-            }}
-            className={`absolute w-4 h-4 rounded-full bg-gradient-to-r ${colors.orbs} blur-sm`}
-            style={{
-              left: `${20 + i * 15}%`,
-              top: `${30 + (i % 2) * 40}%`,
-            }}
-          />
-        ))}
+        {/* Floating energy orbs - Simplified with CSS */}
+        {Array.from({ length: 4 }).map(
+          (
+            _,
+            i // Reduced from 6 to 4 orbs
+          ) => (
+            <div
+              key={i}
+              className={`absolute w-4 h-4 rounded-full bg-gradient-to-r ${colors.orbs} blur-sm animate-float`}
+              style={{
+                left: `${20 + i * 20}%`,
+                top: `${30 + (i % 2) * 40}%`,
+                animationDelay: `${i * 0.5}s`,
+                animationDuration: `${8 + i * 2}s`,
+              }}
+            />
+          )
+        )}
       </div>
 
       {/* Content */}

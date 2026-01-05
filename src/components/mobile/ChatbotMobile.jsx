@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, memo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 
 // Fonction pour améliorer le formatage des réponses
 const formatResponse = (text) => {
@@ -28,96 +28,66 @@ const formatResponse = (text) => {
 
 // Composant mémorisé pour un message de chat mobile
 const ChatMessageMobile = memo(({ message, isBot, isTyping }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20, scale: 0.95 }}
-    animate={{ opacity: 1, y: 0, scale: 1 }}
+  <div
     className={`flex items-start gap-2 ${
       isBot ? "justify-start" : "justify-end"
-    } px-2`}
+    } px-2 animate-fadeInUp`}
   >
     {isBot && (
-      <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: 0.1 }}
-        className="w-6 h-6 rounded-full bg-gradient-to-r from-violet-500 to-cyan-500 flex items-center justify-center shadow-lg flex-shrink-0 p-1"
-      >
+      <div className="w-6 h-6 rounded-full bg-gradient-to-r from-violet-500 to-cyan-500 flex items-center justify-center shadow-lg flex-shrink-0 p-1 animate-scaleIn">
         <img
           src="/images/bot.png"
           alt="AI Assistant"
           className="w-full h-full object-contain"
           style={{ filter: "brightness(0) invert(1)" }}
         />
-      </motion.div>
+      </div>
     )}
 
-    <motion.div
+    <div
       className={`max-w-[85%] p-2.5 rounded-2xl ${
         isBot
           ? "bg-gradient-to-r from-violet-50 to-cyan-50 text-gray-800 rounded-bl-md border border-violet-100"
           : "bg-gradient-to-r from-violet-500 to-cyan-500 text-white rounded-br-md"
-      } shadow-md`}
-      whileHover={{ scale: 1.02 }}
-      transition={{ duration: 0.2 }}
+      } shadow-md hover:scale-[1.02] transition-transform duration-200`}
     >
       {isTyping ? (
         <div className="flex space-x-1">
           {[0, 1, 2].map((i) => (
-            <motion.div
+            <div
               key={i}
-              className="w-1.5 h-1.5 bg-gray-500 rounded-full"
-              animate={{
-                scale: [1, 1.5, 1],
-                opacity: [0.5, 1, 0.5],
-              }}
-              transition={{
-                duration: 1,
-                repeat: Infinity,
-                delay: i * 0.2,
-              }}
+              className="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce"
+              style={{ animationDelay: `${i * 200}ms` }}
             />
           ))}
         </div>
       ) : (
         <p className="text-xs leading-relaxed">{message}</p>
       )}
-    </motion.div>
+    </div>
 
     {!isBot && (
-      <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: 0.1 }}
-        className="w-6 h-6 rounded-full bg-gradient-to-r from-cyan-500 to-violet-500 flex items-center justify-center text-white text-xs font-bold shadow-lg flex-shrink-0"
-      >
+      <div className="w-6 h-6 rounded-full bg-gradient-to-r from-cyan-500 to-violet-500 flex items-center justify-center text-white text-xs font-bold shadow-lg flex-shrink-0 animate-scaleIn">
         👤
-      </motion.div>
+      </div>
     )}
-  </motion.div>
+  </div>
 ));
 
 // Composant pour les suggestions de questions mobiles
 const QuickSuggestionsMobile = memo(({ suggestions, onSuggestionClick }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    className="flex flex-wrap gap-1.5 mt-3 px-2"
-  >
+  <div className="flex flex-wrap gap-1.5 mt-3 px-2 animate-fadeInUp">
     {suggestions.map((suggestion, index) => (
-      <motion.button
+      <button
         key={index}
         onClick={() => onSuggestionClick(suggestion)}
-        className="px-2.5 py-1.5 text-xs bg-gradient-to-r from-violet-50 to-cyan-50 hover:from-violet-100 hover:to-cyan-100 text-violet-700 rounded-full border border-violet-200 transition-all duration-200 shadow-sm hover:shadow-md"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: index * 0.1 }}
+        className="px-2.5 py-1.5 text-xs bg-gradient-to-r from-violet-50 to-cyan-50 hover:from-violet-100 hover:to-cyan-100 text-violet-700 rounded-full border border-violet-200 transition-all duration-200 shadow-sm hover:shadow-md hover:scale-105 active:scale-95 animate-scaleIn"
+        style={{ animationDelay: `${index * 100}ms` }}
       >
         {suggestion}
-      </motion.button>
+      </button>
     ))}
-  </motion.div>
+  </div>
 ));
 
 const ChatbotMobile = ({ isOpen, onClose }) => {
@@ -379,55 +349,37 @@ Be helpful and informative about his background. Share specific details about hi
   return (
     <AnimatePresence>
       {/* Mobile Chat Window - Full Screen Centered */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
+      <div
         onClick={onClose}
-        className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
+        className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 animate-fadeIn"
       >
-        <motion.div
+        <div
           onClick={(e) => e.stopPropagation()}
-          className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 w-full max-w-sm h-[70vh] max-h-[600px] flex flex-col overflow-hidden mx-auto"
-          initial={{ y: 50 }}
-          animate={{ y: 0 }}
-          transition={{ duration: 0.3 }}
+          className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 w-full max-w-sm h-[70vh] max-h-[600px] flex flex-col overflow-hidden mx-auto animate-slideInBottom"
         >
           {/* Mobile Header */}
           <div className="bg-gradient-to-r from-violet-500 to-cyan-500 p-3 text-white">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <motion.div
-                  animate={{
-                    rotate: [0, 5, -5, 0],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    repeatType: "loop",
-                  }}
-                  className="w-7 h-7 rounded-full bg-white/25 backdrop-blur-sm flex items-center justify-center p-1.5"
-                >
+                <div className="w-7 h-7 rounded-full bg-white/25 backdrop-blur-sm flex items-center justify-center p-1.5 hover:rotate-6 transition-transform duration-300">
                   <img
                     src="/images/bot.png"
                     alt="AI Assistant"
                     className="w-full h-full object-contain"
                     style={{ filter: "brightness(0) invert(1)" }}
                   />
-                </motion.div>
+                </div>
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="font-semibold text-sm">AI Assistant</h3>
                     {hasResumeData && (
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="px-1.5 py-0.5 bg-cyan-400 text-white text-xs rounded-full flex items-center gap-1 shadow-lg"
+                      <div
+                        className="px-1.5 py-0.5 bg-cyan-400 text-white text-xs rounded-full flex items-center gap-1 shadow-lg animate-scaleIn"
                         title="Enhanced with CV data"
                       >
                         <span className="w-1 h-1 bg-white rounded-full animate-pulse"></span>
                         CV
-                      </motion.div>
+                      </div>
                     )}
                   </div>
                   <p className="text-xs opacity-80">
@@ -436,14 +388,12 @@ Be helpful and informative about his background. Share specific details about hi
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <motion.button
+                <button
                   onClick={onClose}
-                  className="w-6 h-6 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors text-sm"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
+                  className="w-6 h-6 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-all duration-200 text-sm hover:scale-110 active:scale-90"
                 >
                   ✕
-                </motion.button>
+                </button>
               </div>
             </div>
           </div>
@@ -483,23 +433,13 @@ Be helpful and informative about his background. Share specific details about hi
                 className="flex-1 px-3 py-2 rounded-xl border border-violet-200 focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-200 transition-all text-sm bg-white/90 backdrop-blur-sm text-black placeholder-gray-400"
                 disabled={isTyping}
               />
-              <motion.button
+              <button
                 onClick={() => handleSendMessage()}
                 disabled={!inputValue.trim() || isTyping}
-                className="w-8 h-8 rounded-xl bg-gradient-to-r from-violet-500 to-cyan-500 text-white flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transition-shadow"
-                whileHover={{ scale: inputValue.trim() ? 1.05 : 1 }}
-                whileTap={{ scale: inputValue.trim() ? 0.95 : 1 }}
+                className="w-8 h-8 rounded-xl bg-gradient-to-r from-violet-500 to-cyan-500 text-white flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200"
               >
                 {isTyping ? (
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{
-                      duration: 1,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
-                    className="w-3 h-3 border-2 border-white border-t-transparent rounded-full"
-                  />
+                  <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 ) : (
                   <svg
                     className="w-3 h-3"
@@ -515,11 +455,11 @@ Be helpful and informative about his background. Share specific details about hi
                     />
                   </svg>
                 )}
-              </motion.button>
+              </button>
             </div>
           </div>
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
     </AnimatePresence>
   );
 };

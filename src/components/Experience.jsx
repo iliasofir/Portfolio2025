@@ -1,194 +1,169 @@
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { useRef, useState, useMemo, memo } from "react";
 import QuantumBackground from "./QuantumBackground";
+import { useInView } from "../hooks/useScrollAnimations";
+import "../styles/animations.css";
 
 // Composant mémorisé pour une expérience dans la timeline
-const ExperienceCard = memo(({ experience, index, isLeft }) => (
-  <motion.div
-    initial={{ opacity: 0, x: isLeft ? -100 : 100 }}
-    whileInView={{ opacity: 1, x: 0 }}
-    transition={{ duration: 0.6, delay: index * 0.2 }}
-    viewport={{ once: true }}
-    className={`relative flex ${
-      isLeft ? "justify-start" : "justify-end"
-    } mb-12`}
-  >
-    {/* Timeline dot */}
-    <motion.div
-      whileHover={{ scale: 1.3 }}
-      className={`absolute ${isLeft ? "right-0" : "left-0"} top-8 transform ${
-        isLeft ? "translate-x-1/2" : "-translate-x-1/2"
-      } w-5 h-5 bg-gradient-to-br from-violet-400 to-purple-500 rounded-full border-4 border-gray-900 z-20 shadow-lg shadow-violet-500/30`}
-    />
+const ExperienceCard = memo(({ experience, index, isLeft }) => {
+  const { ref, hasBeenInView } = useInView({ threshold: 0.1 });
 
-    {/* Experience Card */}
-    <motion.div
-      whileHover={{ scale: 1.02, y: -5 }}
-      className={`w-full max-w-md backdrop-blur-xl bg-gradient-to-br from-white/10 via-white/5 to-transparent rounded-3xl p-8 border border-violet-400/30 hover:border-violet-400/60 transition-all duration-500 shadow-2xl hover:shadow-violet-500/20 hover:shadow-2xl ${
-        isLeft ? "mr-8" : "ml-8"
-      } before:absolute before:inset-0 before:rounded-3xl before:bg-gradient-to-br before:from-violet-500/10 before:via-purple-500/5 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 relative overflow-hidden`}
+  return (
+    <div
+      ref={ref}
+      className={`relative flex ${
+        isLeft ? "justify-start" : "justify-end"
+      } mb-12 transition-all duration-600 ${
+        hasBeenInView
+          ? "opacity-100 translate-x-0"
+          : `opacity-0 ${isLeft ? "-translate-x-24" : "translate-x-24"}`
+      }`}
+      style={{ transitionDelay: `${index * 0.2}s` }}
     >
-      {/* Header with logo and status */}
-      <div className="flex items-center justify-between mb-6 relative z-10">
-        <motion.div
-          whileHover={{ scale: 1.1 }}
-          transition={{ duration: 0.3 }}
-          className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center border border-gray-200 shadow-lg"
-        >
-          <img
-            src={experience.logo}
-            alt={`${experience.company} Logo`}
-            className="w-14 h-14 object-contain rounded-lg"
-          />
-        </motion.div>
-        <motion.span
-          whileHover={{ scale: 1.05 }}
-          className={`px-4 py-2 rounded-xl text-xs font-semibold backdrop-blur-sm ${
-            experience.status === "En cours"
-              ? "bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 shadow-emerald-500/20"
-              : "bg-violet-500/20 text-violet-300 border border-violet-400/40 shadow-violet-500/20"
-          } shadow-lg`}
-        >
-          {experience.status}
-        </motion.span>
-      </div>
+      {/* Timeline dot */}
+      <div
+        className={`absolute ${isLeft ? "right-0" : "left-0"} top-8 transform ${
+          isLeft ? "translate-x-1/2" : "-translate-x-1/2"
+        } w-5 h-5 bg-gradient-to-br from-violet-400 to-purple-500 rounded-full border-4 border-gray-900 z-20 shadow-lg shadow-violet-500/30 transition-transform duration-300 hover:scale-125`}
+      />
 
-      {/* Company and role */}
-      <motion.h3
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
-        className="text-xl font-bold text-white mb-2 relative z-10"
+      {/* Experience Card */}
+      <div
+        className={`w-full max-w-md backdrop-blur-xl bg-gradient-to-br from-white/10 via-white/5 to-transparent rounded-3xl p-8 border border-violet-400/30 hover:border-violet-400/60 transition-all duration-500 shadow-2xl hover:shadow-violet-500/20 hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1 ${
+          isLeft ? "mr-8" : "ml-8"
+        } before:absolute before:inset-0 before:rounded-3xl before:bg-gradient-to-br before:from-violet-500/10 before:via-purple-500/5 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 relative overflow-hidden`}
       >
-        {experience.role}
-      </motion.h3>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
-        className="flex items-center gap-3 mb-3 relative z-10"
-      >
-        <div className="w-5 h-5 rounded-lg bg-violet-500/20 border border-violet-400/30 flex items-center justify-center">
-          <svg
-            className="w-3 h-3 text-violet-300"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path
-              fillRule="evenodd"
-              d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-6a1 1 0 00-1-1H9a1 1 0 00-1 1v6a1 1 0 01-1 1H4a1 1 0 110-2V4z"
-              clipRule="evenodd"
+        {/* Header with logo and status */}
+        <div className="flex items-center justify-between mb-6 relative z-10">
+          <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center border border-gray-200 shadow-lg transition-transform duration-300 hover:scale-110">
+            <img
+              src={experience.logo}
+              alt={`${experience.company} Logo`}
+              className="w-14 h-14 object-contain rounded-lg"
             />
-          </svg>
-        </div>
-        <p className="text-violet-300 text-base font-semibold">
-          {experience.company}
-        </p>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ delay: 0.4 }}
-        className="flex items-center gap-3 mb-3 relative z-10"
-      >
-        <div className="w-5 h-5 rounded-lg bg-gray-600/20 border border-gray-500/30 flex items-center justify-center">
-          <svg
-            className="w-3 h-3 text-gray-300"
-            fill="currentColor"
-            viewBox="0 0 20 20"
+          </div>
+          <span
+            className={`px-4 py-2 rounded-xl text-xs font-semibold backdrop-blur-sm transition-transform duration-300 hover:scale-105 ${
+              experience.status === "En cours"
+                ? "bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 shadow-emerald-500/20"
+                : "bg-violet-500/20 text-violet-300 border border-violet-400/40 shadow-violet-500/20"
+            } shadow-lg`}
           >
-            <path
-              fillRule="evenodd"
-              d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-              clipRule="evenodd"
-            />
-          </svg>
+            {experience.status}
+          </span>
         </div>
-        <p className="text-gray-300 text-base">{experience.location}</p>
-      </motion.div>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-        className="flex items-center gap-3 mb-5 relative z-10"
-      >
-        <div className="w-5 h-5 rounded-lg bg-gray-600/20 border border-gray-500/30 flex items-center justify-center">
-          <svg
-            className="w-3 h-3 text-gray-300"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path
-              fillRule="evenodd"
-              d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </div>
-        <p className="text-gray-300 text-base">{experience.period}</p>
-      </motion.div>
-
-      {/* Description */}
-      <motion.p
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ delay: 0.6 }}
-        className="text-gray-200 text-sm leading-relaxed mb-5 relative z-10"
-      >
-        {experience.description}
-      </motion.p>
-
-      {/* Technologies */}
-      {experience.technologies && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ delay: 0.7 }}
-          className="flex flex-wrap gap-2 relative z-10"
+        {/* Company and role */}
+        <h3
+          className="text-xl font-bold text-white mb-2 relative z-10"
+          style={{ opacity: 0, animation: "fadeIn 0.4s ease forwards 0.2s" }}
         >
-          {experience.technologies.map((tech, techIndex) => (
-            <motion.span
-              key={techIndex}
-              whileHover={{
-                scale: 1.1,
-                backgroundColor: "rgba(139, 92, 246, 0.4)",
-              }}
-              className="px-3 py-2 rounded-xl text-xs font-semibold bg-violet-500/15 text-violet-300 border border-violet-400/30 backdrop-blur-sm shadow-lg hover:shadow-violet-500/20 transition-all duration-300"
+          {experience.role}
+        </h3>
+
+        <div
+          className="flex items-center gap-3 mb-3 relative z-10"
+          style={{ opacity: 0, animation: "fadeIn 0.4s ease forwards 0.3s" }}
+        >
+          <div className="w-5 h-5 rounded-lg bg-violet-500/20 border border-violet-400/30 flex items-center justify-center">
+            <svg
+              className="w-3 h-3 text-violet-300"
+              fill="currentColor"
+              viewBox="0 0 20 20"
             >
-              {tech}
-            </motion.span>
-          ))}
-        </motion.div>
-      )}
-    </motion.div>
-  </motion.div>
-));
+              <path
+                fillRule="evenodd"
+                d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-6a1 1 0 00-1-1H9a1 1 0 00-1 1v6a1 1 0 01-1 1H4a1 1 0 110-2V4z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
+          <p className="text-violet-300 text-base font-semibold">
+            {experience.company}
+          </p>
+        </div>
+
+        <div
+          className="flex items-center gap-3 mb-3 relative z-10"
+          style={{ opacity: 0, animation: "fadeIn 0.4s ease forwards 0.4s" }}
+        >
+          <div className="w-5 h-5 rounded-lg bg-gray-600/20 border border-gray-500/30 flex items-center justify-center">
+            <svg
+              className="w-3 h-3 text-gray-300"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
+          <p className="text-gray-300 text-base">{experience.location}</p>
+        </div>
+
+        <div
+          className="flex items-center gap-3 mb-5 relative z-10"
+          style={{ opacity: 0, animation: "fadeIn 0.4s ease forwards 0.5s" }}
+        >
+          <div className="w-5 h-5 rounded-lg bg-gray-600/20 border border-gray-500/30 flex items-center justify-center">
+            <svg
+              className="w-3 h-3 text-gray-300"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
+          <p className="text-gray-300 text-base">{experience.period}</p>
+        </div>
+
+        {/* Description */}
+        <p
+          className="text-gray-200 text-sm leading-relaxed mb-5 relative z-10"
+          style={{ opacity: 0, animation: "fadeIn 0.4s ease forwards 0.6s" }}
+        >
+          {experience.description}
+        </p>
+
+        {/* Technologies */}
+        {experience.technologies && (
+          <div
+            className="flex flex-wrap gap-2 relative z-10"
+            style={{ opacity: 0, animation: "fadeIn 0.4s ease forwards 0.7s" }}
+          >
+            {experience.technologies.map((tech, techIndex) => (
+              <span
+                key={techIndex}
+                className="px-3 py-2 rounded-xl text-xs font-semibold bg-violet-500/15 text-violet-300 border border-violet-400/30 backdrop-blur-sm shadow-lg hover:shadow-violet-500/20 transition-all duration-300 hover:scale-110 hover:bg-violet-500/40"
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+});
+
+ExperienceCard.displayName = "ExperienceCard";
 
 const Experience = () => {
   const containerRef = useRef(null);
   const timelineRef = useRef(null);
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  });
+  const { ref: sectionRef, hasBeenInView } = useInView({ threshold: 0.1 });
 
   // Timeline scroll progress for the moving point
   const { scrollYProgress: timelineProgress } = useScroll({
     target: timelineRef,
     offset: ["start center", "end center"],
   });
-
-  const springConfig = useMemo(() => ({ stiffness: 100, damping: 30 }), []);
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.9, 1], [0, 1, 1, 0]);
-  const scale = useTransform(
-    scrollYProgress,
-    [0, 0.2, 0.9, 1],
-    [0.8, 1, 1, 0.8]
-  );
 
   // Calculate the moving point position (constrained to timeline edges)
   const pointY = useTransform(timelineProgress, [0, 1], ["0%", "100%"]);
@@ -206,13 +181,7 @@ const Experience = () => {
         logo: "/images/AWF.png",
         description:
           "Built a general assembly application using Spring Boot (Java) and PostgreSQL. Developing a modern Angular + TailwindCSS frontend with a fluid user experience. Integrating advanced features such as JWT authentication, OTP-based login, and automated voting and quorum tracking.",
-        technologies: [
-          "Java",
-          "Spring Boot",
-          "Angular",
-          "PostgreSQL",
-          "SMTP",
-        ],
+        technologies: ["Java", "Spring Boot", "Angular", "PostgreSQL", "SMTP"],
       },
       {
         role: "QA Automation Engineering Intern",
@@ -242,7 +211,6 @@ const Experience = () => {
           "Data Science",
         ],
       },
-       
     ],
     []
   );
@@ -254,82 +222,72 @@ const Experience = () => {
       variant="purple"
       className="py-20"
     >
-      <motion.div
-        style={{
-          opacity: useSpring(opacity, springConfig),
-          scale: useSpring(scale, springConfig),
-        }}
-        className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10"
+      <div
+        ref={sectionRef}
+        className={`max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 transition-all duration-800 ${
+          hasBeenInView ? "opacity-100 scale-100" : "opacity-0 scale-95"
+        }`}
       >
-        <motion.div
-          initial={{ opacity: 0, y: -50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, type: "spring", stiffness: 100 }}
-          className="mb-20 relative text-center"
+        <div
+          className={`mb-20 relative text-center transition-all duration-1000 ${
+            hasBeenInView
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 -translate-y-12"
+          }`}
         >
-          <motion.div
-            animate={{
-              scale: [1, 1.1, 1],
-              opacity: [0.4, 0.7, 0.4],
-            }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
+          <div
             className="absolute inset-0 flex justify-center items-center -z-10"
+            style={{ animation: "quantum-pulse 4s ease-in-out infinite" }}
           >
             <div className="w-full h-24 bg-gradient-to-r from-transparent via-violet-500/20 to-transparent blur-2xl rounded-full" />
-          </motion.div>
+          </div>
 
-          <motion.h2
+          <h2
             className="text-5xl md:text-7xl font-black relative"
-            animate={{
-              textShadow: [
-                "0 0 20px rgba(139, 92, 246, 0.5)",
-                "0 0 40px rgba(139, 92, 246, 0.8)",
-                "0 0 20px rgba(139, 92, 246, 0.5)",
-              ],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
+            style={{ animation: "textGlow 3s ease-in-out infinite" }}
           >
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-violet-200 to-cyan-200">
               Experiences
             </span>
-          </motion.h2>
+          </h2>
 
-          <motion.div
-            initial={{ width: 0 }}
-            whileInView={{ width: "60%" }}
-            transition={{ duration: 2, delay: 0.5 }}
-            className="h-0.5 bg-gradient-to-r from-transparent via-violet-400 to-transparent mx-auto mt-6 rounded-full"
+          <div
+            className={`h-0.5 bg-gradient-to-r from-transparent via-violet-400 to-transparent mx-auto mt-6 rounded-full transition-all duration-1000 ${
+              hasBeenInView ? "w-3/5 opacity-100" : "w-0 opacity-0"
+            }`}
+            style={{ transitionDelay: "500ms" }}
           />
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-            className="mt-6 text-gray-300 text-lg font-light max-w-2xl mx-auto"
+          <p
+            className={`mt-6 text-gray-300 text-lg font-light max-w-2xl mx-auto transition-opacity duration-1000 ${
+              hasBeenInView ? "opacity-100" : "opacity-0"
+            }`}
+            style={{ transitionDelay: "800ms" }}
           >
             Proven track record of delivering full-stack web applications and
             data-driven solutions for enterprise clients.
-          </motion.p>
-        </motion.div>
+          </p>
+
+          <style>{`
+            @keyframes quantum-pulse {
+              0%, 100% { transform: scale(1); opacity: 0.4; }
+              50% { transform: scale(1.1); opacity: 0.7; }
+            }
+            @keyframes textGlow {
+              0%, 100% { text-shadow: 0 0 20px rgba(139, 92, 246, 0.5); }
+              50% { text-shadow: 0 0 40px rgba(139, 92, 246, 0.8); }
+            }
+          `}</style>
+        </div>
 
         {/* Timeline container */}
         <div className="relative" ref={timelineRef}>
           {/* Vertical timeline line */}
-          <motion.div
-            initial={{ scaleY: 0 }}
-            whileInView={{ scaleY: 1 }}
-            transition={{ duration: 1, delay: 0.5 }}
-            viewport={{ once: true }}
-            className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-violet-400 via-purple-500 to-violet-400 opacity-40 rounded-full shadow-lg shadow-violet-500/20"
-            style={{ originY: 0 }}
+          <div
+            className={`absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-violet-400 via-purple-500 to-violet-400 opacity-40 rounded-full shadow-lg shadow-violet-500/20 transition-transform duration-1000 origin-top ${
+              hasBeenInView ? "scale-y-100" : "scale-y-0"
+            }`}
+            style={{ transitionDelay: "500ms" }}
           />
 
           {/* Animated scroll point */}
@@ -371,7 +329,7 @@ const Experience = () => {
             ))}
           </div>
         </div>
-      </motion.div>
+      </div>
     </QuantumBackground>
   );
 };
