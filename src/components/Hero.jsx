@@ -6,16 +6,10 @@ import {
   HiLightningBolt,
   HiSparkles,
 } from "react-icons/hi";
-import {
-  motion,
-  useMotionValue,
-  useSpring,
-  useTransform,
-  useScroll,
-  AnimatePresence,
-} from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState, useMemo, useCallback, useRef, memo, useEffect } from "react";
 import QuantumBackground from "./QuantumBackground";
+import { useInView } from "../hooks/useScrollAnimations";
 
 // Hook pour throttling des événements
 const useThrottledCallback = (callback, delay) => {
@@ -33,7 +27,7 @@ const useThrottledCallback = (callback, delay) => {
 };
 
 // Enhanced quantum field background with neural network patterns
-const QuantumField = memo(({ scrollY }) => {
+const QuantumField = memo(() => {
   // Neural network connection points
   const networkNodes = useMemo(
     () =>
@@ -49,7 +43,7 @@ const QuantumField = memo(({ scrollY }) => {
   return (
     <div className="absolute inset-0 overflow-hidden">
       {/* Quantum energy fields */}
-      <motion.div style={{ y: scrollY }} className="absolute inset-0">
+      <div className="absolute inset-0">
         {/* Primary energy core - static with CSS animation for efficiency */}
         <div
           className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-conic from-violet-500/20 via-cyan-500/20 to-violet-500/20 rounded-full blur-xl"
@@ -69,7 +63,7 @@ const QuantumField = memo(({ scrollY }) => {
           className="absolute bottom-1/4 left-1/2 w-72 h-72 bg-gradient-radial from-cyan-400/20 via-violet-500/10 to-transparent rounded-full blur-xl"
           style={{ opacity: 0.35 }}
         />
-      </motion.div>
+      </div>
 
       {/* Neural network grid */}
       <div className="absolute inset-0 opacity-15">
@@ -119,31 +113,16 @@ const QuantumField = memo(({ scrollY }) => {
 
       {/* Floating data particles */}
       {Array.from({ length: 8 }).map((_, i) => (
-        <motion.div
+        <div
           key={i}
           className="absolute w-1 h-1 bg-violet-400/60 rounded-full"
-          animate={{
-            x: [
-              Math.random() * window.innerWidth,
-              Math.random() * window.innerWidth,
-            ],
-            y: [
-              Math.random() * window.innerHeight,
-              Math.random() * window.innerHeight,
-            ],
-            opacity: [0, 0.8, 0],
-            scale: [0, 1.5, 0],
-          }}
-          transition={{
-            duration: 8 + Math.random() * 4,
-            repeat: Infinity,
-            delay: Math.random() * 5,
-            ease: "easeInOut",
-          }}
           style={{
             left: `${Math.random() * 100}%`,
             top: `${Math.random() * 100}%`,
             filter: "blur(0.5px)",
+            animation: `floatParticle ${
+              8 + Math.random() * 4
+            }s ease-in-out infinite ${Math.random() * 5}s`,
           }}
         />
       ))}
@@ -495,28 +474,6 @@ const Hero = () => {
   const containerRef = useRef(null);
   const photoRef = useRef(null);
 
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  // Scroll-based animations
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"],
-  });
-
-  const scrollY = useTransform(scrollYProgress, [0, 1], [0, -200]);
-  const parallaxY = useTransform(scrollYProgress, [0, 1], [0, 100]);
-
-  const springConfig = useMemo(
-    () => ({ damping: 30, stiffness: 200, mass: 0.3 }),
-    []
-  );
-  const x = useSpring(mouseX, springConfig);
-  const y = useSpring(mouseY, springConfig);
-
-  const rotateX = useTransform(y, [-0.5, 0.5], ["8deg", "-8deg"]);
-  const rotateY = useTransform(x, [-0.5, 0.5], ["-8deg", "8deg"]);
-
   // Track Hero section visibility
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -541,28 +498,9 @@ const Hero = () => {
     };
   }, []);
 
-  // Magnetic attraction effect for photo
+  // Track mouse position for spotlight effect
   useEffect(() => {
     const handleMouseMove = (e) => {
-      if (photoRef.current) {
-        const rect = photoRef.current.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-
-        const distX = e.clientX - centerX;
-        const distY = e.clientY - centerY;
-        const distance = Math.sqrt(distX * distX + distY * distY);
-
-        if (distance < 300) {
-          const strength = (300 - distance) / 300;
-          mouseX.set((distX / rect.width) * strength * 0.3);
-          mouseY.set((distY / rect.height) * strength * 0.3);
-        } else {
-          mouseX.set(0);
-          mouseY.set(0);
-        }
-      }
-
       setMousePos({ x: e.clientX, y: e.clientY });
 
       if (containerRef.current) {
@@ -576,7 +514,7 @@ const Hero = () => {
 
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mouseX, mouseY]);
+  }, []);
 
   // Optimisation du handleMouseMove avec throttling
   const handleMouseMoveThrottled = useThrottledCallback((event) => {
@@ -730,31 +668,20 @@ const Hero = () => {
         ))}
       </motion.div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 0.3 }}
-        className="max-w-7xl w-full relative z-10"
-      >
+      <div className="max-w-7xl w-full relative z-10">
         <div className="flex flex-col md:flex-row-reverse items-center gap-16">
           {/* Integrated Photo - No Card */}
-          <motion.div
+          <div
             ref={photoRef}
             className="relative w-80 h-80 md:w-[400px] md:h-[400px]"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            style={{
-              transformStyle: "preserve-3d",
-            }}
           >
             {/* Subtle ambient glow only */}
-            <motion.div
-              className="absolute -inset-12"
-              animate={{
-                opacity: isHovered ? 0.3 : 0.15,
-              }}
-              transition={{ duration: 0.5 }}
+            <div
+              className="absolute -inset-12 transition-opacity duration-500"
               style={{
+                opacity: isHovered ? 0.3 : 0.15,
                 background:
                   "radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, transparent 70%)",
                 filter: "blur(60px)",
@@ -777,51 +704,49 @@ const Hero = () => {
               ))}
             </div>
 
-            {
-              /* Portrait Container */
-              <motion.div className="relative w-full h-full">
-                {/* Portrait with circular mask and solid background */}
-                <motion.div className="relative w-full h-full overflow-hidden rounded-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-                  <motion.img
-                    src="/images/Hero_photo.png"
-                    alt="Ilias Ofir - Software Engineer"
-                    className="w-full h-full object-cover relative z-10"
-                    style={{
-                      maskImage:
-                        "radial-gradient(circle at center, black 35%, transparent 85%)",
-                      WebkitMaskImage:
-                        "radial-gradient(circle at center, black 35%, transparent 85%)",
-                      // Custom "Cyber" filter - Cool tones with enhanced clarity for futuristic look
-                      filter:
-                        "contrast(1.15) brightness(1.05) saturate(1.1) hue-rotate(-8deg)",
-                      willChange: "transform",
-                    }}
-                  />
+            {/* Portrait Container */}
+            <div className="relative w-full h-full">
+              {/* Portrait with circular mask and solid background */}
+              <div className="relative w-full h-full overflow-hidden rounded-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+                <img
+                  src="/images/Hero_photo.png"
+                  alt="Ilias Ofir - Software Engineer"
+                  className="w-full h-full object-cover relative z-10"
+                  style={{
+                    maskImage:
+                      "radial-gradient(circle at center, black 35%, transparent 85%)",
+                    WebkitMaskImage:
+                      "radial-gradient(circle at center, black 35%, transparent 85%)",
+                    // Custom "Cyber" filter - Cool tones with enhanced clarity for futuristic look
+                    filter:
+                      "contrast(1.15) brightness(1.05) saturate(1.1) hue-rotate(-8deg)",
+                    willChange: "transform",
+                  }}
+                />
 
-                  {/* Cyber-theme overlay - Cool blue/violet tint */}
-                  <div
-                    className="absolute inset-0 rounded-full pointer-events-none mix-blend-overlay"
-                    style={{
-                      background:
-                        "radial-gradient(circle at 40% 40%, rgba(139, 92, 246, 0.08), rgba(6, 182, 212, 0.06) 60%, transparent 100%)",
-                    }}
-                  />
+                {/* Cyber-theme overlay - Cool blue/violet tint */}
+                <div
+                  className="absolute inset-0 rounded-full pointer-events-none mix-blend-overlay"
+                  style={{
+                    background:
+                      "radial-gradient(circle at 40% 40%, rgba(139, 92, 246, 0.08), rgba(6, 182, 212, 0.06) 60%, transparent 100%)",
+                  }}
+                />
 
-                  {/* Subtle rim lighting */}
-                  <div
-                    className="absolute inset-0 rounded-full pointer-events-none"
-                    style={{
-                      background:
-                        "radial-gradient(circle at 50% 50%, transparent 60%, rgba(139, 92, 246, 0.1) 85%, rgba(6, 182, 212, 0.15) 100%)",
-                    }}
-                  />
-                </motion.div>
+                {/* Subtle rim lighting */}
+                <div
+                  className="absolute inset-0 rounded-full pointer-events-none"
+                  style={{
+                    background:
+                      "radial-gradient(circle at 50% 50%, transparent 60%, rgba(139, 92, 246, 0.1) 85%, rgba(6, 182, 212, 0.15) 100%)",
+                  }}
+                />
+              </div>
 
-                {/* Enhanced particle system */}
-                <ImageParticles isHovered={isHovered} />
-              </motion.div>
-            }
-          </motion.div>
+              {/* Enhanced particle system */}
+              <ImageParticles isHovered={isHovered} />
+            </div>
+          </div>
 
           {/* Enhanced content section with boot sequence */}
           <div className="flex-1 text-center md:text-left relative">
@@ -1173,7 +1098,7 @@ const Hero = () => {
             </motion.div>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Custom styles */}
       <style>{`
@@ -1213,6 +1138,18 @@ const Hero = () => {
           50% {
             transform: scale(1.3) rotate(180deg);
             opacity: 0.4;
+          }
+        }
+
+        @keyframes floatParticle {
+          0%, 100% {
+            transform: translate(0, 0);
+            opacity: 0;
+            scale: 0;
+          }
+          50% {
+            opacity: 0.8;
+            scale: 1.5;
           }
         }
       `}</style>

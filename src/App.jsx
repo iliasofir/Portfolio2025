@@ -1,5 +1,5 @@
 import { BrowserRouter as Router } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
@@ -17,6 +17,7 @@ import WelcomeModal from "./components/WelcomeModal";
 import About from "./components/About";
 import AboutMobile from "./components/mobile/AboutMobile";
 import "./styles/globals.css";
+import "./styles/animations.css";
 
 function App() {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -80,12 +81,7 @@ function App() {
         </div>
 
         <AnimatePresence mode="wait">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="relative z-10"
-          >
+          <div className="relative z-10 animate-fade-in">
             <Navbar />
             <Hero />
             {isMobile ? <AboutMobile /> : <About />}
@@ -95,15 +91,13 @@ function App() {
             <Education />
             {isMobile ? <ExperienceMobile /> : <Experience />}
             <Footer />
-          </motion.div>
+          </div>
         </AnimatePresence>
 
-        {/* Floating Chat Button */}
-        <motion.button
+        {/* Floating Chat Button - Simplified */}
+        <button
           onClick={() => setIsChatOpen(true)}
-          className="fixed bottom-6 right-6 z-40 w-16 h-16 rounded-full shadow-2xl flex items-center justify-center group overflow-hidden"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+          className="fixed bottom-6 right-6 z-40 w-16 h-16 rounded-full shadow-2xl flex items-center justify-center group overflow-hidden hover-scale transition-transform duration-300"
         >
           {/* Gradient background */}
           <div className="absolute inset-0 bg-gradient-to-br from-violet-500 to-cyan-500 opacity-90" />
@@ -111,30 +105,22 @@ function App() {
           {/* Glass effect overlay */}
           <div className="absolute inset-0 bg-slate-900/20 backdrop-blur-sm" />
 
-          {/* Animated pulsing ring */}
-          <motion.div
-            className="absolute inset-0 rounded-full"
-            animate={{
-              boxShadow: [
-                "0 0 0 0 rgba(139, 92, 246, 0.7)",
-                "0 0 0 20px rgba(139, 92, 246, 0)",
-              ],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
+          {/* Animated pulsing ring - CSS only */}
+          <div
+            className="absolute inset-0 rounded-full animate-pulse-slow"
+            style={{
+              boxShadow: "0 0 0 0 rgba(139, 92, 246, 0.7)",
             }}
           />
 
           {/* Hover glow effect */}
-          <motion.div
-            className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100"
+          <div
+            className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
             style={{
               background:
                 "radial-gradient(circle at center, rgba(6, 182, 212, 0.4), transparent 70%)",
               boxShadow: "0 0 30px rgba(6, 182, 212, 0.5)",
             }}
-            transition={{ duration: 0.3 }}
           />
 
           {/* Bot icon */}
@@ -144,7 +130,7 @@ function App() {
             className="w-8 h-8 object-contain relative z-10 group-hover:scale-110 transition-transform duration-300"
             style={{ filter: "brightness(0) invert(1)" }}
           />
-        </motion.button>
+        </button>
 
         {/* Chatbot - Conditional rendering based on device */}
         {isMobile ? (

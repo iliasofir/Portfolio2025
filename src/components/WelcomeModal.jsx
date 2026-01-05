@@ -1,31 +1,31 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { motion, AnimatePresence, useAnimation } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const WelcomeModal = ({ isOpen, onClose, onStartChat }) => {
   const [currentText, setCurrentText] = useState("");
   const [showButtons, setShowButtons] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  const controls = useAnimation();
   const containerRef = useRef(null);
 
   const welcomeMessage =
     "Welcome to Ilias's digital universe! I'm his AI companion, ready to guide you through his creative journey and technical expertise. What would you like to discover?";
 
-  // Génération de particules flottantes optimisée
+  // Neural network particles with violet/cyan theme
   const particles = useMemo(
     () =>
-      Array.from({ length: 8 }, (_, i) => ({
+      Array.from({ length: 15 }, (_, i) => ({
         id: i,
         x: Math.random() * 100,
         y: Math.random() * 100,
-        size: Math.random() * 3 + 2,
+        size: Math.random() * 4 + 1,
         delay: Math.random() * 3,
-        duration: Math.random() * 2 + 3,
+        duration: Math.random() * 3 + 4,
+        color: i % 2 === 0 ? "violet" : "cyan",
       })),
     []
   );
 
-  // Animation de typing optimisée
+  // Typing animation
   useEffect(() => {
     if (!isOpen) {
       setCurrentText("");
@@ -50,91 +50,6 @@ const WelcomeModal = ({ isOpen, onClose, onStartChat }) => {
     return () => clearInterval(timer);
   }, [isOpen, welcomeMessage]);
 
-  // Animations variants optimisées
-  const containerVariants = useMemo(
-    () => ({
-      hidden: {
-        opacity: 0,
-        scale: 0.95,
-        y: 20,
-      },
-      visible: {
-        opacity: 1,
-        scale: 1,
-        y: 0,
-        transition: {
-          type: "spring",
-          stiffness: 300,
-          damping: 30,
-          staggerChildren: 0.1,
-          delayChildren: 0.1,
-        },
-      },
-      exit: {
-        opacity: 0,
-        scale: 0.95,
-        y: -20,
-        transition: { duration: 0.3 },
-      },
-    }),
-    []
-  );
-
-  const avatarVariants = useMemo(
-    () => ({
-      hidden: { scale: 0, opacity: 0 },
-      visible: {
-        scale: 1,
-        opacity: 1,
-        transition: {
-          type: "spring",
-          stiffness: 200,
-          damping: 25,
-        },
-      },
-      floating: {
-        y: [-3, 3, -3],
-        transition: {
-          duration: 6,
-          repeat: Infinity,
-          ease: "easeInOut",
-        },
-      },
-    }),
-    []
-  );
-
-  const buttonVariants = useMemo(
-    () => ({
-      hidden: { opacity: 0, y: 20 },
-      visible: (i) => ({
-        opacity: 1,
-        y: 0,
-        transition: {
-          delay: i * 0.1,
-          type: "spring",
-          stiffness: 300,
-          damping: 25,
-        },
-      }),
-      hover: {
-        scale: 1.02,
-        y: -1,
-        transition: { type: "spring", stiffness: 400, damping: 20 },
-      },
-      tap: { scale: 0.98 },
-    }),
-    []
-  );
-
-  const particleVariants = {
-    animate: {
-      y: [-20, -40, -20],
-      opacity: [0.3, 0.8, 0.3],
-      scale: [0.8, 1.2, 0.8],
-    },
-  };
-
   return (
     <AnimatePresence mode="wait">
       {isOpen && (
@@ -145,22 +60,30 @@ const WelcomeModal = ({ isOpen, onClose, onStartChat }) => {
           className="fixed inset-0 z-[60] flex items-center justify-center p-4"
           style={{
             background:
-              "radial-gradient(ellipse at center, rgba(59, 130, 246, 0.15) 0%, rgba(0, 0, 0, 0.9) 70%)",
+              "radial-gradient(ellipse at center, rgba(139, 92, 246, 0.12) 0%, rgba(0, 0, 0, 0.95) 70%)",
           }}
         >
-          {/* Particules flottantes */}
+          {/* Quantum Neural Network Particles */}
           {particles.map((particle) => (
             <motion.div
               key={particle.id}
-              className="absolute w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full opacity-20"
+              className={`absolute rounded-full ${
+                particle.color === "violet"
+                  ? "bg-gradient-to-r from-violet-500/40 to-violet-400/30"
+                  : "bg-gradient-to-r from-cyan-500/40 to-cyan-400/30"
+              }`}
               style={{
                 left: `${particle.x}%`,
                 top: `${particle.y}%`,
                 width: `${particle.size}px`,
                 height: `${particle.size}px`,
+                filter: "blur(1px)",
               }}
-              variants={particleVariants}
-              animate="animate"
+              animate={{
+                y: [-20, -60, -20],
+                opacity: [0.2, 0.8, 0.2],
+                scale: [0.8, 1.5, 0.8],
+              }}
               transition={{
                 duration: particle.duration,
                 repeat: Infinity,
@@ -170,51 +93,106 @@ const WelcomeModal = ({ isOpen, onClose, onStartChat }) => {
             />
           ))}
 
-          {/* Container principal */}
+          {/* Neural Network Connecting Lines */}
+          <svg
+            className="absolute inset-0 w-full h-full opacity-10"
+            style={{ pointerEvents: "none" }}
+          >
+            {particles.slice(0, 8).map((particle, i) => {
+              const nextParticle = particles[(i + 1) % 8];
+              return (
+                <motion.line
+                  key={`line-${i}`}
+                  x1={`${particle.x}%`}
+                  y1={`${particle.y}%`}
+                  x2={`${nextParticle.x}%`}
+                  y2={`${nextParticle.y}%`}
+                  stroke={particle.color === "violet" ? "#8b5cf6" : "#06b6d4"}
+                  strokeWidth="0.5"
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: [0.1, 0.3, 0.1] }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    delay: i * 0.2,
+                  }}
+                />
+              );
+            })}
+          </svg>
+
+          {/* Main Modal Container */}
           <motion.div
             ref={containerRef}
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            className="relative w-full max-w-2xl mx-4"
+            initial={{ opacity: 0, scale: 0.9, y: 30 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: -30 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="relative w-full max-w-[90vw] sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-4"
           >
-            {/* Fond glassmorphism avancé */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl" />
+            {/* Holographic Border Effect */}
+            <motion.div
+              className="absolute inset-0 rounded-3xl p-[1px]"
+              style={{
+                background:
+                  "linear-gradient(145deg, rgba(139, 92, 246, 0.5), rgba(6, 182, 212, 0.3), rgba(139, 92, 246, 0.5))",
+                backgroundSize: "200% 200%",
+              }}
+              animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
+            >
+              <div className="w-full h-full rounded-3xl bg-gradient-to-br from-gray-900/95 via-gray-800/90 to-gray-900/95 backdrop-blur-xl" />
+            </motion.div>
 
-            {/* Effets lumineux */}
-            <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-3xl blur-xl opacity-50" />
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-20 bg-gradient-to-r from-blue-400/30 to-purple-400/30 rounded-full blur-2xl" />
+            {/* Quantum Glow Effects */}
+            <motion.div
+              className="absolute -inset-2 rounded-3xl opacity-40 pointer-events-none"
+              animate={{
+                boxShadow: [
+                  "0 0 60px rgba(139, 92, 246, 0.3), 0 0 100px rgba(6, 182, 212, 0.2)",
+                  "0 0 80px rgba(6, 182, 212, 0.4), 0 0 120px rgba(139, 92, 246, 0.3)",
+                  "0 0 60px rgba(139, 92, 246, 0.3), 0 0 100px rgba(6, 182, 212, 0.2)",
+                ],
+              }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            />
 
-            {/* Contenu */}
-            <div className="relative p-8 lg:p-12">
-              {/* Bouton de fermeture stylé */}
+            {/* Top Glow Accent */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-20 sm:w-56 sm:h-28 md:w-64 md:h-32 bg-gradient-to-r from-violet-500/30 via-cyan-500/30 to-violet-500/30 rounded-full blur-3xl pointer-events-none" />
+
+            {/* Content Container */}
+            <div className="relative p-4 sm:p-6 md:p-8 lg:p-12">
+              {/* Close Button with Quantum Style */}
               <motion.button
                 onClick={onClose}
-                className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/20 flex items-center justify-center text-white/60 hover:text-white transition-all duration-300 group z-20"
+                className="absolute top-3 right-3 sm:top-6 sm:right-6 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-violet-500/10 to-cyan-500/10 backdrop-blur-sm hover:from-violet-500/20 hover:to-cyan-500/20 flex items-center justify-center text-gray-400 hover:text-white border border-violet-400/20 hover:border-violet-400/40 transition-all duration-300 group z-20"
                 whileHover={{ scale: 1.1, rotate: 90 }}
                 whileTap={{ scale: 0.9 }}
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 1 }}
+                initial={{ opacity: 0, scale: 0, rotate: -180 }}
+                animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                transition={{ delay: 0.8, type: "spring" }}
               >
-                <span className="text-xl font-light group-hover:text-red-400 transition-colors">
+                <span className="text-lg sm:text-xl font-light group-hover:text-violet-300 transition-colors">
                   ×
                 </span>
               </motion.button>
 
-              {/* Avatar avec robot Lottie optimisé */}
+              {/* AI Avatar with Quantum Halo */}
               <motion.div
-                className="flex justify-center mb-8"
-                variants={avatarVariants}
-                initial="hidden"
-                animate={["visible", "floating"]}
+                className="flex justify-center mb-4 sm:mb-6 md:mb-8"
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
               >
                 <div className="relative">
-                  {/* Halo simplifié */}
+                  {/* Rotating Quantum Halo */}
                   <motion.div
-                    className="absolute -inset-4 rounded-full bg-gradient-to-r from-blue-400/15 via-purple-500/15 to-pink-500/15"
-                    animate={{ rotate: [0, 360] }}
+                    className="absolute -inset-4 sm:-inset-6 rounded-full"
+                    style={{
+                      background:
+                        "conic-gradient(from 0deg, rgba(139, 92, 246, 0.2), rgba(6, 182, 212, 0.3), rgba(139, 92, 246, 0.2))",
+                    }}
+                    animate={{ rotate: 360 }}
                     transition={{
                       duration: 20,
                       repeat: Infinity,
@@ -222,18 +200,33 @@ const WelcomeModal = ({ isOpen, onClose, onStartChat }) => {
                     }}
                   />
 
-                  {/* Container du robot simplifié */}
+                  {/* Inner Glow Ring */}
                   <motion.div
-                    className="relative w-28 h-28 bg-white/5 backdrop-blur-sm rounded-full flex items-center justify-center shadow-xl border border-white/10"
+                    className="absolute -inset-2 sm:-inset-3 rounded-full bg-gradient-to-r from-violet-500/20 to-cyan-500/20 blur-xl"
                     animate={{
+                      scale: [1, 1.1, 1],
+                      opacity: [0.5, 0.8, 0.5],
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  />
+
+                  {/* Avatar Container */}
+                  <motion.div
+                    className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm rounded-full flex items-center justify-center border border-violet-400/30 overflow-hidden"
+                    animate={{
+                      y: [-5, 5, -5],
                       boxShadow: [
-                        "0 0 20px rgba(59, 130, 246, 0.2)",
-                        "0 0 30px rgba(168, 85, 247, 0.3)",
-                        "0 0 20px rgba(59, 130, 246, 0.2)",
+                        "0 0 30px rgba(139, 92, 246, 0.3)",
+                        "0 0 50px rgba(6, 182, 212, 0.4)",
+                        "0 0 30px rgba(139, 92, 246, 0.3)",
                       ],
                     }}
                     transition={{
-                      duration: 4,
+                      duration: 6,
                       repeat: Infinity,
                       ease: "easeInOut",
                     }}
@@ -242,46 +235,67 @@ const WelcomeModal = ({ isOpen, onClose, onStartChat }) => {
                     <iframe
                       src="https://lottie.host/embed/49e71320-d0f3-4051-8356-b5e63a3b0858/iNrI4nLQ80.lottie"
                       style={{
-                        width: "90px",
-                        height: "90px",
+                        width: "80px",
+                        height: "80px",
                         border: "none",
                         background: "transparent",
                       }}
+                      className="sm:!w-[90px] sm:!h-[90px] md:!w-[100px] md:!h-[100px]"
                       title="AI Assistant Robot Animation"
                       loading="lazy"
                     />
 
-                    {/* Anneau de pulse simplifié */}
+                    {/* Scanning Line Effect */}
                     <motion.div
-                      className="absolute inset-0 border border-white/10 rounded-full"
+                      className="absolute inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-cyan-400/80 to-transparent"
                       animate={{
-                        scale: [1, 1.3, 1],
-                        opacity: [0.3, 0, 0.3],
+                        top: ["0%", "100%"],
+                        opacity: [0, 1, 0],
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
+                    />
+
+                    {/* Pulse Rings */}
+                    <motion.div
+                      className="absolute inset-0 border-2 border-violet-400/40 rounded-full"
+                      animate={{
+                        scale: [1, 1.4, 1],
+                        opacity: [0.5, 0, 0.5],
                       }}
                       transition={{
                         duration: 3,
                         repeat: Infinity,
-                        ease: "easeInOut",
+                        ease: "easeOut",
                       }}
                     />
                   </motion.div>
+
+                  {/* Corner Accents */}
+                  <div className="absolute -top-1 -left-1 sm:-top-2 sm:-left-2 w-4 h-4 sm:w-6 sm:h-6 border-t-2 border-l-2 border-violet-400/50 rounded-tl-lg" />
+                  <div className="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 w-4 h-4 sm:w-6 sm:h-6 border-b-2 border-r-2 border-cyan-400/50 rounded-br-lg" />
                 </div>
               </motion.div>
 
-              {/* Titre optimisé */}
+              {/* Title Section */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
-                className="text-center mb-8"
+                transition={{ delay: 0.4, duration: 0.5 }}
+                className="text-center mb-4 sm:mb-6 md:mb-8"
               >
-                <motion.h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent mb-4">
-                  Hello there!
+                <motion.h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold mb-2 sm:mb-3">
+                  <span className="bg-gradient-to-r from-white via-violet-200 to-cyan-200 bg-clip-text text-transparent">
+                    Hello there!
+                  </span>
                   <motion.span
                     className="ml-2 inline-block"
-                    animate={{ rotate: [0, 15, 0] }}
+                    animate={{ rotate: [0, 15, -15, 0] }}
                     transition={{
-                      duration: 0.8,
+                      duration: 1,
                       repeat: Infinity,
                       repeatDelay: 3,
                     }}
@@ -290,26 +304,42 @@ const WelcomeModal = ({ isOpen, onClose, onStartChat }) => {
                   </motion.span>
                 </motion.h1>
 
-                {/* Zone de texte optimisée */}
+                {/* Message Box with Quantum Border */}
                 <motion.div
-                  className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10"
+                  className="relative bg-gradient-to-br from-gray-800/30 to-gray-900/30 backdrop-blur-sm rounded-2xl p-3 sm:p-4 md:p-6 border border-violet-400/20 shadow-lg"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4, duration: 0.5 }}
+                  transition={{ delay: 0.6, duration: 0.5 }}
                 >
-                  {/* Indicateur de typing simplifié */}
+                  {/* Animated Corner Borders */}
+                  <motion.div
+                    className="absolute top-0 left-0 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 border-t-2 border-l-2 border-violet-400/40 rounded-tl-2xl"
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.8 }}
+                  />
+                  <motion.div
+                    className="absolute bottom-0 right-0 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 border-b-2 border-r-2 border-cyan-400/40 rounded-br-2xl"
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.9 }}
+                  />
+
+                  {/* Typing Indicator */}
                   {isTyping && (
                     <motion.div
-                      className="absolute top-4 right-4 flex gap-1"
+                      className="absolute top-2 right-2 sm:top-4 sm:right-4 flex gap-1 sm:gap-1.5"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                     >
                       {[0, 1, 2].map((i) => (
                         <motion.div
                           key={i}
-                          className="w-1.5 h-1.5 bg-blue-400 rounded-full"
-                          initial={{ opacity: 0.3 }}
-                          animate={{ opacity: [0.3, 1, 0.3] }}
+                          className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-gradient-to-r from-violet-400 to-cyan-400"
+                          animate={{
+                            scale: [1, 1.5, 1],
+                            opacity: [0.4, 1, 0.4],
+                          }}
                           transition={{
                             duration: 1,
                             repeat: Infinity,
@@ -320,14 +350,13 @@ const WelcomeModal = ({ isOpen, onClose, onStartChat }) => {
                     </motion.div>
                   )}
 
-                  <p className="text-white/90 text-lg leading-relaxed min-h-[100px] flex items-center justify-center text-center">
+                  <p className="text-white/90 text-sm sm:text-base md:text-lg leading-relaxed min-h-[80px] sm:min-h-[100px] md:min-h-[120px] flex items-center justify-center text-center relative z-10">
                     {currentText}
                     {isTyping && (
                       <motion.span
-                        initial={{ opacity: 1 }}
                         animate={{ opacity: [1, 0] }}
                         transition={{ duration: 0.5, repeat: Infinity }}
-                        className="ml-1 text-blue-400"
+                        className="ml-1 text-cyan-400 font-bold"
                       >
                         |
                       </motion.span>
@@ -336,44 +365,75 @@ const WelcomeModal = ({ isOpen, onClose, onStartChat }) => {
                 </motion.div>
               </motion.div>
 
-              {/* Boutons d'action modernisés */}
+              {/* Action Buttons */}
               <AnimatePresence>
                 {showButtons && (
                   <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="flex flex-col sm:flex-row gap-4 lg:gap-6"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.4 }}
+                    className="flex flex-col sm:flex-row gap-3 sm:gap-4"
                   >
+                    {/* Start Chat Button */}
                     <motion.button
                       onClick={() => {
                         onStartChat();
                         onClose();
                       }}
-                      custom={0}
-                      variants={buttonVariants}
-                      initial="hidden"
-                      animate="visible"
-                      whileHover="hover"
-                      whileTap="tap"
-                      className="flex-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold py-3 px-6 rounded-xl shadow-lg"
+                      className="relative flex-1 group overflow-hidden rounded-xl"
+                      whileHover={{ scale: 1.02, y: -2 }}
+                      whileTap={{ scale: 0.98 }}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.1 }}
                     >
-                      <span className="flex items-center justify-center gap-2">
-                        💬 Let's Chat!
+                      {/* Animated Background */}
+                      <motion.div
+                        className="absolute inset-0 bg-gradient-to-r from-violet-600 to-cyan-600"
+                        animate={{
+                          backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+                        }}
+                        style={{ backgroundSize: "200% 100%" }}
+                        transition={{ duration: 3, repeat: Infinity }}
+                      />
+
+                      {/* Shine Effect */}
+                      <motion.div
+                        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                        style={{
+                          background:
+                            "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)",
+                          backgroundSize: "200% 100%",
+                        }}
+                        animate={{
+                          backgroundPosition: ["-200% 0%", "200% 0%"],
+                        }}
+                        transition={{ duration: 1.5, repeat: Infinity }}
+                      />
+
+                      <span className="relative z-10 flex items-center justify-center gap-2 text-white font-semibold py-2.5 px-4 sm:py-3 sm:px-5 md:py-3.5 md:px-6 text-sm sm:text-base">
+                        <span className="text-lg sm:text-xl">💬</span>
+                        Let's Chat!
                       </span>
                     </motion.button>
 
+                    {/* Explore Button */}
                     <motion.button
                       onClick={onClose}
-                      custom={1}
-                      variants={buttonVariants}
-                      initial="hidden"
-                      animate="visible"
-                      whileHover="hover"
-                      whileTap="tap"
-                      className="flex-1 bg-white/10 backdrop-blur-sm text-white font-semibold py-3 px-6 rounded-xl border border-white/20 hover:bg-white/20 transition-colors duration-300"
+                      className="relative flex-1 group rounded-xl overflow-hidden bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-violet-400/30 hover:border-violet-400/50 transition-all duration-300"
+                      whileHover={{ scale: 1.02, y: -2 }}
+                      whileTap={{ scale: 0.98 }}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.2 }}
                     >
-                      <span className="flex items-center justify-center gap-2">
-                        🚀 Explore Portfolio
+                      {/* Hover Glow */}
+                      <motion.div className="absolute inset-0 bg-gradient-to-r from-violet-500/0 via-violet-500/10 to-cyan-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                      <span className="relative z-10 flex items-center justify-center gap-2 text-white font-semibold py-2.5 px-4 sm:py-3 sm:px-5 md:py-3.5 md:px-6 text-sm sm:text-base">
+                        <span className="text-lg sm:text-xl">🚀</span>
+                        Explore Portfolio
                       </span>
                     </motion.button>
                   </motion.div>
@@ -381,18 +441,30 @@ const WelcomeModal = ({ isOpen, onClose, onStartChat }) => {
               </AnimatePresence>
             </div>
 
-            {/* Éléments décoratifs simplifiés */}
+            {/* Decorative Quantum Nodes */}
             <motion.div
-              className="absolute -top-2 -left-2 w-4 h-4 bg-blue-400/20 rounded-full"
-              initial={{ opacity: 0.3 }}
-              animate={{ opacity: [0.3, 0.6, 0.3] }}
+              className="absolute -top-3 -left-3 w-6 h-6 rounded-full bg-gradient-to-br from-violet-500/40 to-violet-600/30 border border-violet-400/50"
+              animate={{
+                scale: [1, 1.2, 1],
+                opacity: [0.5, 0.8, 0.5],
+              }}
               transition={{ duration: 2, repeat: Infinity }}
             />
             <motion.div
-              className="absolute -bottom-2 -right-2 w-3 h-3 bg-purple-400/20 rounded-full"
-              initial={{ opacity: 0.4 }}
-              animate={{ opacity: [0.4, 0.7, 0.4] }}
-              transition={{ duration: 1.5, repeat: Infinity, delay: 0.5 }}
+              className="absolute -bottom-3 -right-3 w-5 h-5 rounded-full bg-gradient-to-br from-cyan-500/40 to-cyan-600/30 border border-cyan-400/50"
+              animate={{
+                scale: [1, 1.3, 1],
+                opacity: [0.4, 0.7, 0.4],
+              }}
+              transition={{ duration: 2.5, repeat: Infinity, delay: 0.5 }}
+            />
+            <motion.div
+              className="absolute top-1/2 -right-4 w-4 h-4 rounded-full bg-gradient-to-br from-violet-500/30 to-cyan-500/30 border border-violet-400/40"
+              animate={{
+                scale: [1, 1.4, 1],
+                opacity: [0.3, 0.6, 0.3],
+              }}
+              transition={{ duration: 3, repeat: Infinity, delay: 1 }}
             />
           </motion.div>
         </motion.div>

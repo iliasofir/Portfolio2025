@@ -7,11 +7,13 @@ import {
   AnimatePresence,
 } from "framer-motion";
 import QuantumBackground from "./QuantumBackground";
+import { useInView } from "../hooks/useScrollAnimations";
 
 // High-performance certification card with modern glassmorphism and neural network inspired design
 const CertificationCard = memo(
   ({ cert, index, hoveredCard, setHoveredCard, mousePosition }) => {
     const cardRef = useRef(null);
+    const { ref, hasBeenInView } = useInView({ threshold: 0.1 });
 
     // Optimized hover handlers
     const handleHoverStart = useCallback(
@@ -38,37 +40,27 @@ const CertificationCard = memo(
     );
 
     return (
-      <motion.div
-        ref={cardRef}
-        initial={{
-          opacity: 0,
-          rotateX: -15,
-          y: 100,
-          rotateY: 0,
-          scale: 1,
-          z: 0,
+      <div
+        ref={(el) => {
+          ref.current = el;
+          cardRef.current = el;
         }}
-        whileInView={{ opacity: 1, rotateX: 0, y: 0 }}
-        transition={{
-          delay: index * 0.15,
-          duration: 0.8,
-          type: "spring",
-          stiffness: 100,
-          damping: 15,
-        }}
-        viewport={{ once: true, margin: "-50px" }}
-        whileHover={{
-          rotateX: 5,
-          rotateY: mousePosition.x * 0.02,
-          scale: 1.02,
-          z: 50,
-        }}
-        onHoverStart={handleHoverStart}
-        onHoverEnd={handleHoverEnd}
-        className="group relative perspective-1000"
+        onMouseEnter={handleHoverStart}
+        onMouseLeave={handleHoverEnd}
+        className={`group relative perspective-1000 transition-all duration-800 ${
+          hasBeenInView
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 translate-y-24"
+        }`}
         style={{
           willChange: "transform",
           transformStyle: "preserve-3d",
+          transform: isHovered
+            ? `rotateX(5deg) rotateY(${
+                mousePosition.x * 0.02
+              }deg) scale(1.02) translateZ(50px)`
+            : "rotateX(-15deg) rotateY(0deg) scale(1) translateZ(0px)",
+          transitionDelay: `${index * 0.15}s`,
         }}
       >
         {/* Holographic border effect */}
@@ -85,14 +77,13 @@ const CertificationCard = memo(
         </div>
 
         {/* Main card container */}
-        <motion.div
-          animate={{
+        <div
+          className="relative overflow-hidden rounded-3xl backdrop-blur-xl bg-gradient-to-br from-gray-900/40 via-gray-800/30 to-gray-900/40 border-0 p-8 h-full transition-shadow duration-400"
+          style={{
             boxShadow: isHovered
               ? "0 25px 80px -15px rgba(139, 92, 246, 0.4), 0 0 0 1px rgba(255,255,255,0.05)"
               : "0 10px 40px -15px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255,255,255,0.02)",
           }}
-          transition={{ duration: 0.4 }}
-          className="relative overflow-hidden rounded-3xl backdrop-blur-xl bg-gradient-to-br from-gray-900/40 via-gray-800/30 to-gray-900/40 border-0 p-8 h-full"
         >
           {/* Neural network background */}
           <div className="absolute inset-0 opacity-10">
@@ -159,15 +150,13 @@ const CertificationCard = memo(
 
           <div className="relative z-10">
             {/* Logo with quantum effect */}
-            <motion.div
-              initial={{ rotateZ: 0, scale: 1 }}
-              whileHover={{
-                scale: 1.1,
-                rotateZ: [0, -5, 5, 0],
-                filter: "drop-shadow(0 0 20px rgba(139, 92, 246, 0.6))",
+            <div
+              className="relative w-20 h-20 mb-6 rounded-2xl p-3 overflow-hidden transition-all duration-600 hover:scale-110"
+              style={{
+                filter: isHovered
+                  ? "drop-shadow(0 0 20px rgba(139, 92, 246, 0.6))"
+                  : "none",
               }}
-              transition={{ duration: 0.6 }}
-              className="relative w-20 h-20 mb-6 rounded-2xl p-3 overflow-hidden"
             >
               {/* Animated background */}
               <div
@@ -179,19 +168,15 @@ const CertificationCard = memo(
               />
 
               {/* Scanning line effect */}
-              <motion.div
-                initial={{ x: "-100%", opacity: 0 }}
-                animate={{
-                  x: isHovered ? ["-100%", "100%"] : "-100%",
-                  opacity: isHovered ? [0, 1, 0] : 0,
-                }}
-                transition={{
-                  duration: 1.5,
-                  repeat: isHovered ? Infinity : 0,
-                  ease: "easeInOut",
-                }}
-                style={{ opacity: 0 }}
+              <div
                 className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12"
+                style={{
+                  opacity: isHovered ? 1 : 0,
+                  animation: isHovered
+                    ? "shine 1.5s ease-in-out infinite"
+                    : "none",
+                  transform: "translateX(-100%) skewX(-12deg)",
+                }}
               />
 
               <img
@@ -199,50 +184,53 @@ const CertificationCard = memo(
                 alt={cert.issuer}
                 className="relative z-10 w-full h-full object-contain drop-shadow-lg"
               />
-            </motion.div>
 
-            {/* Title with typewriter effect */}
-            <motion.h3
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
+              <style>{`
+                @keyframes shine {
+                  0% { transform: translateX(-100%) skewX(-12deg); }
+                  100% { transform: translateX(100%) skewX(-12deg); }
+                }
+              `}</style>
+            </div>
+
+            {/* Title */}
+            <h3
               className="text-xl font-bold text-white mb-4 leading-tight"
+              style={{
+                opacity: 0,
+                animation: "fadeIn 0.4s ease forwards 0.2s",
+              }}
             >
               <span className="bg-gradient-to-r from-white via-violet-200 to-cyan-200 bg-clip-text text-transparent">
                 {cert.title}
               </span>
-            </motion.h3>
+            </h3>
             {/* Category badge */}
-            <motion.div
-              initial={{ opacity: 0, x: -20, scale: 1 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
+            <div
               className="absolute top-4 right-4"
+              style={{
+                opacity: 0,
+                animation: "fadeInRight 0.4s ease forwards 0.3s",
+              }}
             >
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="px-4 py-2 rounded-full backdrop-blur-xl bg-gradient-to-r from-violet-500/20 to-cyan-500/20 border border-violet-400/30"
-              >
+              <div className="px-4 py-2 rounded-full backdrop-blur-xl bg-gradient-to-r from-violet-500/20 to-cyan-500/20 border border-violet-400/30 transition-transform duration-300 hover:scale-105">
                 <span className="text-xs font-semibold bg-clip-text text-transparent bg-gradient-to-r from-violet-300 to-cyan-300">
                   {cert.category}
                 </span>
-              </motion.div>
-            </motion.div>
-            {/* Info section with enhanced styling */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
+              </div>
+            </div>
+            {/* Issuer and date info */}
+            <div
               className="space-y-3 mb-6"
+              style={{
+                opacity: 0,
+                animation: "fadeIn 0.4s ease forwards 0.4s",
+              }}
             >
               <div className="flex items-center gap-3">
-                <motion.div
-                  initial={{ rotate: 0 }}
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.8 }}
-                  className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500/20 to-cyan-500/20 backdrop-blur-sm flex items-center justify-center border border-violet-400/30"
-                >
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500/20 to-cyan-500/20 backdrop-blur-sm flex items-center justify-center border border-violet-400/30 transition-transform duration-800 hover:rotate-360">
                   <div className="w-3 h-3 rounded-full bg-violet-400" />
-                </motion.div>
+                </div>
                 <p className="text-violet-300 font-semibold text-lg">
                   {cert.issuer}
                 </p>
@@ -264,28 +252,26 @@ const CertificationCard = memo(
                 </div>
                 <p className="text-gray-300 font-medium">{cert.date}</p>
               </div>
-            </motion.div>
+            </div>
 
             {/* Enhanced CTA button */}
-            <motion.button
-              initial={{ scale: 1 }}
-              whileHover={{
-                scale: 1.02,
-                boxShadow: "0 15px 35px -5px rgba(139, 92, 246, 0.4)",
-              }}
-              whileTap={{ scale: 0.98 }}
-              className="relative w-full p-4 rounded-xl overflow-hidden group border border-violet-400/20 backdrop-blur-sm"
+            <button
+              className="relative w-full p-4 rounded-xl overflow-hidden group border border-violet-400/20 backdrop-blur-sm transition-all duration-300 hover:scale-[1.02]"
               onClick={() => window.open(cert.credentialUrl, "_blank")}
+              style={{
+                boxShadow: isHovered
+                  ? "0 15px 35px -5px rgba(139, 92, 246, 0.4)"
+                  : "none",
+              }}
             >
               {/* Button background animation */}
-              <motion.div
-                animate={{
+              <div
+                className="absolute inset-0 rounded-xl transition-all duration-400"
+                style={{
                   background: isHovered
                     ? "linear-gradient(135deg, rgba(139,92,246,0.15), rgba(6,182,212,0.1))"
                     : "linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))",
                 }}
-                transition={{ duration: 0.4 }}
-                className="absolute inset-0 rounded-xl"
               />
 
               {/* Shimmer effect */}
@@ -333,43 +319,29 @@ const CertificationCard = memo(
                   />
                 </motion.svg>
               </div>
-            </motion.button>
+
+              <style>{`
+                @keyframes buttonShine {
+                  0% { transform: translateX(-100%) skewX(-12deg); opacity: 0; }
+                  50% { opacity: 0.5; }
+                  100% { transform: translateX(100%) skewX(-12deg); opacity: 0; }
+                }
+              `}</style>
+            </button>
           </div>
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
     );
   }
 );
+
+CertificationCard.displayName = "CertificationCard";
 
 const Certification = () => {
   const containerRef = useRef(null);
   const [hoveredCard, setHoveredCard] = useState(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  });
-
-  // Optimized spring configuration
-  const springConfig = useMemo(
-    () => ({ stiffness: 120, damping: 30, mass: 0.5 }),
-    []
-  );
-
-  // Enhanced scroll-based animations
-  const opacity = useTransform(
-    scrollYProgress,
-    [0, 0.15, 0.85, 1],
-    [0, 1, 1, 0]
-  );
-  const scale = useTransform(
-    scrollYProgress,
-    [0, 0.15, 0.85, 1],
-    [0.9, 1, 1, 0.9]
-  );
-  const backgroundY = useTransform(scrollYProgress, [0, 1], [-50, 50]);
-  const rotateX = useTransform(scrollYProgress, [0, 0.5, 1], [15, 0, -15]);
+  const { ref: sectionRef, hasBeenInView } = useInView({ threshold: 0.1 });
 
   // Optimized mouse movement handler
   const handleMouseMove = useCallback((e) => {
@@ -455,20 +427,19 @@ const Certification = () => {
       containerRef={containerRef}
       variant="purple"
     >
-      <div onMouseMove={handleMouseMove}>
-        <motion.div
-          style={{
-            opacity: useSpring(opacity, springConfig),
-            scale: useSpring(scale, springConfig),
-          }}
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10"
+      <div onMouseMove={handleMouseMove} ref={sectionRef}>
+        <div
+          className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 transition-all duration-800 ${
+            hasBeenInView ? "opacity-100 scale-100" : "opacity-0 scale-95"
+          }`}
         >
           {/* Enhanced title section */}
-          <motion.div
-            initial={{ opacity: 0, y: -50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, type: "spring", stiffness: 100 }}
-            className="mb-20 relative text-center"
+          <div
+            className={`mb-20 relative text-center transition-all duration-1000 ${
+              hasBeenInView
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 -translate-y-12"
+            }`}
           >
             {/* Title backdrop effect - static */}
             <div className="absolute inset-0 flex justify-center items-center -z-10">
@@ -486,23 +457,23 @@ const Certification = () => {
               </span>
             </h2>
 
-            <motion.div
-              initial={{ width: 0 }}
-              whileInView={{ width: "60%" }}
-              transition={{ duration: 2, delay: 0.5 }}
-              className="h-0.5 bg-gradient-to-r from-transparent via-violet-400 to-transparent mx-auto mt-6 rounded-full"
+            <div
+              className={`h-0.5 bg-gradient-to-r from-transparent via-violet-400 to-transparent mx-auto mt-6 rounded-full transition-all duration-1000 ${
+                hasBeenInView ? "w-3/5 opacity-100" : "w-0 opacity-0"
+              }`}
+              style={{ transitionDelay: "500ms" }}
             />
 
-            <motion.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ delay: 0.8 }}
-              className="mt-6 text-gray-300 text-lg font-light max-w-2xl mx-auto"
+            <p
+              className={`mt-6 text-gray-300 text-lg font-light max-w-2xl mx-auto transition-opacity duration-1000 ${
+                hasBeenInView ? "opacity-100" : "opacity-0"
+              }`}
+              style={{ transitionDelay: "800ms" }}
             >
               Professional certifications showcasing expertise across cloud
               computing, full-stack development, and data science domains.
-            </motion.p>
-          </motion.div>
+            </p>
+          </div>
 
           {/* Enhanced cards grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
@@ -519,44 +490,34 @@ const Certification = () => {
           </div>
 
           {/* Quantum statistics footer */}
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="mt-20 text-center"
+          <div
+            className={`mt-20 text-center transition-all duration-800 ${
+              hasBeenInView
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-12"
+            }`}
+            style={{ transitionDelay: "500ms" }}
           >
             <div className="inline-flex items-center gap-8 px-8 py-4 rounded-2xl backdrop-blur-xl bg-gradient-to-r from-violet-500/10 via-transparent to-cyan-500/10 border border-white/10">
-              <motion.div
-                initial={{ scale: 1 }}
-                whileHover={{ scale: 1.1 }}
-                className="text-center"
-              >
+              <div className="text-center transition-transform duration-300 hover:scale-110">
                 <div className="text-2xl font-bold text-white mb-1">
                   {certifications.length}
                 </div>
                 <div className="text-sm text-gray-400">Certifications</div>
-              </motion.div>
+              </div>
               <div className="w-px h-8 bg-gradient-to-b from-transparent via-white/20 to-transparent" />
-              <motion.div
-                initial={{ scale: 1 }}
-                whileHover={{ scale: 1.1 }}
-                className="text-center"
-              >
+              <div className="text-center transition-transform duration-300 hover:scale-110">
                 <div className="text-2xl font-bold text-white mb-1">3</div>
                 <div className="text-sm text-gray-400">Tech Domains</div>
-              </motion.div>
+              </div>
               <div className="w-px h-8 bg-gradient-to-b from-transparent via-white/20 to-transparent" />
-              <motion.div
-                initial={{ scale: 1 }}
-                whileHover={{ scale: 1.1 }}
-                className="text-center"
-              >
+              <div className="text-center transition-transform duration-300 hover:scale-110">
                 <div className="text-2xl font-bold text-white mb-1">100%</div>
                 <div className="text-sm text-gray-400">Verified</div>
-              </motion.div>
+              </div>
             </div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
 
       <style>{`
