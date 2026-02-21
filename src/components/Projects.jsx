@@ -292,13 +292,13 @@ const Projects = () => {
         accentColor: "rgb(59, 130, 246)",
       },
       {
-        title: "Recruiting Agency App",
+        title: "Joblink press - Hiring Agency App",
         period: "2024",
         description: "JavaFX Desktop Application",
         details:
           "Designed a multi-client recruitment platform for companies and job seekers. Enabled job postings and interactive journals.",
         tech: ["JavaFX", "MySQL", "IntelliJ IDEA"],
-        image: "/images/project1.jpeg",
+        image: "/images/Joblink_press.png",
         github: "https://github.com/AhmedDevST/AgenceRecrutement",
         color: "from-emerald-400 to-teal-600",
         bgAccent: "bg-emerald-500/20",
@@ -365,6 +365,33 @@ const Projects = () => {
         bgAccent: "bg-amber-200/20",
         accentColor: "rgb(16, 185, 120)",
       },
+      {
+        title: "Ntlakaw – Event Management & Booking Platform",
+        period: "2025",
+        description: "Web-based Event Management System",
+        details:
+          "Designed a multi-client event management platform for companies and customers. Enabled event creation, booking, and payment processing.",
+        tech: ["Spring Boot", "React.js", "MySQL", "Stripe API", "Chakra-UI"],
+        image: "/images/Ntlakaw.png",
+        github: "https://github.com/AhmedDevST/Ntlakaw",
+        color: "from-emerald-400 to-teal-600",
+        bgAccent: "bg-emerald-500/20",
+        accentColor: "rgb(16, 185, 129)",
+      },
+      {
+        title: "LogGuard",
+        period: "2025",
+        description: "AI-Powered Log Anomaly Detection System",
+        details:
+          "Designed an AI-powered system to detect anomalies in system logs. Implemented machine learning models for log analysis and pattern recognition.",
+        tech: ["SpringBoot", "FastAPI", "NextJs", "TimeScaleDB","Grafana", "Docker"],
+        image: "/images/LogGuard.png",
+        github: "https://github.com/iliasofir/smart-log-anomaly-java",
+        color: "from-emerald-400 to-teal-600",
+        bgAccent: "bg-emerald-500/20",
+        accentColor: "rgb(16, 185, 129)",
+      }
+    
     ],
     []
   );

@@ -18,11 +18,11 @@ const CertificationCard = memo(
     // Optimized hover handlers
     const handleHoverStart = useCallback(
       () => setHoveredCard(cert.id),
-      [cert.id, setHoveredCard]
+      [cert.id, setHoveredCard],
     );
     const handleHoverEnd = useCallback(
       () => setHoveredCard(null),
-      [setHoveredCard]
+      [setHoveredCard],
     );
 
     const isHovered = hoveredCard === cert.id;
@@ -36,7 +36,7 @@ const CertificationCard = memo(
           y: Math.random() * 100,
           delay: Math.random() * 2,
         })),
-      []
+      [],
     );
 
     return (
@@ -115,7 +115,7 @@ const CertificationCard = memo(
                       opacity={isHovered ? "0.3" : "0"}
                       style={{ transition: "opacity 0.3s" }}
                     />
-                  ))
+                  )),
               )}
               <defs>
                 <linearGradient
@@ -205,20 +205,16 @@ const CertificationCard = memo(
                 {cert.title}
               </span>
             </h3>
+
             {/* Category badge */}
-            <div
-              className="absolute top-4 right-4"
-              style={{
-                opacity: 0,
-                animation: "fadeInRight 0.4s ease forwards 0.3s",
-              }}
-            >
+            <div className="absolute top-4 right-4">
               <div className="px-4 py-2 rounded-full backdrop-blur-xl bg-gradient-to-r from-violet-500/20 to-cyan-500/20 border border-violet-400/30 transition-transform duration-300 hover:scale-105">
                 <span className="text-xs font-semibold bg-clip-text text-transparent bg-gradient-to-r from-violet-300 to-cyan-300">
                   {cert.category}
                 </span>
               </div>
             </div>
+
             {/* Issuer and date info */}
             <div
               className="space-y-3 mb-6"
@@ -332,7 +328,7 @@ const CertificationCard = memo(
         </div>
       </div>
     );
-  }
+  },
 );
 
 CertificationCard.displayName = "CertificationCard";
@@ -357,16 +353,15 @@ const Certification = () => {
     () => [
       {
         id: 1,
-        title:
-          "Oracle Cloud Infrastructure Foundations 2024 Certified Associate",
+        title: "Oracle Certified Professional: Java SE 21 Developer",
         issuer: "Oracle",
-        date: "Feb 2025",
+        date: "Feb 2026",
         credentialUrl:
-          "https://catalog-education.oracle.com/pls/certview/sharebadge?id=179EEB1994E84E7775CE1A02A09FB5756CD771CE6432B02C74E00C7184EDA076",
+          "https://catalog-education.oracle.com/ords/certview/sharebadge?id=44338B7A7836373533A8ADBFCB67E38D38B2389D089E717A9C619881898DFF78",
         logo: "/images/oracle.png",
         color: "from-red-400 to-orange-500",
         bgAccent: "bg-red-500/10",
-        category: "Cloud Computing",
+        category: "Software Development",
       },
 
       {
@@ -395,16 +390,18 @@ const Certification = () => {
       },
       {
         id: 4,
-        title: "Oracle Cloud Infrastructure 2025 Certified Architect Associate",
+        title:
+          "Oracle Cloud Infrastructure Foundations 2024 Certified Associate",
         issuer: "Oracle",
-        date: "Dec 2025",
+        date: "Feb 2025",
         credentialUrl:
-          "https://catalog-education.oracle.com/ords/certview/sharebadge?id=25B257ACD9F5D0A50D1CBC16498B4442F543B8A12BF3651E16583FC9C49E66E6",
+          "https://catalog-education.oracle.com/pls/certview/sharebadge?id=179EEB1994E84E7775CE1A02A09FB5756CD771CE6432B02C74E00C7184EDA076",
         logo: "/images/oracle.png",
-        color: "from-violet-400 to-violet-600",
-        bgAccent: "bg-violet-500/10",
+        color: "from-red-400 to-orange-500",
+        bgAccent: "bg-red-500/10",
         category: "Cloud Computing",
       },
+
       {
         id: 5,
         title: "MERN Stack Developer",
@@ -417,8 +414,26 @@ const Certification = () => {
         bgAccent: "bg-violet-500/10",
         category: "Web Development",
       },
+      {
+        id: 6,
+        title: "Oracle Cloud Infrastructure 2025 Certified Architect Associate",
+        issuer: "Oracle",
+        date: "Dec 2025",
+        credentialUrl:
+          "https://catalog-education.oracle.com/ords/certview/sharebadge?id=25B257ACD9F5D0A50D1CBC16498B4442F543B8A12BF3651E16583FC9C49E66E6",
+        logo: "/images/oracle.png",
+        color: "from-violet-400 to-violet-600",
+        bgAccent: "bg-violet-500/10",
+        category: "Cloud Computing",
+      },
     ],
-    []
+    [],
+  );
+
+  // Calculate unique tech domains
+  const uniqueDomains = useMemo(
+    () => new Set(certifications.map((cert) => cert.category)).size,
+    [certifications],
   );
 
   return (
@@ -507,7 +522,9 @@ const Certification = () => {
               </div>
               <div className="w-px h-8 bg-gradient-to-b from-transparent via-white/20 to-transparent" />
               <div className="text-center transition-transform duration-300 hover:scale-110">
-                <div className="text-2xl font-bold text-white mb-1">3</div>
+                <div className="text-2xl font-bold text-white mb-1">
+                  {uniqueDomains}
+                </div>
                 <div className="text-sm text-gray-400">Tech Domains</div>
               </div>
               <div className="w-px h-8 bg-gradient-to-b from-transparent via-white/20 to-transparent" />

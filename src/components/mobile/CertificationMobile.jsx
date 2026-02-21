@@ -170,72 +170,93 @@ const CertificationMobile = () => {
 
   // Certifications data
   const certifications = useMemo(
-    () => [
-      {
-        id: 1,
-        title:
-          "Oracle Cloud Infrastructure Foundations 2024 Certified Associate",
-        issuer: "Oracle",
-        date: "Feb 2025",
-        credentialUrl:
-          "https://catalog-education.oracle.com/pls/certview/sharebadge?id=179EEB1994E84E7775CE1A02A09FB5756CD771CE6432B02C74E00C7184EDA076",
-        logo: "/images/oracle.png",
-        color: "from-red-400 to-orange-500",
-        bgAccent: "bg-red-500/10",
-        category: "Cloud Computing",
-      },
+      () => [
+        {
+          id: 1,
+          title:
+            "Oracle Certified Professional: Java SE 21 Developer",
+          issuer: "Oracle",
+          date: "Feb 2026",
+          credentialUrl:
+            "https://catalog-education.oracle.com/ords/certview/sharebadge?id=44338B7A7836373533A8ADBFCB67E38D38B2389D089E717A9C619881898DFF78",
+          logo: "/images/oracle.png",
+          color: "from-red-400 to-orange-500",
+          bgAccent: "bg-red-500/10",
+          category: "Software Development",
+        },
+        
+  
+        {
+          id: 2,
+          title: "Oracle Cloud Infrastructure 2025 Certified DevOps Professional",
+          issuer: "Oracle",
+          date: "Oct 2025",
+          credentialUrl:
+            "https://catalog-education.oracle.com/ords/certview/sharebadge?id=BC2817D66FE80005AE4C6DA8B5461FB2F42B7FBF434BC1B48DC36E8811CC974D",
+          logo: "/images/oracle.png",
+          color: "from-blue-400 to-cyan-500",
+          bgAccent: "bg-blue-500/10",
+          category: "Devops",
+        },
+        {
+          id: 3,
+          title: "Big Data Foundations - Level 2",
+          issuer: "IBM",
+          date: "May 2025",
+          credentialUrl:
+            "https://www.credly.com/badges/4db3fdd4-ee7f-45c2-af7c-6cb4617e2bd6/linked_in_profile",
+          logo: "/images/IBM_logo.png",
+          color: "from-blue-400 to-cyan-500",
+          bgAccent: "bg-blue-500/10",
+          category: "Data Science",
+        },
+        {
+          id: 4,
+          title:
+            "Oracle Cloud Infrastructure Foundations 2024 Certified Associate",
+          issuer: "Oracle",
+          date: "Feb 2025",
+          credentialUrl:
+            "https://catalog-education.oracle.com/pls/certview/sharebadge?id=179EEB1994E84E7775CE1A02A09FB5756CD771CE6432B02C74E00C7184EDA076",
+          logo: "/images/oracle.png",
+          color: "from-red-400 to-orange-500",
+          bgAccent: "bg-red-500/10",
+          category: "Cloud Computing",
+        },
+        
+        {
+          id: 5,
+          title: "MERN Stack Developer",
+          issuer: "Udemy",
+          date: "Aug 2024",
+          credentialUrl:
+            "https://www.linkedin.com/in/ilias-ofir-445b91295/details/certifications/1726409009042/single-media-viewer/?profileId=ACoAAEeLNjUBZGYFEyr2xQDond17qZWEny61fwE",
+          logo: "/images/Udemy-Logo.png",
+          color: "from-purple-400 to-violet-600",
+          bgAccent: "bg-violet-500/10",
+          category: "Web Development",
+        },
+        {
+          id: 6,
+          title: "Oracle Cloud Infrastructure 2025 Certified Architect Associate",
+          issuer: "Oracle",
+          date: "Dec 2025",
+          credentialUrl:
+            "https://catalog-education.oracle.com/ords/certview/sharebadge?id=25B257ACD9F5D0A50D1CBC16498B4442F543B8A12BF3651E16583FC9C49E66E6",
+          logo: "/images/oracle.png",
+          color: "from-violet-400 to-violet-600",
+          bgAccent: "bg-violet-500/10",
+          category: "Cloud Computing",
+        }
+      ],
+      []
+    );
 
-      {
-        id: 2,
-        title: "Oracle Cloud Infrastructure 2025 Certified DevOps Professional",
-        issuer: "Oracle",
-        date: "Oct 2025",
-        credentialUrl:
-          "https://catalog-education.oracle.com/ords/certview/sharebadge?id=BC2817D66FE80005AE4C6DA8B5461FB2F42B7FBF434BC1B48DC36E8811CC974D",
-        logo: "/images/oracle.png",
-        color: "from-blue-400 to-cyan-500",
-        bgAccent: "bg-blue-500/10",
-        category: "Cloud Computing",
-      },
-      {
-        id: 3,
-        title: "Big Data Foundations - Level 2",
-        issuer: "IBM",
-        date: "May 2025",
-        credentialUrl:
-          "https://www.credly.com/badges/4db3fdd4-ee7f-45c2-af7c-6cb4617e2bd6/linked_in_profile",
-        logo: "/images/IBM_logo.png",
-        color: "from-blue-400 to-cyan-500",
-        bgAccent: "bg-blue-500/10",
-        category: "Data Science",
-      },
-      {
-        id: 4,
-        title: "Oracle Cloud Infrastructure 2025 Certified Architect Associate",
-        issuer: "Oracle",
-        date: "Dec 2025",
-        credentialUrl:
-          "https://catalog-education.oracle.com/ords/certview/sharebadge?id=25B257ACD9F5D0A50D1CBC16498B4442F543B8A12BF3651E16583FC9C49E66E6",
-        logo: "/images/oracle.png",
-        color: "from-violet-400 to-violet-600",
-        bgAccent: "bg-violet-500/10",
-        category: "Cloud Computing",
-      },
-      {
-        id: 5,
-        title: "MERN Stack Developer",
-        issuer: "Udemy",
-        date: "Aug 2024",
-        credentialUrl:
-          "https://www.linkedin.com/in/ilias-ofir-445b91295/details/certifications/1726409009042/single-media-viewer/?profileId=ACoAAEeLNjUBZGYFEyr2xQDond17qZWEny61fwE",
-        logo: "/images/Udemy-Logo.png",
-        color: "from-purple-400 to-violet-600",
-        bgAccent: "bg-violet-500/10",
-        category: "Web Development",
-      },
-    ],
-    []
-  );
+    // Calculate unique tech domains
+      const uniqueDomains = useMemo(
+        () => new Set(certifications.map((cert) => cert.category)).size,
+        [certifications],
+      );
 
   return (
     <QuantumBackground
@@ -303,7 +324,9 @@ const CertificationMobile = () => {
             </div>
             <div className="w-px h-6 bg-gradient-to-b from-transparent via-white/20 to-transparent" />
             <div className="text-center hover:scale-105 transition-transform duration-300">
-              <div className="text-xl font-bold text-white mb-1">3</div>
+              <div className="text-xl font-bold text-white mb-1">
+                 {uniqueDomains}
+              </div>
               <div className="text-xs text-gray-400">Domains</div>
             </div>
             <div className="w-px h-6 bg-gradient-to-b from-transparent via-white/20 to-transparent" />
