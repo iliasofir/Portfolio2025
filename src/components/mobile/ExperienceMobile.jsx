@@ -134,6 +134,17 @@ const ExperienceMobile = () => {
   // Experience data
   const experiences = useMemo(
     () => [
+       {
+        role: "Software Engineer Intern",
+        company: "Capgemini",
+        location: "Rabat, Maroc",
+        period: "March 2026 - Present",
+        status: "Ongoing",
+        logo: "/images/cap.png",
+        description:
+        "I will be contributing to enterprise-level projects while continuously expanding my technical expertise in modern web technologies and architectural patterns.",
+        technologies: ["Java", "Spring Boot"],
+      },
       {
         role: "Full Stack Java/Angular Engineering Intern",
         company: "Attijariwafa Bank",
