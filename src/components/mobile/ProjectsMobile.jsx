@@ -240,6 +240,18 @@ const ProjectsMobile = () => {
         github: "https://github.com/iliasofir/smart-log-anomaly-java",
         color: "from-emerald-400 to-teal-600",
         bgAccent: "bg-emerald-500/20",
+      },
+      {
+        title: "AI Research Assistant",
+        period: "2025",
+        description: "AI-Powered Research Assistant",
+        details:
+          "Developed an AI-powered research assistant to help researchers analyze data and generate insights.",
+        tech: ["CrewAI", "FastAPI", "React", "Gemini API","Agentic","OCR"],
+        image: "/images/Agent_proj.png",
+        github: "https://github.com/iliasofir/Ai_Agent_research",
+        color: "from-emerald-700 to-teal-200",
+        bgAccent: "bg-fuchsia-500/20",
       }
     
     ],
